@@ -1,0 +1,8 @@
+{
+  "name": "CF Companion",
+  "description": "Tracks upcoming Codeforces contests from your GNOME panel with live countdowns, urgency colors, and desktop notifications.",
+  "uuid": "cf-companion@Tanishgehlot05.github.io",
+  "version": 1,
+  "shell-version": ["46"],
+  "url": "https://github.com/Tanishgehlot05/cf-companion"
+}
