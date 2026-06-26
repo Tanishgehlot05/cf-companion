@@ -1,19 +1,21 @@
 # CF Companion
 
-A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces contests from your panel, sends desktop notifications before they start, and optionally connects to a Telegram bot that sends reminders and post-contest standings comparisons with friends.
+A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces contests directly from your panel — live countdown, urgency colors, and desktop notifications. Optionally pairs with a Telegram bot for reminders and post-contest standings with friends.
 
-![GNOME 45+](https://img.shields.io/badge/GNOME-45%2B-4A86CF?logo=gnome&logoColor=white)
+![GNOME 46](https://img.shields.io/badge/GNOME-46-4A86CF?logo=gnome&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
 ## Screenshots
 
-> Add release screenshots to the `screenshots/` folder before publishing.
+| Panel | Dropdown |
+|---|---|
+| ![Panel](screenshots/control_panel.png) | ![Dropdown](screenshots/dropdown.png) |
 
-| Panel label | Dropdown menu | Notification |
-|---|---|---|
-| `screenshots/panel.png` | `screenshots/dropdown.png` | `screenshots/notification.png` |
+| Contest list | Notification |
+|---|---|
+| ![Closeup](screenshots/dropdown_closeup.png) | ![Notification](screenshots/notification_1.png) |
 
 ---
 
@@ -21,162 +23,140 @@ A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces 
 
 ### GNOME Extension
 
-- **Live countdown** — panel shows time until the next contest (`CF • 2h 14m`), updated every minute without re-fetching
-- **Urgency colors** — contest names turn green → yellow → orange → red as the start time approaches
-- **Desktop notifications** — one notification at 1 hour before, 15 minutes before, and at contest start; no duplicates within a session
-- **Preferences** — configure refresh interval, max contests shown, and desktop reminders
-- **Offline-friendly** — keeps showing the last fetched contests if the network is unavailable, with an "Offline · Last update: HH:MM" footer
+- **Live countdown** — panel label updates every minute showing time to next contest (`CF • 1d 3h`)
+- **Urgency colors** — contest names shift green → yellow → orange → red as start time approaches
+- **Desktop notifications** — fires at 1 hour before, 15 minutes before, and at contest start; no repeat notifications within a session
+- **Offline mode** — keeps showing last known contests when network is unavailable, footer shows last update time
 
 ### Telegram Bot (optional)
 
-- Set your Codeforces handle and add friends to track
-- Morning digest at 8am with today's contests
+- Register your Codeforces handle and track friends
+- Morning digest with the day's contests
 - Reminders 1 hour and 15 minutes before each contest
-- After each contest: standings comparison with your friends, sorted by rank
+- Post-contest standings comparison with friends, sorted by rank
 
 ---
 
-## Architecture
+## Project Structure
 
 ```
 cf-companion/
-├── extension/          ← GNOME Shell extension (GJS, ES Modules)
-│   ├── extension.js    ← Main indicator and menu logic
-│   ├── metadata.json   ← Extension identity and GNOME version support
-│   ├── prefs.js        ← GNOME preferences window
-│   ├── stylesheet.css  ← Panel and dropdown styles
-│   ├── icons/          ← Extension icons
-│   ├── schemas/        ← GSettings schema for preferences
+├── extension/
+│   ├── extension.js       ← panel indicator, dropdown, fetch loop
+│   ├── metadata.json      ← extension identity
+│   ├── stylesheet.css     ← panel and menu styles
 │   └── utils/
-│       ├── time.js         ← Countdown formatting and urgency logic
-│       └── notifications.js ← Desktop notification helpers
+│       ├── time.js          ← countdown formatting, urgency colors
+│       └── notifications.js ← desktop notification logic
 │
-├── backend/            ← Node.js backend (optional)
-│   ├── server.js       ← Health endpoint + cron jobs
-│   ├── bot.js          ← Telegram bot (long-polling)
-│   ├── db.js           ← SQLite setup
+├── backend/
+│   ├── server.js          ← Express app + cron jobs
+│   ├── bot.js             ← Telegram bot (long-polling)
+│   ├── db.js              ← SQLite setup
+│   ├── routes/
+│   │   ├── users.js       ← user and friend management
+│   │   └── contests.js    ← contest data endpoints
 │   └── package.json
 │
-├── .github/workflows/  ← GitHub Actions CI
+├── .github/workflows/     ← CI lint and validation
 ├── screenshots/
 ├── README.md
 ├── LICENSE
 └── .gitignore
 ```
 
-**Data flow:**
+---
+
+## How it works
 
 ```
-Codeforces API ──► GNOME Extension (direct, every 30 min)
+Codeforces API ──► GNOME Extension (every 30 min, direct)
                         │
-                        └── Panel label, dropdown, notifications,
-                            preferences (all local, no backend needed)
+                        └── panel label, dropdown, desktop notifications
 
 Codeforces API ──► Backend (cron, every 30 min)
                         │
-                        ├── SQLite DB (contest cache)
-                        └── Telegram Bot ──► Users
+                        └── Telegram Bot ──► your phone
                                                 │
-                                                └── Reminders, morning digest,
-                                                    post-contest standings
+                                                ├── morning digest
+                                                ├── contest reminders
+                                                └── post-contest standings
 ```
+
+The extension works fully standalone — the backend is only needed for Telegram features.
 
 ---
 
-## Installation — Extension
-
-### Option 1: Manual (recommended for development)
+## Installing the Extension
 
 ```bash
-# Clone the repo
-git clone <repo-url>
+git clone https://github.com/Tanishgehlot05/cf-companion.git
 cd cf-companion
 
-# Copy the extension to GNOME's extensions folder
-cp -r extension ~/.local/share/gnome-shell/extensions/cf-companion@gnome
+mkdir -p ~/.local/share/gnome-shell/extensions/cf-companion@Tanishgehlot05.github.io
+cp -r extension/* ~/.local/share/gnome-shell/extensions/cf-companion@Tanishgehlot05.github.io/
 
-# Compile preferences schema
-glib-compile-schemas ~/.local/share/gnome-shell/extensions/cf-companion@gnome/schemas
-
-# Enable it
-gnome-extensions enable cf-companion@gnome
-
-# On Wayland: log out and back in to restart GNOME Shell
-# On X11: press Alt+F2, type 'r', press Enter
+gnome-extensions enable cf-companion@Tanishgehlot05.github.io
 ```
 
-### Option 2: GNOME Extensions website
-
-> *(Submit to [extensions.gnome.org](https://extensions.gnome.org) once tested)*
+On Wayland, log out and back in after enabling. On X11, press `Alt+F2`, type `r`, press Enter.
 
 ---
 
-## Running the Backend (optional)
-
-The extension works standalone. The backend is only needed for the Telegram bot features.
+## Running the Backend
 
 ```bash
 cd backend
-
-# Install dependencies
 npm install
-
-# Set up environment variables
 cp .env.example .env
-# Edit .env — add your Telegram bot token
-
-# Start
+# add your Telegram bot token to .env
 npm start
-
-# Or with auto-restart during development
-npm run dev
 ```
 
-The server runs on `http://localhost:3000` by default.
+Server runs on `http://localhost:3000`.
 
 ---
 
-## Telegram Bot Setup
+## Telegram Setup
 
-See the detailed guide below for creating your bot token. Once you have it:
+1. Open Telegram and message `@BotFather`
+2. Send `/newbot` — follow the steps to create a bot and get your token
+3. Add the token to `backend/.env` as `TELEGRAM_BOT_TOKEN`
+4. Start the backend and message your bot `/start`
+5. Set your handle: `/add YourCFHandle`
+6. Add friends: `/add FriendHandle`
 
-1. Add `TELEGRAM_BOT_TOKEN=your_token_here` to `backend/.env`
-2. Start the backend: `npm start` inside `backend/`
-3. Open Telegram, find your bot, and send `/start`
-4. Set your handle: `/add YourCFHandle`
-5. Add friends: `/add FriendHandle`
+### Commands
 
-### Bot Commands
-
-| Command | Description |
+| Command | What it does |
 |---|---|
-| `/start` | Register and see welcome message |
-| `/help` | List all commands |
+| `/start` | Register your account |
+| `/help` | Show all commands |
 | `/add <handle>` | Set your handle (first time) or add a friend |
 | `/remove <handle>` | Remove a friend |
-| `/friends` | See your current friend list |
+| `/friends` | List your tracked friends |
 
 ---
 
-## Debugging the Extension
+## Debugging
 
 ```bash
-# Watch live GNOME Shell logs (best way to debug)
+# live extension logs
 journalctl -f -o cat /usr/bin/gnome-shell
 
-# Reload the extension after code changes (X11 only)
-gnome-extensions disable cf-companion@gnome
-gnome-extensions enable cf-companion@gnome
+# reload after changes (X11 only)
+gnome-extensions disable cf-companion@Tanishgehlot05.github.io
+gnome-extensions enable cf-companion@Tanishgehlot05.github.io
 ```
 
 ---
 
-## Future Improvements
+## Planned
 
-- Contest type filter (Div. 1, Div. 2, Educational, etc.)
-- Rating change display in post-contest standings (requires `/user.rating` API call)
-- Support for Codeforces Gym contests
-- Light theme color variants for urgency labels
+- Preferences page for refresh interval and contest count
+- Contest type filter (Div. 1, Div. 2, Educational)
+- Rating change display in post-contest standings
+- Light theme support for urgency colors
 
 ---
 
