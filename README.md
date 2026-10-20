@@ -1,6 +1,6 @@
 # CF Companion
 
-A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces contests directly from your panel — live countdown, urgency colors, and desktop notifications. Optionally pairs with a Telegram bot for reminders and post-contest standings with friends.
+A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces contests directly from your panel with live countdowns, urgency colors, and desktop notifications. An optional backend in this repository provides separate Telegram features.
 
 ![GNOME 46](https://img.shields.io/badge/GNOME-46-4A86CF?logo=gnome&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -23,8 +23,9 @@ A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces 
 
 ### GNOME Extension
 
-- **Live countdown** — panel label updates every minute showing time to next contest (`CF • 1d 3h`)
-- **Urgency colors** — contest names shift green → yellow → orange → red as start time approaches
+- **Live countdown** — panel label updates every minute, shows `LIVE` during a contest, and shows `CF ✓` when there are no upcoming contests
+- **Current contest rows** — countdowns and urgency colors update every minute; finished contests disappear from the list
+- **Retry backoff** — failed API requests retry after 2, 5, 10, then 30 minutes; successful requests return to the normal 30-minute refresh
 - **Desktop notifications** — fires at 1 hour before, 15 minutes before, and at contest start; no repeat notifications within a session
 - **Offline mode** — keeps showing last known contests when network is unavailable, footer shows last update time
 
@@ -90,9 +91,8 @@ The extension works fully standalone — the backend is only needed for Telegram
 git clone https://github.com/Tanishgehlot05/cf-companion.git
 cd cf-companion
 
-mkdir -p ~/.local/share/gnome-shell/extensions/cf-companion@Tanishgehlot05.github.io
-cp -r extension/* ~/.local/share/gnome-shell/extensions/cf-companion@Tanishgehlot05.github.io/
-
+gnome-extensions pack extension --force --extra-source=utils
+gnome-extensions install --force cf-companion@Tanishgehlot05.github.io.shell-extension.zip
 gnome-extensions enable cf-companion@Tanishgehlot05.github.io
 ```
 
