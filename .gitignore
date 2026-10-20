@@ -1,0 +1,21 @@
+# Generated extension packages
+*.zip
+
+# Local development and secrets
+.env
+.env.*
+!.env.example
+node_modules/
+venv/
+
+# Generated build files
+dist/
+gschemas.compiled
+
+# Editor and operating system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
