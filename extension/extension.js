@@ -13,26 +13,29 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import { secondsUntil, formatCountdown, formatStartDate, formatDuration, urgencyClass } from './utils/time.js';
-import { checkReminders, destroySource } from './utils/notifications.js';
+import { ReminderManager } from './utils/notifications.js';
 
 
 const CF_API_URL = 'https://codeforces.com/api/contest.list?gym=false';
 const REFRESH_INTERVAL_MS = 30 * 60 * 1000;
 const COUNTDOWN_INTERVAL_MS = 60 * 1000;
+const RETRY_INTERVALS_MS = [2, 5, 10, 30].map(minutes => minutes * 60 * 1000);
 const MAX_CONTESTS = 8;
 
 
 export default class CFCompanion extends Extension {
 
     enable() {
+        this._reminders = new ReminderManager();
         this._indicator = new CFIndicator(this);
         Main.panel.addToStatusArea(this.uuid, this._indicator, 0, 'right');
     }
 
     disable() {
-        destroySource();
         this._indicator?.destroy();
         this._indicator = null;
+        this._reminders?.destroy();
+        this._reminders = null;
     }
 }
 
@@ -45,14 +48,16 @@ class CFIndicator extends PanelMenu.Button {
 
         this._extension = extension;
         this._httpSession = new Soup.Session();
+        this._httpSession.timeout = 30;
         this._cancellable = new Gio.Cancellable();
-        this._isDestroyed = false;
-
-        this._refreshTimer   = null;
-        this._countdownTimer = null;
+        this._requestRunning = false;
+        this._retryAttempt = 0;
+        this._refreshId = null;
+        this._minuteTickId = null;
 
         // cache last good contests for offline mode
         this._lastContests  = [];
+        this._contestRows = [];
         this._isOffline     = false;
         this._lastUpdatedAt = null;
 
@@ -93,7 +98,7 @@ class CFIndicator extends PanelMenu.Button {
 
         const next = this._lastContests[0];
         const secondsLeft = secondsUntil(next.startTimeSeconds);
-        const countdown   = formatCountdown(secondsLeft);
+        const countdown = secondsLeft <= 0 ? 'LIVE' : formatCountdown(secondsLeft);
         this._panelLabel.set_text(`CF • ${countdown}`);
     }
 
@@ -105,7 +110,6 @@ class CFIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(headerItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        // this part gets rebuilt on every refresh
         this._contestSection = new PopupMenu.PopupMenuSection();
         this.menu.addMenuItem(this._contestSection);
 
@@ -130,6 +134,7 @@ class CFIndicator extends PanelMenu.Button {
 
     _showLoadingPlaceholder() {
         this._contestSection.removeAll();
+        this._contestRows = [];
         const item = new PopupMenu.PopupMenuItem('⏳  Loading contests…', { reactive: false });
         item.label.add_style_class_name('cf-loading-label');
         this._contestSection.addMenuItem(item);
@@ -138,19 +143,24 @@ class CFIndicator extends PanelMenu.Button {
     // rebuilds contest list in dropdown
     _updateMenu(contests) {
         this._contestSection.removeAll();
+        this._contestRows = [];
 
         if (contests.length === 0) {
             const item = new PopupMenu.PopupMenuItem('No upcoming contests found.', { reactive: false });
             this._contestSection.addMenuItem(item);
             this._updateFooter();
+            this._updatePanelLabel();
             return;
         }
 
         for (let i = 0; i < contests.length; i++) {
-            this._contestSection.addMenuItem(this._buildContestItem(contests[i]));
+            const row = this._buildContestItem(contests[i]);
+            this._contestRows.push(row);
+            this._contestSection.addMenuItem(row.item);
 
             if (i < contests.length - 1) {
-                this._contestSection.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+                row.separator = new PopupMenu.PopupSeparatorMenuItem();
+                this._contestSection.addMenuItem(row.separator);
             }
         }
 
@@ -161,15 +171,14 @@ class CFIndicator extends PanelMenu.Button {
     // one contest row in the dropdown
     _buildContestItem(contest) {
         const secondsLeft  = secondsUntil(contest.startTimeSeconds);
-        const countdown    = formatCountdown(secondsLeft);
+        const countdown    = secondsLeft <= 0 ? 'LIVE' : formatCountdown(secondsLeft);
         const dateStr      = formatStartDate(contest.startTimeSeconds);
         const durationStr  = formatDuration(contest.durationSeconds);
         const colorClass   = urgencyClass(secondsLeft);
 
         const typeBadge = contest.type === 'CF' ? '🔵' : contest.type === 'ICPC' ? '🟢' : '🟡';
 
-        const item = new PopupMenu.PopupSubMenuMenuItem('', false);
-        item.label.hide();
+        const item = new PopupMenu.PopupBaseMenuItem();
 
         const vbox = new St.BoxLayout({
             vertical: true,
@@ -182,22 +191,19 @@ class CFIndicator extends PanelMenu.Button {
         });
 
         const detailLabel = new St.Label({
-            text: `📅 ${dateStr}   ⏱ ${durationStr}   ⏳ in ${countdown}`,
+            text: `📅 ${dateStr}   ⏱ ${durationStr}   ⏳ ${countdown === 'LIVE' ? 'LIVE' : `in ${countdown}`}`,
             style_class: 'cf-contest-details',
         });
 
         vbox.add_child(nameLabel);
         vbox.add_child(detailLabel);
 
-        item.insert_child_at_index(vbox, 1);
-
-        const openContestItem = new PopupMenu.PopupMenuItem('🔗  Open contest page');
-        openContestItem.connect('activate', () => {
+        item.add_child(vbox);
+        item.connect('activate', () => {
             this._openUri(`https://codeforces.com/contests/${contest.id}`);
         });
-        item.menu.addMenuItem(openContestItem);
 
-        return item;
+        return { contest, item, nameLabel, detailLabel };
     }
 
     _updateFooter() {
@@ -215,7 +221,7 @@ class CFIndicator extends PanelMenu.Button {
     _showOfflineMessage() {
         if (this._lastContests.length === 0) {
             this._contestSection.removeAll();
-            const item = new PopupMenu.PopupMenuItem('', { reactive: false });
+            const item = new PopupMenu.PopupBaseMenuItem({ reactive: false });
 
             const vbox = new St.BoxLayout({ vertical: true });
 
@@ -231,7 +237,6 @@ class CFIndicator extends PanelMenu.Button {
 
             vbox.add_child(offlineLabel);
             vbox.add_child(retryLabel);
-            item.label.hide();
             item.add_child(vbox);
 
             this._contestSection.addMenuItem(item);
@@ -242,28 +247,27 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     _refresh() {
-        if (this._isDestroyed) return;
-
-        this._clearTimer(this._refreshTimer);
-        this._refreshTimer = null;
+        if (this._requestRunning)
+            return;
+        this._requestRunning = true;
 
         this._fetchContests()
             .then(contests => {
-                if (this._isDestroyed) return;
+                if (this._cancellable.is_cancelled())
+                    throw new Error('Request cancelled');
 
                 this._isOffline     = false;
                 this._lastContests  = contests;
                 this._lastUpdatedAt = new Date();
+                this._retryAttempt = 0;
 
                 this._updateMenu(contests);
-                checkReminders(contests);
+                this._extension._reminders.check(contests);
 
-                this._refreshTimer = this._scheduleTimer(REFRESH_INTERVAL_MS, () => {
-                    this._refresh();
-                });
+                this._scheduleRefresh(REFRESH_INTERVAL_MS);
             })
             .catch(err => {
-                if (this._isDestroyed || err.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
+                if (err.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED) || this._cancellable.is_cancelled()) {
                     return;
                 }
 
@@ -277,9 +281,12 @@ class CFIndicator extends PanelMenu.Button {
                     this._showOfflineMessage();
                 }
 
-                this._refreshTimer = this._scheduleTimer(REFRESH_INTERVAL_MS, () => {
-                    this._refresh();
-                });
+                const retry = RETRY_INTERVALS_MS[Math.min(this._retryAttempt, RETRY_INTERVALS_MS.length - 1)];
+                this._retryAttempt++;
+                this._scheduleRefresh(retry);
+            })
+            .finally(() => {
+                this._requestRunning = false;
             });
     }
 
@@ -298,13 +305,13 @@ class CFIndicator extends PanelMenu.Button {
                 GLib.PRIORITY_DEFAULT,
                 this._cancellable,
                 (session, result) => {
-                    if (this._isDestroyed) {
-                        reject(new Error('Request cancelled'));
-                        return;
-                    }
-
                     try {
                         const bytes = session.send_and_read_finish(result);
+
+                        if (this._cancellable.is_cancelled()) {
+                            reject(new Error('Request cancelled'));
+                            return;
+                        }
 
                         if (message.get_status() !== Soup.Status.OK) {
                             reject(new Error(`HTTP ${message.get_status()}`));
@@ -341,43 +348,74 @@ class CFIndicator extends PanelMenu.Button {
         }
     }
 
-    // minute tick for panel text and reminders
+    // Update menu rows and reminders once per minute.
     _startCountdownTick() {
-        this._countdownTimer = this._scheduleRepeatingTimer(COUNTDOWN_INTERVAL_MS, () => {
+        this._minuteTickId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, COUNTDOWN_INTERVAL_MS, () => {
+            this._minuteTickId = null;
+            this._lastContests = this._lastContests.filter(contest =>
+                contest.startTimeSeconds + contest.durationSeconds > Math.floor(Date.now() / 1000));
+            this._updateContestRows();
             this._updatePanelLabel();
             if (this._lastContests.length > 0) {
-                checkReminders(this._lastContests);
+                this._extension._reminders.check(this._lastContests);
             }
-            return GLib.SOURCE_CONTINUE;
-        });
-    }
-
-    _scheduleTimer(intervalMs, callback) {
-        return GLib.timeout_add(GLib.PRIORITY_DEFAULT, intervalMs, () => {
-            callback();
+            this._startCountdownTick();
             return GLib.SOURCE_REMOVE;
         });
     }
 
-    _scheduleRepeatingTimer(intervalMs, callback) {
-        return GLib.timeout_add(GLib.PRIORITY_DEFAULT, intervalMs, callback);
-    }
+    _updateContestRows() {
+        const now = Math.floor(Date.now() / 1000);
+        const liveIds = new Set(this._lastContests.map(contest => contest.id));
+        this._contestRows = this._contestRows.filter(row => {
+            if (liveIds.has(row.contest.id))
+                return true;
+            this._contestSection.removeMenuItem(row.item);
+            if (row.separator)
+                this._contestSection.removeMenuItem(row.separator);
+            return false;
+        });
 
-    _clearTimer(timerId) {
-        if (timerId !== null && timerId !== undefined) {
-            GLib.source_remove(timerId);
+        const lastRow = this._contestRows[this._contestRows.length - 1];
+        if (lastRow?.separator) {
+            this._contestSection.removeMenuItem(lastRow.separator);
+            lastRow.separator = null;
+        }
+
+        for (const row of this._contestRows) {
+            const secondsLeft = row.contest.startTimeSeconds - now;
+            const countdown = secondsLeft <= 0 ? 'LIVE' : formatCountdown(secondsLeft);
+            const dateStr = formatStartDate(row.contest.startTimeSeconds);
+            const durationStr = formatDuration(row.contest.durationSeconds);
+            row.detailLabel.set_text(`📅 ${dateStr}   ⏱ ${durationStr}   ⏳ ${countdown === 'LIVE' ? 'LIVE' : `in ${countdown}`}`);
+            for (const className of ['cf-urgency-green', 'cf-urgency-yellow', 'cf-urgency-orange', 'cf-urgency-red'])
+                row.nameLabel.remove_style_class_name(className);
+            row.nameLabel.add_style_class_name(urgencyClass(secondsLeft));
         }
     }
 
+    _scheduleRefresh(intervalMs) {
+        if (this._refreshId !== null)
+            GLib.source_remove(this._refreshId);
+        this._refreshId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, intervalMs, () => {
+            this._refreshId = null;
+            this._refresh();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
     destroy() {
-        this._isDestroyed = true;
         this._cancellable?.cancel();
-        this._clearTimer(this._refreshTimer);
-        this._clearTimer(this._countdownTimer);
-        this._refreshTimer   = null;
-        this._countdownTimer = null;
+        if (this._refreshId !== null) {
+            GLib.source_remove(this._refreshId);
+            this._refreshId = null;
+        }
+        if (this._minuteTickId !== null) {
+            GLib.source_remove(this._minuteTickId);
+            this._minuteTickId = null;
+        }
+        this._httpSession?.abort();
         this._httpSession    = null;
-        this._cancellable    = null;
         super.destroy();
     }
 });
