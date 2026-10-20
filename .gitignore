@@ -1,6 +1,8 @@
 # Node
 node_modules/
+venv/
 npm-debug.log*
+*.zip
 
 # Environment
 .env

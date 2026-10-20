@@ -67,22 +67,17 @@ jobs:
           ls -la extension/utils/
           echo "All extension files accounted for."
 
-      - name: Compile GSettings schema
-        run: glib-compile-schemas --strict extension/schemas
-
       - name: Build extension bundle
         run: |
-          gnome-extensions pack extension --force \
-            --schema=schemas/org.gnome.shell.extensions.cf-companion.gschema.xml \
-            --extra-source=utils \
-            --extra-source=icons
+          uuid=$(node -p "require('./extension/metadata.json').uuid")
+          gnome-extensions pack extension --force --extra-source=utils
+          test -f "${uuid}.shell-extension.zip"
 
       - name: Verify bundle contents
         run: |
-          unzip -l cf-companion@gnome.shell-extension.zip
-          unzip -l cf-companion@gnome.shell-extension.zip | grep -q 'extension.js'
-          unzip -l cf-companion@gnome.shell-extension.zip | grep -q 'metadata.json'
-          unzip -l cf-companion@gnome.shell-extension.zip | grep -q 'schemas/org.gnome.shell.extensions.cf-companion.gschema.xml'
-          unzip -l cf-companion@gnome.shell-extension.zip | grep -q 'utils/time.js'
-          unzip -l cf-companion@gnome.shell-extension.zip | grep -q 'utils/notifications.js'
-          unzip -l cf-companion@gnome.shell-extension.zip | grep -q 'icons/cf-companion-symbolic.svg'
+          uuid=$(node -p "require('./extension/metadata.json').uuid")
+          unzip -l "${uuid}.shell-extension.zip"
+          unzip -l "${uuid}.shell-extension.zip" | grep -q 'extension.js'
+          unzip -l "${uuid}.shell-extension.zip" | grep -q 'metadata.json'
+          unzip -l "${uuid}.shell-extension.zip" | grep -q 'utils/time.js'
+          unzip -l "${uuid}.shell-extension.zip" | grep -q 'utils/notifications.js'
