@@ -352,6 +352,7 @@ class CFIndicator extends PanelMenu.Button {
     _startCountdownTick() {
         this._minuteTickId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, COUNTDOWN_INTERVAL_MS, () => {
             this._minuteTickId = null;
+            this._startCountdownTick();
             this._lastContests = this._lastContests.filter(contest =>
                 contest.startTimeSeconds + contest.durationSeconds > Math.floor(Date.now() / 1000));
             this._updateContestRows();
@@ -359,7 +360,6 @@ class CFIndicator extends PanelMenu.Button {
             if (this._lastContests.length > 0) {
                 this._extension._reminders.check(this._lastContests);
             }
-            this._startCountdownTick();
             return GLib.SOURCE_REMOVE;
         });
     }
@@ -370,15 +370,15 @@ class CFIndicator extends PanelMenu.Button {
         this._contestRows = this._contestRows.filter(row => {
             if (liveIds.has(row.contest.id))
                 return true;
-            this._contestSection.removeMenuItem(row.item);
+            row.item.destroy();
             if (row.separator)
-                this._contestSection.removeMenuItem(row.separator);
+                row.separator.destroy();
             return false;
         });
 
         const lastRow = this._contestRows[this._contestRows.length - 1];
         if (lastRow?.separator) {
-            this._contestSection.removeMenuItem(lastRow.separator);
+            lastRow.separator.destroy();
             lastRow.separator = null;
         }
 

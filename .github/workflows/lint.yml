@@ -70,7 +70,7 @@ jobs:
       - name: Build extension bundle
         run: |
           uuid=$(node -p "require('./extension/metadata.json').uuid")
-          gnome-extensions pack extension --force
+          gnome-extensions pack extension --force --extra-source=utils
           test -f "${uuid}.shell-extension.zip"
 
       - name: Verify bundle contents
