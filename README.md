@@ -53,9 +53,6 @@ cf-companion/
 │   ├── server.js          ← Express app + cron jobs
 │   ├── bot.js             ← Telegram bot (long-polling)
 │   ├── db.js              ← SQLite setup
-│   ├── routes/
-│   │   ├── users.js       ← user and friend management
-│   │   └── contests.js    ← contest data endpoints
 │   └── package.json
 │
 ├── .github/workflows/     ← CI lint and validation
