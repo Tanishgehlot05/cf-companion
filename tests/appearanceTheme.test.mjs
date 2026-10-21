@@ -222,7 +222,7 @@ for (const theme of THEMES) {
 }
 for (const theme of THEMES) {
     assert.ok(buildShellThemeCss().includes(
-        `.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {\n    background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};\n    border-radius: 12px;\n    padding: 4px;`),
+        `.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {\n    background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};\n    border-radius: 12px;\n    padding: 4px;`),
     `${theme.id} toolbar uses its theme surface and separator border`);
     assert.ok(buildShellThemeCss().includes(
         `.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:hover`),

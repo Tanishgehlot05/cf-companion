@@ -188,7 +188,7 @@ export function buildShellThemeCss() {
 `).join('\n');
 
     const toolbarRules = THEMES.map(theme => `
-.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {
+.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {
     background-color: ${theme.secondarySurface};
     border: 1px solid ${theme.separator};
     border-radius: 12px;

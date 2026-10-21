@@ -347,7 +347,7 @@
 }
 
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-system {
+.cf-companion-menu.cf-theme-system .cf-action-toolbar-row.cf-action-toolbar-theme-system {
     background-color: #212325;
     border: 1px solid #3a3d46;
     border-radius: 12px;
@@ -355,7 +355,7 @@
 }
 
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-orbit {
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-row.cf-action-toolbar-theme-orbit {
     background-color: #242731;
     border: 1px solid #3B3E4B;
     border-radius: 12px;
@@ -363,7 +363,7 @@
 }
 
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-slate {
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-row.cf-action-toolbar-theme-slate {
     background-color: #232B33;
     border: 1px solid #404C58;
     border-radius: 12px;
@@ -371,7 +371,7 @@
 }
 
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-sage {
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-row.cf-action-toolbar-theme-sage {
     background-color: #232C25;
     border: 1px solid #3F4C41;
     border-radius: 12px;
@@ -379,7 +379,7 @@
 }
 
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-ember {
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-row.cf-action-toolbar-theme-ember {
     background-color: #2B2522;
     border: 1px solid #4B3E35;
     border-radius: 12px;
