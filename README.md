@@ -1,162 +1,88 @@
 # CF Companion
 
-A GNOME Shell extension for competitive programmers. Tracks upcoming Codeforces contests directly from your panel with live countdowns, urgency colors, and desktop notifications. An optional backend in this repository provides separate Telegram features.
+CF Companion is a GNOME Shell extension that shows upcoming Codeforces contests in the top panel. It provides contest countdowns, urgency colors, and desktop reminders.
 
-![GNOME 46](https://img.shields.io/badge/GNOME-46-4A86CF?logo=gnome&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-green)
+## V2 Preview
 
----
+These genuine screenshots show the V2 interface running on GNOME Shell 46. The profile handle is redacted in the shared dropdown captures. GNOME Extensions submission and review are separate from GitHub releases.
 
-## Screenshots
+**Main dropdown — GNOME Default:** profile summary, upcoming contests, countdowns, and the action toolbar.
 
-| Panel | Dropdown |
-|---|---|
-| ![Panel](screenshots/control_panel.png) | ![Dropdown](screenshots/dropdown.png) |
+![CF Companion V2 test dropdown using GNOME Default, with the profile handle redacted](docs/screenshots/v2-dropdown-default.png)
 
-| Contest list | Notification |
-|---|---|
-| ![Closeup](screenshots/dropdown_closeup.png) | ![Notification](screenshots/notification_1.png) |
+**Main dropdown — Orbit:** the same contest panel using the Orbit palette.
 
----
+![CF Companion V2 test dropdown using the Orbit theme, with the profile handle redacted](docs/screenshots/v2-dropdown-orbit.png)
 
-## Features
+**Appearance preferences:** all five available palettes and the current selection.
 
-### GNOME Extension
+![CF Companion V2 appearance preferences showing GNOME Default, Orbit, Slate, Sage, and Ember](docs/screenshots/v2-appearance-settings.png)
 
-- **Live countdown** — panel label updates every minute, shows `LIVE` during a contest, and shows `CF ✓` when there are no upcoming contests
-- **Current contest rows** — countdowns and urgency colors update every minute; finished contests disappear from the list
-- **Retry backoff** — failed API requests retry after 2, 5, 10, then 30 minutes; successful requests return to the normal 30-minute refresh
-- **Desktop notifications** — fires at 1 hour before, 15 minutes before, and at contest start; no repeat notifications within a session
-- **Offline mode** — keeps showing last known contests when network is unavailable, footer shows last update time
+This standalone project contains only the GNOME Shell extension. It targets **GNOME Shell 46** and retains the existing UUID `cf-companion@Tanishgehlot05.github.io`.
 
-### Telegram Bot (optional)
+## Baseline
 
-- Register your Codeforces handle and track friends
-- Morning digest with the day's contests
-- Reminders 1 hour and 15 minutes before each contest
-- Post-contest standings comparison with friends, sorted by rank
+The extension source is based on the submitted V1 review-fixes baseline, commit [`8b616e2`](https://github.com/Tanishgehlot05/cf-companion/commit/8b616e29b9276189fa37f92b653163fba9fbc50f). Stages 1–5 are implemented. The official UUID and extension version are unchanged.
 
----
+## Package
 
-## Project Structure
+From this project directory, run:
 
-```
-cf-companion/
-├── extension/
-│   ├── extension.js       ← panel indicator, dropdown, fetch loop
-│   ├── metadata.json      ← extension identity
-│   ├── stylesheet.css     ← panel and menu styles
-│   └── utils/
-│       ├── time.js          ← countdown formatting, urgency colors
-│       └── notifications.js ← desktop notification logic
-│
-├── backend/
-│   ├── server.js          ← Express app + cron jobs
-│   ├── bot.js             ← Telegram bot (long-polling)
-│   ├── db.js              ← SQLite setup
-│   └── package.json
-│
-├── .github/workflows/     ← CI lint and validation
-├── screenshots/
-├── README.md
-├── LICENSE
-└── .gitignore
+```sh
+node scripts/generate-theme-stylesheet.mjs
+node --experimental-default-type=module scripts/package-extension.mjs --out-dir=/tmp
 ```
 
----
+The production package is written to `/tmp` using the UUID from `extension/metadata.json`. The helper stages only runtime files before invoking GNOME's extension packager, so tests and development documentation are not included.
 
-## How it works
+See [CHANGELOG.md](CHANGELOG.md) for the version history and [docs/RELEASING.md](docs/RELEASING.md) for release policy and verification commands. The GitHub Actions release workflow packages the exact tagged commit and attaches the ZIP to a GitHub Release; it never uploads to extensions.gnome.org.
 
-```
-Codeforces API ──► GNOME Extension (every 30 min, direct)
-                        │
-                        └── panel label, dropdown, desktop notifications
+The four custom palettes and GNOME Default option are defined in `extension/utils/themes.js`. The generator keeps the Shell stylesheet's theme selectors in sync with those shared palette values; it is a development-time helper and is not included in the extension package. Bundled Codeforces icon variants are in `extension/icons/`; their source and license are documented alongside them.
 
-Codeforces API ──► Backend (cron, every 30 min)
-                        │
-                        └── Telegram Bot ──► your phone
-                                                │
-                                                ├── morning digest
-                                                ├── contest reminders
-                                                └── post-contest standings
+For local development, copy the contents of `extension/` into:
+
+```text
+~/.local/share/gnome-shell/extensions/cf-companion@Tanishgehlot05.github.io/
 ```
 
-The extension works fully standalone — the backend is only needed for Telegram features.
+Then disable and re-enable the extension using GNOME Extensions or `gnome-extensions`. Shell/session behavior should be tested on GNOME Shell 46.
 
----
+## Project contents
 
-## Installing the Extension
+- `extension/extension.js` — extension entry point
+- `extension/metadata.json` — GNOME extension metadata
+- `extension/stylesheet.css` — panel and menu styling
+- `extension/services/` — contest, profile, and friend-profile fetching with retries and upcoming-contest cache persistence
+- `extension/ui/` — panel indicator and dropdown
+- `extension/utils/` — countdown, urgency, and notification helpers
+- `LICENSE` — MIT License
 
-```bash
-git clone https://github.com/Tanishgehlot05/cf-companion.git
-cd cf-companion
+The Telegram backend, credentials, generated packages, and V1 Git history are not part of this repository.
 
-gnome-extensions pack extension --force --extra-source=utils
-gnome-extensions install --force cf-companion@Tanishgehlot05.github.io.shell-extension.zip
-gnome-extensions enable cf-companion@Tanishgehlot05.github.io
-```
+## Stage 1 architecture
 
-On Wayland, log out and back in after enabling. On X11, press `Alt+F2`, type `r`, press Enter.
+- `extension/extension.js` owns enable/disable and connects the runtime components.
+- `extension/services/contestService.js` fetches and validates the Codeforces list, handles retries, and reads/writes the local cache.
+- `extension/services/codeforcesUserService.js` validates handles and fetches the configured public profile from Codeforces.
+- `extension/services/friendsService.js` maintains the rating-sorted friends leaderboard and refreshes current public friend profiles hourly.
+- `extension/ui/panel.js` owns the panel indicator, menu, rows, countdown display, and manual refresh action.
+- `extension/utils/reminderService.js` owns reminder deduplication and the MessageTray source lifecycle.
+- `extension/utils/snoozeTimerManager.js` tracks one replaceable five-minute snooze per contest through the shared timer manager.
+- `extension/utils/reminderPreferences.js` handles reminder-mode filtering, persisted starred contest IDs, reminder windows, and panel urgency rules.
+- `extension/utils/timerManager.js` tracks every GLib timeout and removes outstanding sources during teardown.
+- `extension/prefs.js` provides General, Contests, Reminders, Profile & Friends, Appearance, and Integration pages. Orbit, Slate, Sage, and Ember are applied through the existing general Apply Changes workflow.
+- The `codeforces-handle` and `friends` preferences are stored locally in GSettings. Current friend profile data is kept in memory.
 
----
+The last successful contest list is stored at `${XDG_CACHE_HOME:-~/.cache}/cf-companion/contests.json`. It is validated before display and has no age-based expiry: the most recently successful valid response remains available until replaced by another successful response. Missing or invalid cache data is ignored; a network failure leaves an already loaded cache in place and displays the existing offline state. Cache writes are asynchronous and contain only contest data and its successful update timestamp.
 
-## Running the Backend
+Post-contest summaries, standings comparisons, and rating-result messages are deferred to the separate Telegram backend project. The GNOME extension does not fetch, poll, read, or write recent-contest results. Any existing `contest-results.json` file is left untouched and is no longer used by the extension.
 
-```bash
-cd backend
-npm install
-cp .env.example .env
-# add your Telegram bot token to .env
-npm start
-```
+Regular reminders default to **All contests**. The optional **Starred contests only** mode is applied with the other general preferences and reads the starred contest IDs stored in GSettings. Upcoming and live contest rows have an inline accessible star control. IDs are removed from the saved star list only when a fresh contest-list response confirms that contest has finished; cached and offline data do not prune stars. Reminder notifications have Open contest and Snooze 5 min actions. Snoozes use the shared timer manager, replace an existing snooze for the same contest, and are cancelled on disable. The snoozed notification uses a distinct send-once key and is checked again against the contest end time before delivery.
 
-Server runs on `http://localhost:3000`.
+The dropdown keeps every filtered active contest available when Codeforces reports `CODING` or its validated schedule places it between its start and end. If a refresh omits a still-active contest, its last known contest record remains available until its scheduled end; cached live rows are labelled as schedule-based. The panel uses the existing minute timer to show live time remaining, prefers a starred active contest for the compact indicator, and otherwise selects the active contest ending soonest. Live rows provide contest, problemset, and standings shortcuts.
 
----
+The Friends leaderboard is a collapsed native submenu. Current friend profiles are cached in memory for the session, shown with rank colors, and refreshed hourly; opening the submenu does not trigger a request. Post-contest summaries are deferred to the separate Telegram backend project.
 
-## Telegram Setup
+Refresh, Open Codeforces, and Settings share one compact toolbar row. Refresh status updates in place while the contest request is running; the contest service keeps requests single-flight and retains its validated contest cache on failure.
 
-1. Open Telegram and message `@BotFather`
-2. Send `/newbot` — follow the steps to create a bot and get your token
-3. Add the token to `backend/.env` as `TELEGRAM_BOT_TOKEN`
-4. Start the backend and message your bot `/start`
-5. Set your handle: `/add YourCFHandle`
-6. Add friends: `/add FriendHandle`
-
-### Commands
-
-| Command | What it does |
-|---|---|
-| `/start` | Register your account |
-| `/help` | Show all commands |
-| `/add <handle>` | Set your handle (first time) or add a friend |
-| `/remove <handle>` | Remove a friend |
-| `/friends` | List your tracked friends |
-
----
-
-## Debugging
-
-```bash
-# live extension logs
-journalctl -f -o cat /usr/bin/gnome-shell
-
-# reload after changes (X11 only)
-gnome-extensions disable cf-companion@Tanishgehlot05.github.io
-gnome-extensions enable cf-companion@Tanishgehlot05.github.io
-```
-
----
-
-## Planned
-
-- Preferences page for refresh interval and contest count
-- Contest type filter (Div. 1, Div. 2, Educational)
-- Rating change display in post-contest standings
-- Light theme support for urgency colors
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+Upcoming contest rows use local-time friendly dates (Today, Tomorrow, or weekday/date) and update their date and countdown text in place. The panel indicator text turns red during the final 15 minutes before a contest starts and returns to its normal color during live contests or when no upcoming contest applies.
