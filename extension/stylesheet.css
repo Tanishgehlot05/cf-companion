@@ -68,8 +68,8 @@
 /* Palette selectors are generated from utils/themes.js. */
 /* BEGIN GENERATED THEME RULES */
 .cf-profile-row.cf-profile-theme-system {
-    background-color: #2d2f36;
-    border: 1px solid #3a3d46;
+    background-color: transparent;
+    border: none;
     border-radius: 14px;
     padding: 10px 12px;
 }
@@ -82,7 +82,7 @@
 }
 
 .cf-profile-row.cf-profile-theme-system .cf-profile-brand-code {
-    color: #f5f5f5;
+    color: inherit;
     font-size: 16px;
     font-weight: 700;
 }
@@ -96,7 +96,7 @@
 }
 
 .cf-profile-row.cf-profile-theme-system .cf-profile-chevron {
-    color: #d0d4db;
+    color: inherit;
 }
 
 
@@ -358,8 +358,8 @@
 
 
 .cf-companion-menu.cf-theme-system .cf-action-toolbar-row.cf-action-toolbar-theme-system {
-    background-color: #212325;
-    border: 1px solid #3a3d46;
+    background-color: transparent;
+    border: none;
     border-radius: 12px;
     padding: 4px;
 }

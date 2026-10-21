@@ -128,10 +128,15 @@ export function setAppearanceThemeDraft(settings, value) {
 }
 
 export function buildShellThemeCss() {
-    const profileCardRules = THEMES.map(theme => `
+    const profileCardRules = THEMES.map(theme => {
+        const profileSurface = theme.id === 'system'
+            ? 'background-color: transparent;\n    border: none;'
+            : `background-color: ${theme.surface};\n    border: 1px solid ${theme.separator};`;
+        const profileGlyphColor = theme.id === 'system' ? 'inherit' : theme.primaryText;
+        const profileChevronColor = theme.id === 'system' ? 'inherit' : theme.secondaryText;
+        return `
 .cf-profile-row.cf-profile-theme-${theme.id} {
-    background-color: ${theme.surface};
-    border: 1px solid ${theme.separator};
+    ${profileSurface}
     border-radius: 14px;
     padding: 10px 12px;
 }
@@ -144,7 +149,7 @@ export function buildShellThemeCss() {
 }
 
 .cf-profile-row.cf-profile-theme-${theme.id} .cf-profile-brand-code {
-    color: ${theme.primaryText};
+    color: ${profileGlyphColor};
     font-size: 16px;
     font-weight: 700;
 }
@@ -158,9 +163,10 @@ export function buildShellThemeCss() {
 }
 
 .cf-profile-row.cf-profile-theme-${theme.id} .cf-profile-chevron {
-    color: ${theme.secondaryText};
+    color: ${profileChevronColor};
 }
-`).join('\n');
+`;
+    }).join('\n');
 
     const friendHandleRules = THEMES.map(theme => `
 .cf-companion-menu.cf-theme-${theme.id} .cf-friend-row .cf-friend-handle {
@@ -189,14 +195,18 @@ export function buildShellThemeCss() {
 }
 `).join('\n');
 
-    const toolbarRules = THEMES.map(theme => `
+    const toolbarRules = THEMES.map(theme => {
+        const toolbarSurface = theme.id === 'system'
+            ? 'background-color: transparent;\n    border: none;'
+            : `background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};`;
+        return `
 .cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {
-    background-color: ${theme.secondarySurface};
-    border: 1px solid ${theme.separator};
+    ${toolbarSurface}
     border-radius: 12px;
     padding: 4px;
 }
-`).join('\n');
+`;
+    }).join('\n');
 
     const menuInteractionRules = THEMES.map(theme => `
 .cf-companion-menu.cf-theme-${theme.id} .popup-menu-item:hover,

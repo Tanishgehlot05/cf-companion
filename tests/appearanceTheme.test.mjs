@@ -191,12 +191,12 @@ assert.doesNotMatch(buildShellThemeCss(), /\.cf-companion-menu\.cf-theme-system 
     'GNOME Default keeps the native popup surface');
 assert.doesNotMatch(buildShellThemeCss(), /cf-urgency-green/,
     'normal long-range countdowns do not use a hard-coded green urgency class');
-assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \{[\s\S]*?background-color: #2d2f36;/,
-    'GNOME Default profile card uses its shared palette surface');
+assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \{\s*background-color: transparent;\s*border: none;/,
+    'GNOME Default profile card follows the native Shell surface in light and dark modes');
 assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \.cf-profile-brand \{[\s\S]*?background-color: rgba\(153, 180, 255, 0\.16\);[\s\S]*?border: 1px solid rgba\(153, 180, 255, 0\.2\);/,
     'GNOME Default brand tile uses a softened shared-palette accent');
-assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \.cf-profile-brand-code \{\s*color: #f5f5f5;\s*font-size: 16px;/,
-    'GNOME Default uses the smaller, softer foreground code mark');
+assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \.cf-profile-brand-code \{\s*color: inherit;\s*font-size: 16px;/,
+    'GNOME Default code mark inherits the native foreground color');
 assert.match(buildShellThemeCss(), /\.cf-contest-row\.cf-contest-theme-system\.cf-contest-row-priority \{\s*border-left: 3px solid #99b4ff/i,
     'the next contest uses only a narrow accent bar');
 const priorityRule = buildShellThemeCss().match(/\.cf-contest-row\.cf-contest-theme-system\.cf-contest-row-priority \{([^}]*)\}/)?.[1] ?? '';
@@ -251,9 +251,15 @@ for (const theme of THEMES) {
     `${theme.id} friend handles use bold primary text`);
 }
 for (const theme of THEMES) {
-    assert.ok(buildShellThemeCss().includes(
-        `.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {\n    background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};\n    border-radius: 12px;\n    padding: 4px;`),
-    `${theme.id} toolbar uses its theme surface and separator border`);
+    if (theme.id === 'system') {
+        assert.ok(buildShellThemeCss().includes(
+            `.cf-companion-menu.cf-theme-system .cf-action-toolbar-row.cf-action-toolbar-theme-system {\n    background-color: transparent;\n    border: none;\n    border-radius: 12px;\n    padding: 4px;`),
+        'GNOME Default toolbar follows the native Shell surface');
+    } else {
+        assert.ok(buildShellThemeCss().includes(
+            `.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {\n    background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};\n    border-radius: 12px;\n    padding: 4px;`),
+        `${theme.id} toolbar uses its theme surface and separator border`);
+    }
     assert.ok(buildShellThemeCss().includes(
         `.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:hover`),
     `${theme.id} toolbar buttons have themed hover states`);
