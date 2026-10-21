@@ -35,6 +35,8 @@ assert.match(panelSource, /vertical: true,[\s\S]*x_expand: true,[\s\S]*y_align: 
     'the handle and rank block is vertically centered against the profile tile');
 assert.match(panelSource, /this\._codeforcesToolbarIcon\.gicon = codeforcesIcon/,
     'the Codeforces logo remains in the bottom toolbar');
+assert.match(stylesheet, /\.cf-contest-expand-button \{ padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; \}/,
+    'View all uses a slightly larger, still compact label and hit target');
 assert.match(panelSource, /view-refresh-symbolic/);
 assert.match(panelSource, /preferences-system-symbolic/);
 assert.doesNotMatch(prefsSource, /icons\/codeforces(?:-inverse)?\.svg/,

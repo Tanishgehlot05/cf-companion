@@ -17,7 +17,7 @@
 .cf-menu-header { font-size: 11px; font-weight: 600; padding: 5px 8px 3px; }
 .cf-contest-header-row { padding: 3px 5px 2px; }
 .cf-contest-header-box { spacing: 8px; }
-.cf-contest-expand-button { padding: 2px 6px; border-radius: 5px; font-size: 10px; }
+.cf-contest-expand-button { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; }
 .cf-menu-footer { font-size: 10px; padding: 1px 8px 3px; }
 
 .cf-contest-section { spacing: 6px; }
