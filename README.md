@@ -16,37 +16,18 @@ A GNOME Shell extension that brings Codeforces contests, live countdowns, remind
 
 ## Installation
 
-Install the latest production release from a terminal. This uses GNOME's extension management command and `curl`:
+Build and install from the source repository:
 
 ```bash
-set -euo pipefail
+git clone https://github.com/Tanishgehlot05/cf-companion.git
+cd cf-companion
 
-uuid='cf-companion@Tanishgehlot05.github.io'
-asset='cf-companion@Tanishgehlot05.github.io.shell-extension.zip'
-url='https://github.com/Tanishgehlot05/cf-companion/releases/latest/download/cf-companion%40Tanishgehlot05.github.io.shell-extension.zip'
-tmpdir="$(mktemp -d)"
-trap 'rm -rf -- "$tmpdir"' EXIT
-
-if ! curl --fail --location --show-error --silent \
-    --output "$tmpdir/$asset" "$url"; then
-  printf 'Could not download CF Companion. Check your connection and try again.\n' >&2
-  exit 1
-fi
-
-if ! gnome-extensions install --force "$tmpdir/$asset"; then
-  printf 'Could not install CF Companion. Check the downloaded bundle and try again.\n' >&2
-  exit 1
-fi
-
-if ! gnome-extensions enable "$uuid"; then
-  printf 'Installed the bundle, but could not enable %s. Check GNOME Extensions after reloading the Shell.\n' "$uuid" >&2
-  exit 1
-fi
-
-printf 'Installed and enabled %s.\n' "$uuid"
+gnome-extensions pack extension --force --extra-source=utils
+gnome-extensions install --force cf-companion@Tanishgehlot05.github.io.shell-extension.zip
+gnome-extensions enable cf-companion@Tanishgehlot05.github.io
 ```
 
-This release targets **GNOME Shell 46**. Reload the Shell session so it discovers the installed extension:
+CF Companion targets **GNOME Shell 46**. The GNOME Shell session may need to reload before the installed extension appears:
 
 - **Wayland:** Log out of GNOME, then log back in.
 - **Xorg/X11:** Press `Alt`+`F2`, enter `r`, then press Enter.
