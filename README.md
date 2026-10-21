@@ -14,13 +14,12 @@ From this project directory, run:
 
 ```sh
 node scripts/generate-theme-stylesheet.mjs
-gnome-extensions pack extension --force \
-  --extra-source=services --extra-source=ui --extra-source=utils --extra-source=icons \
-  --schema=schemas/org.gnome.shell.extensions.cf-companion.gschema.xml \
-  --out-dir=/tmp
+node --experimental-default-type=module scripts/package-extension.mjs --out-dir=/tmp
 ```
 
-The package is written to `/tmp` using the UUID from `extension/metadata.json`. The service, UI, utility, and icon directories are included as extra source because the extension keeps those assets in dedicated directories. The GSettings schema is included for the preferences window.
+The production package is written to `/tmp` using the UUID from `extension/metadata.json`. The helper stages only runtime files before invoking GNOME's extension packager, so tests and development documentation are not included.
+
+See [CHANGELOG.md](CHANGELOG.md) for the version history and [docs/RELEASING.md](docs/RELEASING.md) for release policy and verification commands. The GitHub Actions release workflow packages the exact tagged commit and attaches the ZIP to a GitHub Release; it never uploads to extensions.gnome.org.
 
 The four custom palettes and GNOME Default option are defined in `extension/utils/themes.js`. The generator keeps the Shell stylesheet's theme selectors in sync with those shared palette values; it is a development-time helper and is not included in the extension package. Bundled Codeforces icon variants are in `extension/icons/`; their source and license are documented alongside them.
 

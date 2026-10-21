@@ -1,0 +1,55 @@
+name: V2 checks
+
+on:
+  push:
+    branches: [v2-stable]
+  pull_request:
+    branches: [v2-stable]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '20'
+
+      - name: Install GNOME validation and packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnome-shell gjs libglib2.0-bin unzip
+
+      - name: Run Node.js tests
+        run: |
+          for test in tests/*.test.mjs; do
+            node --experimental-default-type=module "$test"
+          done
+
+      - name: Run GJS tests
+        run: |
+          for test in tests/*.test.js; do
+            gjs --module "$test"
+          done
+
+      - name: Check JavaScript syntax and generated themes
+        run: |
+          find extension scripts tests -type f \( -name '*.js' -o -name '*.mjs' \) -print0 \
+            | xargs -0 -n1 node --experimental-default-type=module --check
+          node --experimental-default-type=module scripts/generate-theme-stylesheet.mjs --check
+          git diff --check
+
+      - name: Validate GSettings schema
+        run: glib-compile-schemas --strict --dry-run extension/schemas
+
+      - name: Build and inspect production package
+        run: |
+          node --experimental-default-type=module scripts/package-extension.mjs --out-dir=dist
+          zip_path="dist/cf-companion@Tanishgehlot05.github.io.shell-extension.zip"
+          node --experimental-default-type=module scripts/check-release.mjs --archive "$zip_path"
