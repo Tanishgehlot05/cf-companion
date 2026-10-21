@@ -2,6 +2,22 @@
 
 CF Companion is a GNOME Shell extension that shows upcoming Codeforces contests in the top panel. It provides contest countdowns, urgency colors, and desktop reminders.
 
+## V2 Preview
+
+These genuine screenshots show the current V2 test interface on GNOME Shell 46. The profile handle is redacted in the shared dropdown captures. V2 has not yet been released as version 2.0.0.
+
+**Main dropdown — GNOME Default:** profile summary, upcoming contests, countdowns, and the action toolbar.
+
+![CF Companion V2 test dropdown using GNOME Default, with the profile handle redacted](docs/screenshots/v2-dropdown-default.png)
+
+**Main dropdown — Orbit:** the same contest panel using the Orbit palette.
+
+![CF Companion V2 test dropdown using the Orbit theme, with the profile handle redacted](docs/screenshots/v2-dropdown-orbit.png)
+
+**Appearance preferences:** all five available palettes and the current selection.
+
+![CF Companion V2 appearance preferences showing GNOME Default, Orbit, Slate, Sage, and Ember](docs/screenshots/v2-appearance-settings.png)
+
 This standalone project contains only the GNOME Shell extension. It targets **GNOME Shell 46** and retains the existing UUID `cf-companion@Tanishgehlot05.github.io`.
 
 ## Baseline
