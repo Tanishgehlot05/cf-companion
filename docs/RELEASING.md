@@ -29,12 +29,13 @@ advanced since this note was written.
 ## Branches
 
 - `main` is the primary branch and carries the current product line. After the
-  V2.0.0 migration it contains V2 and is the base for subsequent V2 releases.
+  V2.0.0 migration it contains V2 and is protected; merge changes through a
+  pull request after the required CI check passes.
 - `maintenance/1.x` preserves the latest verified V1 candidate for any further
   GNOME Extensions review corrections. Keep its production UUID and metadata
   unchanged; validate and submit V1 fixes from this branch only.
-- The temporary `v2-stable` branch was retired after the V2 release commit and
-  tag were integrated into `main` and its history was verified reachable.
+- `review-fixes` is retained as a historical reference. Make future V1 review
+  corrections on `maintenance/1.x`.
 - Create short-lived branches from `main`, for example `feature/theme-polish`
   or `fix/countdown-bug`, test them, and merge them back through review. Do not
   create branches named after individual versions.
@@ -44,14 +45,18 @@ advanced since this note was written.
 
 ## Verified history note
 
-As checked on 2026-10-21, the repository has no V1 release tags or GitHub
-Releases. The [initial GNOME Extensions submission](https://extensions.gnome.org/review/72223)
+As checked on 2026-10-22, the only GitHub release and tag is `v2.0.0`. The
+[initial GNOME Extensions submission](https://extensions.gnome.org/review/72223)
 shows version `1` as rejected; the [review-fix submission](https://extensions.gnome.org/review/76863)
-shows `1.1 (2)` as unreviewed. The source history likewise does not establish
-the intended `v1.0.0` or `v1.0.1` SemVer snapshots: the initial commit has no
-`version-name`, while the reviewer-fix line records `1.1`. Do not create those
-historical tags without reliable release-designation evidence. V2 release tags
-must match the tagged snapshot's `version-name` exactly.
+shows `1.1 (2)` as unreviewed. The implementation files in the revision-2
+submission archive match the reviewer-fix source at `8b616e2` (merged as
+`1620f42`), but the submission's version name is `1.1`, not the intended
+SemVer `1.0.1`. The revision-1 archive's `extension.js` does not match any
+tracked V1 source commit. Therefore neither V1 SemVer label has been published,
+and the initial submission cannot be assigned to an exact tracked source
+snapshot. Do not create historical tags until their SemVer mapping is
+explicitly resolved. V2 release tags must match the tagged snapshot's
+`version-name` exactly.
 
 ## Local verification and package build
 
@@ -87,9 +92,7 @@ data, backend code, and development documentation.
 2. Update `version-name` and increment the GNOME integer `version` in
    `extension/metadata.json`. Add a changelog entry based only on merged code.
 3. Review the diff, run every verification command above, and inspect the ZIP.
-4. Merge reviewed changes to `main` and ensure the worktree is clean. During
-   the initial V2 migration, validate the candidate on `v2-stable` first and
-   preserve it there until the merge is complete.
+4. Merge the validated pull request to `main` and ensure the worktree is clean.
 5. Create an annotated tag whose name exactly matches the metadata:
 
    ```sh
