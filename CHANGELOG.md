@@ -1,10 +1,12 @@
 # Changelog
 
-This file records changes found in repository history. Historical V1 SemVer
-labels below are the requested product labels, not verified Git release tags:
-EGO records the initial V1 submission as rejected version `1` and its
-review-fix submission as `1.1 (2)` (unreviewed at the time of release-workflow
-setup). See [docs/RELEASING.md](docs/RELEASING.md) before creating V1 tags.
+This file records changes found in repository history. The V1 SemVer headings
+below are intended historical labels, not published GitHub Releases: there are
+no V1 Git tags or GitHub Releases. The source history and GNOME Extensions
+submissions do not establish exact SemVer release snapshots, so the V1 tags
+have not been created. The initial EGO submission (version `1`) is rejected;
+the reviewer-fix submission (`1.1 (2)`) is still unreviewed. See
+[docs/RELEASING.md](docs/RELEASING.md) for the version-history rationale.
 
 ## 2.0.0
 
