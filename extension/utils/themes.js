@@ -172,6 +172,7 @@ export function buildShellThemeCss() {
     const contestRowRules = THEMES.map(theme => `
 .cf-contest-row.cf-contest-theme-${theme.id} {
     background-color: transparent;
+    border-left: 3px solid ${theme.separator};
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -184,6 +185,7 @@ export function buildShellThemeCss() {
 .cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-${theme.id},
 .cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-${theme.id} {
     background-color: ${colorWithAlpha(theme.primaryAccent, 0.15)};
+    border-left-color: ${theme.primaryAccent};
 }
 `).join('\n');
 

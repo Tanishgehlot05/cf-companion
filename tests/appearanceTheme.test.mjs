@@ -229,9 +229,15 @@ for (const theme of THEMES) {
     )?.[1] ?? '';
     assert.match(idleContestRule, /background-color: transparent;/,
         `${theme.id} contest rows are transparent when idle`);
+    assert.ok(idleContestRule.includes(`border-left: 3px solid ${theme.separator};`),
+        `${theme.id} contest rows show a subtle leading accent while idle`);
     assert.ok(buildShellThemeCss().includes(
         `.cf-contest-row.cf-contest-theme-${theme.id}.cf-contest-row-priority {\n    border-left: 3px solid ${theme.primaryAccent};`
     ), `${theme.id} keeps the next-contest accent bar`);
+    assert.ok(buildShellThemeCss().includes(
+        `.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-${theme.id} {\n    background-color: rgba(`
+    ) && buildShellThemeCss().includes(`border-left-color: ${theme.primaryAccent};`),
+    `${theme.id} hover feedback accents the leading bar`);
 }
 for (const theme of THEMES) {
     assert.ok(buildShellThemeCss().includes(

@@ -264,6 +264,7 @@
 
 .cf-contest-row.cf-contest-theme-system {
     background-color: transparent;
+    border-left: 3px solid #3a3d46;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -276,11 +277,13 @@
 .cf-companion-menu.cf-theme-system.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-system,
 .cf-companion-menu.cf-theme-system .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-system {
     background-color: rgba(153, 180, 255, 0.15);
+    border-left-color: #99b4ff;
 }
 
 
 .cf-contest-row.cf-contest-theme-orbit {
     background-color: transparent;
+    border-left: 3px solid #3B3E4B;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -293,11 +296,13 @@
 .cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-orbit,
 .cf-companion-menu.cf-theme-orbit .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-orbit {
     background-color: rgba(169, 154, 244, 0.15);
+    border-left-color: #A99AF4;
 }
 
 
 .cf-contest-row.cf-contest-theme-slate {
     background-color: transparent;
+    border-left: 3px solid #404C58;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -310,11 +315,13 @@
 .cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-slate,
 .cf-companion-menu.cf-theme-slate .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-slate {
     background-color: rgba(147, 175, 214, 0.15);
+    border-left-color: #93AFD6;
 }
 
 
 .cf-contest-row.cf-contest-theme-sage {
     background-color: transparent;
+    border-left: 3px solid #3F4C41;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -327,11 +334,13 @@
 .cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-sage,
 .cf-companion-menu.cf-theme-sage .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-sage {
     background-color: rgba(154, 189, 164, 0.15);
+    border-left-color: #9ABDA4;
 }
 
 
 .cf-contest-row.cf-contest-theme-ember {
     background-color: transparent;
+    border-left: 3px solid #4B3E35;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -344,6 +353,7 @@
 .cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-ember,
 .cf-companion-menu.cf-theme-ember .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-ember {
     background-color: rgba(215, 175, 126, 0.15);
+    border-left-color: #D7AF7E;
 }
 
 
