@@ -81,6 +81,12 @@
     padding: 0;
 }
 
+.cf-profile-row.cf-profile-theme-system .cf-profile-brand-code {
+    color: #99b4ff;
+    font-size: 17px;
+    font-weight: 700;
+}
+
 .cf-profile-row.cf-profile-theme-system .cf-profile-indicator {
     color: #8b90a0;
 }
@@ -106,6 +112,12 @@
     border: 1px solid rgba(169, 154, 244, 0.32);
     border-radius: 10px;
     padding: 0;
+}
+
+.cf-profile-row.cf-profile-theme-orbit .cf-profile-brand-code {
+    color: #A99AF4;
+    font-size: 17px;
+    font-weight: 700;
 }
 
 .cf-profile-row.cf-profile-theme-orbit .cf-profile-indicator {
@@ -135,6 +147,12 @@
     padding: 0;
 }
 
+.cf-profile-row.cf-profile-theme-slate .cf-profile-brand-code {
+    color: #93AFD6;
+    font-size: 17px;
+    font-weight: 700;
+}
+
 .cf-profile-row.cf-profile-theme-slate .cf-profile-indicator {
     color: #758392;
 }
@@ -162,6 +180,12 @@
     padding: 0;
 }
 
+.cf-profile-row.cf-profile-theme-sage .cf-profile-brand-code {
+    color: #9ABDA4;
+    font-size: 17px;
+    font-weight: 700;
+}
+
 .cf-profile-row.cf-profile-theme-sage .cf-profile-indicator {
     color: #788575;
 }
@@ -187,6 +211,12 @@
     border: 1px solid rgba(215, 175, 126, 0.32);
     border-radius: 10px;
     padding: 0;
+}
+
+.cf-profile-row.cf-profile-theme-ember .cf-profile-brand-code {
+    color: #D7AF7E;
+    font-size: 17px;
+    font-weight: 700;
 }
 
 .cf-profile-row.cf-profile-theme-ember .cf-profile-indicator {

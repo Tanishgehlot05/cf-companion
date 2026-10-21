@@ -209,7 +209,6 @@ class CFIndicator extends PanelMenu.Button {
         if (!this._panelLabel || !this.menu?.actor)
             return;
         const codeforcesIcon = themeId === 'system' ? this._codeforcesIcon : this._codeforcesInverseIcon;
-        this._profileBrandIcon.gicon = codeforcesIcon;
         this._codeforcesToolbarIcon.gicon = codeforcesIcon;
         const actors = [
             this._panelLabel,
@@ -253,12 +252,11 @@ class CFIndicator extends PanelMenu.Button {
         const profileBox = new St.BoxLayout({ x_expand: true, style_class: 'cf-profile-row' });
         this._profileBox = profileBox;
         const headerRow = new St.BoxLayout({ style_class: 'cf-profile-header-row' });
-        const brandIcon = new St.Icon({
-            gicon: this._codeforcesIcon,
-            style_class: 'cf-profile-brand-icon',
+        const brandIcon = new St.Label({
+            text: '</>',
+            style_class: 'cf-profile-brand-code',
             y_align: Clutter.ActorAlign.CENTER,
         });
-        this._profileBrandIcon = brandIcon;
         const brand = new St.BoxLayout({ style_class: 'cf-profile-brand' });
         brand.add_child(brandIcon);
         this._profileHandleLabel = new St.Label({

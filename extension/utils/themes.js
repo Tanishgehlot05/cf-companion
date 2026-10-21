@@ -143,6 +143,12 @@ export function buildShellThemeCss() {
     padding: 0;
 }
 
+.cf-profile-row.cf-profile-theme-${theme.id} .cf-profile-brand-code {
+    color: ${theme.primaryAccent};
+    font-size: 17px;
+    font-weight: 700;
+}
+
 .cf-profile-row.cf-profile-theme-${theme.id} .cf-profile-indicator {
     color: ${theme.disabledText};
 }

@@ -27,8 +27,10 @@ assert.match(codeforcesInverseIcon, /fill="#20212A"/,
     'custom themes use the bundled high-contrast inverse Codeforces mark');
 assert.match(panelSource, /Gio\.FileIcon\.new\([\s\S]*icons\/codeforces\.svg/,
     'the panel loads its Codeforces mark from a bundled local asset');
-assert.match(panelSource, /this\._profileBrandIcon\.gicon = codeforcesIcon[\s\S]*this\._codeforcesToolbarIcon\.gicon = codeforcesIcon/,
-    'theme changes update both Codeforces logo instances');
+assert.match(panelSource, /text: '<\/>'[\s\S]*style_class: 'cf-profile-brand-code'/,
+    'the profile tile uses the compact code glyph');
+assert.match(panelSource, /this\._codeforcesToolbarIcon\.gicon = codeforcesIcon/,
+    'the Codeforces logo remains in the bottom toolbar');
 assert.match(panelSource, /view-refresh-symbolic/);
 assert.match(panelSource, /preferences-system-symbolic/);
 assert.match(prefsSource, /icons\/codeforces\.svg/,
