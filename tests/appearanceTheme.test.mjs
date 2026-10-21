@@ -173,14 +173,31 @@ assert.match(buildPreferencesCss(), /theme-orbit/);
 assert.match(buildPreferencesCss(), /theme-slate/);
 assert.match(buildPreferencesCss(), /theme-sage/);
 assert.match(buildPreferencesCss(), /theme-ember/);
-assert.doesNotMatch(buildShellThemeCss(), /cf-theme-system/,
-    'GNOME Default does not receive a custom Shell palette class or override rules');
+assert.match(buildShellThemeCss(), /\.cf-companion-menu\.cf-theme-system \.popup-menu-item:hover/,
+    'GNOME Default receives the shared interaction highlight without a popup surface override');
+assert.doesNotMatch(buildShellThemeCss(), /\.cf-companion-menu\.cf-theme-system \{/,
+    'GNOME Default keeps the native popup surface');
 assert.doesNotMatch(buildShellThemeCss(), /cf-urgency-green/,
     'normal long-range countdowns do not use a hard-coded green urgency class');
 assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \{[\s\S]*?background-color: #2d2f36;/,
     'GNOME Default profile card uses its shared palette surface');
 assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \.cf-profile-brand \{[\s\S]*?background-color: rgba\(153, 180, 255, 0\.2\);/,
     'GNOME Default brand tile uses the shared palette accent at low opacity');
+assert.match(buildShellThemeCss(), /\.cf-contest-row\.cf-contest-theme-system\.cf-contest-row-priority \{\s*border-left: 3px solid #99b4ff/i,
+    'the next contest uses only a narrow accent bar');
+const priorityRule = buildShellThemeCss().match(/\.cf-contest-row\.cf-contest-theme-system\.cf-contest-row-priority \{([^}]*)\}/)?.[1] ?? '';
+assert.match(priorityRule, /border-left: 3px solid/i,
+    'the next contest uses a narrow accent bar');
+assert.doesNotMatch(priorityRule, /background-color|border:\s*1px/i,
+    'the next contest has no full hover-like highlight');
+assert.match(buildShellThemeCss(), /\.popup-menu-item:hover,[\s\S]*?background-color: rgba\(153, 180, 255, 0\.15\);/,
+    'menu hover uses a faint primary-accent fill');
+assert.match(panelSource, /_enableKeyboardMenuFocus\(\)[\s\S]*key-press-event[\s\S]*motion-event/,
+    'keyboard focus styling is enabled by keyboard navigation and cleared by pointer movement');
+assert.match(panelSource, /actor\.disconnect\(signal\)/,
+    'menu input signal handlers are disconnected during indicator destruction');
+assert.match(panelSource, /open-state-changed'[\s\S]*_setKeyboardMenuFocus\(false\)/,
+    'opening the menu clears keyboard-only focus styling from a previous session');
 assert.match(buildPreferencesCss(), /cf-theme-preview-system \{\s*background-color: @window_bg_color/,
     'GNOME Default preview follows native GTK surface colors');
 assert.doesNotMatch(buildPreferencesCss(), /\.theme-system preferencespage/,
@@ -201,7 +218,7 @@ for (const theme of THEMES) {
         `.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {\n    background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};\n    border-radius: 12px;\n    padding: 4px;`),
     `${theme.id} toolbar uses its theme surface and separator border`);
     assert.ok(buildShellThemeCss().includes(
-        `.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} .cf-action-toolbar-button:hover`),
+        `.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:hover`),
     `${theme.id} toolbar buttons have themed hover states`);
 }
 
@@ -218,7 +235,7 @@ for (const theme of THEMES) {
 }
 for (const theme of THEMES) {
     if (theme.id === 'system') {
-        assert.doesNotMatch(stylesheet, /cf-theme-system/);
+        assert.match(stylesheet, /cf-companion-menu\.cf-theme-system \.popup-menu-item:hover/);
         assert.doesNotMatch(preferencesCss, /\.theme-system preferencespage/);
         continue;
     }

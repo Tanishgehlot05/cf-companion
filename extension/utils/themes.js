@@ -164,13 +164,13 @@ export function buildShellThemeCss() {
 }
 
 .cf-contest-row.cf-contest-theme-${theme.id}.cf-contest-row-priority {
-    background-color: ${colorWithAlpha(theme.primaryAccent, 0.12)};
-    border: 1px solid ${theme.primaryAccent};
+    border-left: 3px solid ${theme.primaryAccent};
 }
 
-.cf-contest-row.cf-contest-theme-${theme.id}:hover,
-.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-${theme.id} {
-    background-color: ${theme.surfaceHover};
+.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-${theme.id},
+.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-${theme.id},
+.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-${theme.id} {
+    background-color: ${colorWithAlpha(theme.primaryAccent, 0.15)};
 }
 `).join('\n');
 
@@ -181,11 +181,16 @@ export function buildShellThemeCss() {
     border-radius: 12px;
     padding: 4px;
 }
+`).join('\n');
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} .cf-action-toolbar-button:hover,
-.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} .cf-action-toolbar-button:focus,
-.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} .cf-action-toolbar-button:active {
-    background-color: ${theme.surfaceHover};
+    const menuInteractionRules = THEMES.map(theme => `
+.cf-companion-menu.cf-theme-${theme.id} .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-${theme.id} .popup-menu-item:active,
+.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:active {
+    background-color: ${colorWithAlpha(theme.primaryAccent, 0.15)};
     border-radius: 8px;
 }
 `).join('\n');
@@ -297,15 +302,6 @@ export function buildShellThemeCss() {
     color: ${theme.secondaryAccent};
 }
 
-.cf-companion-menu.cf-theme-${theme.id} .popup-menu-item:hover,
-.cf-companion-menu.cf-theme-${theme.id} .popup-menu-item:focus,
-.cf-companion-menu.cf-theme-${theme.id} .popup-menu-item:active,
-.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:hover,
-.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:focus,
-.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:active {
-    background-color: ${theme.surfaceHover};
-}
-
 .cf-companion-menu.cf-theme-${theme.id} .cf-contest-star-button {
     color: ${theme.primaryAccent};
     background-color: transparent;
@@ -316,10 +312,14 @@ export function buildShellThemeCss() {
     border-radius: 5px;
 }
 
-.cf-companion-menu.cf-theme-${theme.id} .cf-contest-star-button:focus,
-.cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:focus {
+.cf-companion-menu.cf-theme-${theme.id} .cf-contest-star-button:focus {
     border: 1px solid ${theme.primaryAccent};
     border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-action-toolbar-button:focus {
+    border: 1px solid ${theme.primaryAccent};
+    border-radius: 8px;
 }
 
 .cf-companion-menu.cf-theme-${theme.id} .cf-action-toolbar-button:insensitive {
@@ -348,7 +348,7 @@ export function buildShellThemeCss() {
 }
 `).join('\n');
 
-    return `${profileCardRules}\n${contestRowRules}\n${toolbarRules}\n${customThemeRules}`;
+    return `${profileCardRules}\n${contestRowRules}\n${toolbarRules}\n${customThemeRules}\n${menuInteractionRules}`;
 }
 
 export function buildPreferencesCss() {

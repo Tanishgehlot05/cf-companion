@@ -209,13 +209,13 @@
 }
 
 .cf-contest-row.cf-contest-theme-system.cf-contest-row-priority {
-    background-color: rgba(153, 180, 255, 0.12);
-    border: 1px solid #99b4ff;
+    border-left: 3px solid #99b4ff;
 }
 
-.cf-contest-row.cf-contest-theme-system:hover,
-.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-system {
-    background-color: #363a43;
+.cf-companion-menu.cf-theme-system .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-system,
+.cf-companion-menu.cf-theme-system.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-system,
+.cf-companion-menu.cf-theme-system .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-system {
+    background-color: rgba(153, 180, 255, 0.15);
 }
 
 
@@ -226,13 +226,13 @@
 }
 
 .cf-contest-row.cf-contest-theme-orbit.cf-contest-row-priority {
-    background-color: rgba(169, 154, 244, 0.12);
-    border: 1px solid #A99AF4;
+    border-left: 3px solid #A99AF4;
 }
 
-.cf-contest-row.cf-contest-theme-orbit:hover,
-.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-orbit {
-    background-color: #343640;
+.cf-companion-menu.cf-theme-orbit .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-orbit,
+.cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-orbit,
+.cf-companion-menu.cf-theme-orbit .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-orbit {
+    background-color: rgba(169, 154, 244, 0.15);
 }
 
 
@@ -243,13 +243,13 @@
 }
 
 .cf-contest-row.cf-contest-theme-slate.cf-contest-row-priority {
-    background-color: rgba(147, 175, 214, 0.12);
-    border: 1px solid #93AFD6;
+    border-left: 3px solid #93AFD6;
 }
 
-.cf-contest-row.cf-contest-theme-slate:hover,
-.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-slate {
-    background-color: #394954;
+.cf-companion-menu.cf-theme-slate .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-slate,
+.cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-slate,
+.cf-companion-menu.cf-theme-slate .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-slate {
+    background-color: rgba(147, 175, 214, 0.15);
 }
 
 
@@ -260,13 +260,13 @@
 }
 
 .cf-contest-row.cf-contest-theme-sage.cf-contest-row-priority {
-    background-color: rgba(154, 189, 164, 0.12);
-    border: 1px solid #9ABDA4;
+    border-left: 3px solid #9ABDA4;
 }
 
-.cf-contest-row.cf-contest-theme-sage:hover,
-.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-sage {
-    background-color: #3A4640;
+.cf-companion-menu.cf-theme-sage .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-sage,
+.cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-sage,
+.cf-companion-menu.cf-theme-sage .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-sage {
+    background-color: rgba(154, 189, 164, 0.15);
 }
 
 
@@ -277,13 +277,13 @@
 }
 
 .cf-contest-row.cf-contest-theme-ember.cf-contest-row-priority {
-    background-color: rgba(215, 175, 126, 0.12);
-    border: 1px solid #D7AF7E;
+    border-left: 3px solid #D7AF7E;
 }
 
-.cf-contest-row.cf-contest-theme-ember:hover,
-.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-ember {
-    background-color: #433731;
+.cf-companion-menu.cf-theme-ember .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-ember,
+.cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-ember,
+.cf-companion-menu.cf-theme-ember .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-ember {
+    background-color: rgba(215, 175, 126, 0.15);
 }
 
 
@@ -294,26 +294,12 @@
     padding: 4px;
 }
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-system .cf-action-toolbar-button:hover,
-.cf-action-toolbar-row.cf-action-toolbar-theme-system .cf-action-toolbar-button:focus,
-.cf-action-toolbar-row.cf-action-toolbar-theme-system .cf-action-toolbar-button:active {
-    background-color: #363a43;
-    border-radius: 8px;
-}
-
 
 .cf-action-toolbar-row.cf-action-toolbar-theme-orbit {
     background-color: #242731;
     border: 1px solid #3B3E4B;
     border-radius: 12px;
     padding: 4px;
-}
-
-.cf-action-toolbar-row.cf-action-toolbar-theme-orbit .cf-action-toolbar-button:hover,
-.cf-action-toolbar-row.cf-action-toolbar-theme-orbit .cf-action-toolbar-button:focus,
-.cf-action-toolbar-row.cf-action-toolbar-theme-orbit .cf-action-toolbar-button:active {
-    background-color: #343640;
-    border-radius: 8px;
 }
 
 
@@ -324,13 +310,6 @@
     padding: 4px;
 }
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-slate .cf-action-toolbar-button:hover,
-.cf-action-toolbar-row.cf-action-toolbar-theme-slate .cf-action-toolbar-button:focus,
-.cf-action-toolbar-row.cf-action-toolbar-theme-slate .cf-action-toolbar-button:active {
-    background-color: #394954;
-    border-radius: 8px;
-}
-
 
 .cf-action-toolbar-row.cf-action-toolbar-theme-sage {
     background-color: #232C25;
@@ -339,26 +318,12 @@
     padding: 4px;
 }
 
-.cf-action-toolbar-row.cf-action-toolbar-theme-sage .cf-action-toolbar-button:hover,
-.cf-action-toolbar-row.cf-action-toolbar-theme-sage .cf-action-toolbar-button:focus,
-.cf-action-toolbar-row.cf-action-toolbar-theme-sage .cf-action-toolbar-button:active {
-    background-color: #3A4640;
-    border-radius: 8px;
-}
-
 
 .cf-action-toolbar-row.cf-action-toolbar-theme-ember {
     background-color: #2B2522;
     border: 1px solid #4B3E35;
     border-radius: 12px;
     padding: 4px;
-}
-
-.cf-action-toolbar-row.cf-action-toolbar-theme-ember .cf-action-toolbar-button:hover,
-.cf-action-toolbar-row.cf-action-toolbar-theme-ember .cf-action-toolbar-button:focus,
-.cf-action-toolbar-row.cf-action-toolbar-theme-ember .cf-action-toolbar-button:active {
-    background-color: #433731;
-    border-radius: 8px;
 }
 
 
@@ -468,15 +433,6 @@
     color: #74C9C1;
 }
 
-.cf-companion-menu.cf-theme-orbit .popup-menu-item:hover,
-.cf-companion-menu.cf-theme-orbit .popup-menu-item:focus,
-.cf-companion-menu.cf-theme-orbit .popup-menu-item:active,
-.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:hover,
-.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:focus,
-.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:active {
-    background-color: #343640;
-}
-
 .cf-companion-menu.cf-theme-orbit .cf-contest-star-button {
     color: #A99AF4;
     background-color: transparent;
@@ -487,10 +443,14 @@
     border-radius: 5px;
 }
 
-.cf-companion-menu.cf-theme-orbit .cf-contest-star-button:focus,
-.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:focus {
+.cf-companion-menu.cf-theme-orbit .cf-contest-star-button:focus {
     border: 1px solid #A99AF4;
     border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .cf-action-toolbar-button:focus {
+    border: 1px solid #A99AF4;
+    border-radius: 8px;
 }
 
 .cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:insensitive {
@@ -625,15 +585,6 @@
     color: #AFC4D8;
 }
 
-.cf-companion-menu.cf-theme-slate .popup-menu-item:hover,
-.cf-companion-menu.cf-theme-slate .popup-menu-item:focus,
-.cf-companion-menu.cf-theme-slate .popup-menu-item:active,
-.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:hover,
-.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:focus,
-.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:active {
-    background-color: #394954;
-}
-
 .cf-companion-menu.cf-theme-slate .cf-contest-star-button {
     color: #93AFD6;
     background-color: transparent;
@@ -644,10 +595,14 @@
     border-radius: 5px;
 }
 
-.cf-companion-menu.cf-theme-slate .cf-contest-star-button:focus,
-.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:focus {
+.cf-companion-menu.cf-theme-slate .cf-contest-star-button:focus {
     border: 1px solid #93AFD6;
     border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .cf-action-toolbar-button:focus {
+    border: 1px solid #93AFD6;
+    border-radius: 8px;
 }
 
 .cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:insensitive {
@@ -782,15 +737,6 @@
     color: #C9D7A7;
 }
 
-.cf-companion-menu.cf-theme-sage .popup-menu-item:hover,
-.cf-companion-menu.cf-theme-sage .popup-menu-item:focus,
-.cf-companion-menu.cf-theme-sage .popup-menu-item:active,
-.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:hover,
-.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:focus,
-.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:active {
-    background-color: #3A4640;
-}
-
 .cf-companion-menu.cf-theme-sage .cf-contest-star-button {
     color: #9ABDA4;
     background-color: transparent;
@@ -801,10 +747,14 @@
     border-radius: 5px;
 }
 
-.cf-companion-menu.cf-theme-sage .cf-contest-star-button:focus,
-.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:focus {
+.cf-companion-menu.cf-theme-sage .cf-contest-star-button:focus {
     border: 1px solid #9ABDA4;
     border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .cf-action-toolbar-button:focus {
+    border: 1px solid #9ABDA4;
+    border-radius: 8px;
 }
 
 .cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:insensitive {
@@ -939,15 +889,6 @@
     color: #C78D78;
 }
 
-.cf-companion-menu.cf-theme-ember .popup-menu-item:hover,
-.cf-companion-menu.cf-theme-ember .popup-menu-item:focus,
-.cf-companion-menu.cf-theme-ember .popup-menu-item:active,
-.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:hover,
-.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:focus,
-.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:active {
-    background-color: #433731;
-}
-
 .cf-companion-menu.cf-theme-ember .cf-contest-star-button {
     color: #D7AF7E;
     background-color: transparent;
@@ -958,10 +899,14 @@
     border-radius: 5px;
 }
 
-.cf-companion-menu.cf-theme-ember .cf-contest-star-button:focus,
-.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:focus {
+.cf-companion-menu.cf-theme-ember .cf-contest-star-button:focus {
     border: 1px solid #D7AF7E;
     border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .cf-action-toolbar-button:focus {
+    border: 1px solid #D7AF7E;
+    border-radius: 8px;
 }
 
 .cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:insensitive {
@@ -987,5 +932,60 @@
     background-color: #332B26;
     color: #F3EEE8;
     border-color: #4B3E35;
+}
+
+
+.cf-companion-menu.cf-theme-system .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-system.cf-keyboard-navigation .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-system .popup-menu-item:active,
+.cf-companion-menu.cf-theme-system .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-system.cf-keyboard-navigation .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-system .cf-action-toolbar-button:active {
+    background-color: rgba(153, 180, 255, 0.15);
+    border-radius: 8px;
+}
+
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-orbit .popup-menu-item:active,
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:active {
+    background-color: rgba(169, 154, 244, 0.15);
+    border-radius: 8px;
+}
+
+
+.cf-companion-menu.cf-theme-slate .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-slate .popup-menu-item:active,
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:active {
+    background-color: rgba(147, 175, 214, 0.15);
+    border-radius: 8px;
+}
+
+
+.cf-companion-menu.cf-theme-sage .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-sage .popup-menu-item:active,
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:active {
+    background-color: rgba(154, 189, 164, 0.15);
+    border-radius: 8px;
+}
+
+
+.cf-companion-menu.cf-theme-ember .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-ember .popup-menu-item:active,
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:active {
+    background-color: rgba(215, 175, 126, 0.15);
+    border-radius: 8px;
 }
 /* END GENERATED THEME RULES */

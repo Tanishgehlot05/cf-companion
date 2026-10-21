@@ -8,10 +8,10 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { formatCountdown, formatDuration, formatFriendlyStartDate, urgencyClass } from '../utils/time.js';
-import { contestCategoryLabel } from '../utils/contestFilters.js';
 import { contestUrls, createContestMenuActions } from '../utils/contestMenuActions.js';
 import { isPanelUrgent, readStarredContestIds, removeFinishedStarredContestIds, setContestStarred } from '../utils/reminderPreferences.js';
 import { rankStyleClass } from '../utils/userProfile.js';
+import { contestCategoryLabel } from '../utils/contestFilters.js';
 import { THEMES, readAppearanceTheme } from '../utils/themes.js';
 import { contestLifecycle, panelContestDisplay, selectPrimaryActiveContest, selectVisibleMenuContests, upcomingContestViewMode } from '../utils/upcomingContests.js';
 
@@ -184,6 +184,8 @@ class CFIndicator extends PanelMenu.Button {
         this._minuteTickId = null;
         this._destroyed = false;
         this._toolbarTooltips = [];
+        this._menuNavigationSignals = [];
+        this._menuNavigationActors = [];
 
         this._buildPanelLabel();
         this._buildMenu();
@@ -218,8 +220,7 @@ class CFIndicator extends PanelMenu.Button {
         for (const actor of actors) {
             for (const theme of THEMES)
                 actor.remove_style_class_name(`cf-theme-${theme.id}`);
-            if (themeId !== 'system')
-                actor.add_style_class_name(`cf-theme-${themeId}`);
+            actor.add_style_class_name(`cf-theme-${themeId}`);
         }
         if (this._profileBox) {
             for (const theme of THEMES)
@@ -352,6 +353,7 @@ class CFIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(this._footerItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this._buildActionToolbar();
+        this._enableKeyboardMenuFocus();
 
         this.menu.connect('open-state-changed', (menu, isOpen) => {
             if (!isOpen && !this._destroyed) {
@@ -363,6 +365,39 @@ class CFIndicator extends PanelMenu.Button {
                     this._renderFriendRows();
             }
         });
+    }
+
+    _enableKeyboardMenuFocus() {
+        this._menuNavigationActors = [this.menu.actor, this._friendsSubmenu.menu.actor];
+        for (const actor of this._menuNavigationActors) {
+            const keySignal = actor.connect('key-press-event', (_actor, event) => {
+                const key = event.get_key_symbol();
+                if ([
+                    Clutter.KEY_Up, Clutter.KEY_Down, Clutter.KEY_Left, Clutter.KEY_Right,
+                    Clutter.KEY_Tab, Clutter.KEY_ISO_Left_Tab, Clutter.KEY_Home, Clutter.KEY_End,
+                ].includes(key))
+                    this._setKeyboardMenuFocus(true);
+                return Clutter.EVENT_PROPAGATE;
+            });
+            const motionSignal = actor.connect('motion-event', () => {
+                this._setKeyboardMenuFocus(false);
+                return Clutter.EVENT_PROPAGATE;
+            });
+            this._menuNavigationSignals.push([actor, keySignal], [actor, motionSignal]);
+        }
+        const menuOpenSignal = this.menu.connect('open-state-changed', () => {
+            this._setKeyboardMenuFocus(false);
+        });
+        this._menuNavigationSignals.push([this.menu, menuOpenSignal]);
+    }
+
+    _setKeyboardMenuFocus(enabled) {
+        for (const actor of this._menuNavigationActors) {
+            if (enabled)
+                actor.add_style_class_name('cf-keyboard-navigation');
+            else
+                actor.remove_style_class_name('cf-keyboard-navigation');
+        }
     }
 
     _buildActionToolbar() {
@@ -1099,6 +1134,12 @@ class CFIndicator extends PanelMenu.Button {
         for (const tooltip of this._toolbarTooltips)
             tooltip.destroy();
         this._toolbarTooltips = [];
+        for (const [actor, signal] of this._menuNavigationSignals) {
+            if (signal)
+                actor.disconnect(signal);
+        }
+        this._menuNavigationSignals = [];
+        this._menuNavigationActors = [];
         super.destroy();
     }
 });
