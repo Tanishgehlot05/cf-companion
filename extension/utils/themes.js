@@ -176,23 +176,21 @@ export function buildShellThemeCss() {
 `).join('\n');
 
     const contestRowRules = THEMES.map(theme => `
-.cf-contest-row.cf-contest-theme-${theme.id} {
+.cf-contest-row-layout.cf-contest-theme-${theme.id} {
     background-color: transparent;
-    border-left: 3px solid ${theme.separator};
     border-radius: 12px;
-    padding: 10px 12px;
 }
 
-.cf-contest-row.cf-contest-theme-${theme.id}.cf-contest-row-priority {
-    border-left: 3px solid ${theme.primaryAccent};
+.cf-contest-accent-strip.cf-contest-accent-theme-${theme.id} {
+    background-color: ${theme.primaryAccent};
 }
 
-.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-${theme.id},
-.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-${theme.id},
-.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-${theme.id} {
+.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-${theme.id},
+.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-${theme.id},
+.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:active .cf-contest-row-layout.cf-contest-theme-${theme.id} {
     background-color: ${colorWithAlpha(theme.primaryAccent, 0.15)};
-    border-left-color: ${theme.primaryAccent};
 }
+
 `).join('\n');
 
     const toolbarRules = THEMES.map(theme => {

@@ -197,13 +197,10 @@ assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \.
     'GNOME Default brand tile uses a softened shared-palette accent');
 assert.match(buildShellThemeCss(), /\.cf-profile-row\.cf-profile-theme-system \.cf-profile-brand-code \{\s*color: inherit;\s*font-size: 16px;/,
     'GNOME Default code mark inherits the native foreground color');
-assert.match(buildShellThemeCss(), /\.cf-contest-row\.cf-contest-theme-system\.cf-contest-row-priority \{\s*border-left: 3px solid #99b4ff/i,
-    'the next contest uses only a narrow accent bar');
-const priorityRule = buildShellThemeCss().match(/\.cf-contest-row\.cf-contest-theme-system\.cf-contest-row-priority \{([^}]*)\}/)?.[1] ?? '';
-assert.match(priorityRule, /border-left: 3px solid/i,
-    'the next contest uses a narrow accent bar');
-assert.doesNotMatch(priorityRule, /background-color|border:\s*1px/i,
-    'the next contest has no full hover-like highlight');
+assert.match(buildShellThemeCss(), /\.cf-contest-accent-strip\.cf-contest-accent-theme-system \{\s*background-color: #99b4ff;/,
+    'contest strip colors come from the active theme');
+assert.doesNotMatch(buildShellThemeCss(), /\.cf-contest-row\.cf-contest-theme-system[^}]*border-left/,
+    'contest rows no longer simulate the strip with a border');
 assert.match(buildShellThemeCss(), /\.popup-menu-item:hover,[\s\S]*?background-color: rgba\(153, 180, 255, 0\.15\);/,
     'menu hover uses a faint primary-accent fill');
 assert.match(panelSource, /_enableKeyboardMenuFocus\(\)[\s\S]*key-press-event[\s\S]*motion-event/,
@@ -230,20 +227,24 @@ assert.match(panelSource, /style_class: 'popup-menu-icon cf-action-toolbar-icon'
 assert.doesNotMatch(buildShellThemeCss(), /cf-codeforces-toolbar-icon/,
     'the Codeforces toolbar icon has no unique framed tile');
 for (const theme of THEMES) {
-    const idleContestRule = buildShellThemeCss().match(
-        new RegExp(`\\.cf-contest-row\\.cf-contest-theme-${theme.id} \\{([^}]*)\\}`)
+    const css = buildShellThemeCss();
+    const idleRowRule = css.match(
+        new RegExp(`\\.cf-contest-row-layout\\.cf-contest-theme-${theme.id} \\{([^}]*)\\}`)
     )?.[1] ?? '';
-    assert.match(idleContestRule, /background-color: transparent;/,
+    assert.match(idleRowRule, /background-color: transparent;/,
         `${theme.id} contest rows are transparent when idle`);
-    assert.ok(idleContestRule.includes(`border-left: 3px solid ${theme.separator};`),
-        `${theme.id} contest rows show a subtle leading accent while idle`);
-    assert.ok(buildShellThemeCss().includes(
-        `.cf-contest-row.cf-contest-theme-${theme.id}.cf-contest-row-priority {\n    border-left: 3px solid ${theme.primaryAccent};`
-    ), `${theme.id} keeps the next-contest accent bar`);
-    assert.ok(buildShellThemeCss().includes(
-        `.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-${theme.id} {\n    background-color: rgba(`
-    ) && buildShellThemeCss().includes(`border-left-color: ${theme.primaryAccent};`),
-    `${theme.id} hover feedback accents the leading bar`);
+    const stripRule = css.match(
+        new RegExp(`\\.cf-contest-accent-strip\\.cf-contest-accent-theme-${theme.id} \\{([^}]*)\\}`)
+    )?.[1] ?? '';
+    assert.ok(stripRule.includes(`background-color: ${theme.primaryAccent};`),
+        `${theme.id} contest strips use the primary accent`);
+    assert.doesNotMatch(stripRule, /opacity:/,
+        `${theme.id} strip visibility is controlled by row interaction state`);
+    assert.ok(css.includes(
+        `.cf-companion-menu.cf-theme-${theme.id} .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-${theme.id}`
+    ) && css.includes(
+        `.cf-companion-menu.cf-theme-${theme.id}.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-${theme.id}`
+    ), `${theme.id} tints rows on hover and keyboard focus`);
 }
 for (const theme of THEMES) {
     assert.ok(buildShellThemeCss().includes(
@@ -380,7 +381,7 @@ assert.match(panelSource, /_scheduleCountdownTick\(\);[\s\S]*this\._syncContestR
 assert.doesNotMatch(panelSource, /_statsItem|_featuredItem|cf-contest-timeline|cf-console-featured/,
     'the real panel contains no stats strip, duplicate featured contest, or timeline connector');
 assert.match(panelSource, /cf-contest-row-priority/,
-    'the first upcoming contest receives only a subtle inline row accent');
+    'the existing first-upcoming contest priority marker is retained without idle row highlighting');
 assert.doesNotMatch(panelSource, /cf-contest-row-featured|cf-console|_updateConsoleStats|_updateFeaturedContest/,
     'the current dropdown has no remnants of the old featured-card experiment');
 assert.match(panelSource, /_friendsSubmenu[\s\S]*_contestHeader[\s\S]*_contestSection/,
