@@ -361,63 +361,38 @@ export function buildShellThemeCss() {
 
 export function buildPreferencesCss() {
     const errorColor = '#E46D66';
-    const previews = `
-.cf-companion-preferences .cf-theme-preview {
-    min-width: 150px;
-    min-height: 80px;
-    padding: 6px 8px;
-    border-radius: 9px;
-    border: 1px solid;
-    font-size: 9px;
-}
-.cf-companion-preferences .cf-preview-profile,
-.cf-companion-preferences .cf-preview-metadata,
-.cf-companion-preferences .cf-preview-toolbar {
-    min-height: 13px;
-}
-.cf-companion-preferences .cf-preview-contest {
-    padding: 2px 4px;
-    border-radius: 4px;
-}
-.cf-companion-preferences .cf-preview-brand {
-    min-width: 17px;
-    min-height: 17px;
-    padding: 2px;
-    border-radius: 4px;
-}
-.cf-companion-preferences .cf-preview-title { font-size: 10px; font-weight: 600; }
-.cf-companion-preferences .cf-preview-secondary { font-size: 9px; }
-.cf-companion-preferences .cf-preview-icon { -gtk-icon-size: 10px; }
-.cf-companion-preferences .cf-preview-toolbar { padding-top: 2px; }
-${THEMES.filter(theme => theme.id !== 'system').map(theme => `
-.cf-companion-preferences .cf-theme-preview-${theme.id} {
+    const swatches = THEMES.map(theme => `
+.cf-companion-preferences .cf-theme-swatch-${theme.id} {
     background-color: ${theme.background};
-    color: ${theme.primaryText};
-    border-color: ${theme.separator};
+    border: 1px solid ${theme.separator};
+    border-radius: 10px;
 }
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-profile { background-color: ${theme.secondarySurface}; }
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-contest { background-color: ${theme.surface}; border: 1px solid ${theme.separator}; }
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-title { color: ${theme.primaryText}; }
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-secondary,
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-icon { color: ${theme.secondaryText}; }
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-accent { color: ${theme.primaryAccent}; }
-.cf-companion-preferences .cf-theme-preview-${theme.id} .cf-preview-brand { background-color: ${theme.primaryAccent}; }
-`).join('\n')}`;
+.cf-companion-preferences .cf-theme-swatch-${theme.id} .cf-theme-swatch-dot-surface {
+    background-color: ${theme.surface};
+}
+.cf-companion-preferences .cf-theme-swatch-${theme.id} .cf-theme-swatch-dot-primary-accent {
+    background-color: ${theme.primaryAccent};
+}
+.cf-companion-preferences .cf-theme-swatch-${theme.id} .cf-theme-swatch-dot-secondary-accent {
+    background-color: ${theme.secondaryAccent};
+}
+.cf-companion-preferences .cf-theme-swatch-${theme.id} .cf-theme-swatch-dot-primary-text {
+    background-color: ${theme.primaryText};
+}
+`).join('\n');
 
-    const nativePreview = `
-.cf-companion-preferences .cf-theme-preview-system {
-    background-color: @window_bg_color;
-    color: @window_fg_color;
-    border-color: @borders;
+    const swatchBase = `
+.cf-companion-preferences .cf-theme-swatch {
+    min-width: 112px;
+    min-height: 56px;
+    border-radius: 10px;
 }
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-profile { background-color: @card_bg_color; }
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-contest { background-color: @view_bg_color; border: 1px solid @borders; }
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-title { color: @window_fg_color; }
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-secondary,
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-icon { color: @view_fg_color; }
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-accent { color: @accent_color; }
-.cf-companion-preferences .cf-theme-preview-system .cf-preview-brand { background-color: @accent_bg_color; }
-}`;
+.cf-companion-preferences .cf-theme-swatch-dot {
+    min-width: 16px;
+    min-height: 16px;
+    border-radius: 8px;
+}
+`;
 
     const selectedRows = THEMES.map(theme => `
 .cf-companion-preferences .cf-theme-row-selected-${theme.id} {
@@ -614,5 +589,5 @@ ${root} button.destructive-action {
 `;
     }).join('\n');
 
-    return `${previews}\n${nativePreview}\n${selectedRows}\n${applyButtons}\n${palettes}`;
+    return `${swatchBase}\n${swatches}\n${selectedRows}\n${applyButtons}\n${palettes}`;
 }

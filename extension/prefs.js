@@ -26,76 +26,36 @@ const REMINDER_SETTINGS = [
     ['reminder-at-start', 'At contest start'],
 ];
 
-function buildThemePreview(theme, codeforcesIconPath, codeforcesInverseIconPath) {
-    const preview = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL,
-        spacing: 2,
-        width_request: 150,
-        height_request: 80,
+function buildThemeSwatch(theme) {
+    const swatch = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL,
+        spacing: 8,
+        width_request: 112,
+        height_request: 56,
         hexpand: false,
         valign: Gtk.Align.CENTER,
     });
-    preview.add_css_class('cf-theme-preview');
-    preview.add_css_class(`cf-theme-preview-${theme.id}`);
-    if (theme.id !== 'system')
-        preview.add_css_class(`theme-${theme.id}`);
+    swatch.add_css_class('cf-theme-swatch');
+    swatch.add_css_class(`cf-theme-swatch-${theme.id}`);
+    swatch.update_property([Gtk.AccessibleProperty.LABEL], [`${theme.name} palette`]);
 
-    const profile = new Gtk.Box({ spacing: 5, height_request: 18 });
-    profile.add_css_class('cf-preview-profile');
-    const brand = new Gtk.Box({ width_request: 18, height_request: 18, valign: Gtk.Align.CENTER });
-    brand.add_css_class('cf-preview-brand');
-    const iconPath = theme.id === 'system' ? codeforcesIconPath : codeforcesInverseIconPath;
-    const profileIcon = Gtk.Image.new_from_file(iconPath);
-    profileIcon.pixel_size = 13;
-    profileIcon.add_css_class('cf-preview-icon');
-    brand.append(profileIcon);
-    profile.append(brand);
-    const profileLabel = new Gtk.Label({ label: 'Codeforces profile', xalign: 0, hexpand: true });
-    profileLabel.add_css_class('cf-preview-title');
-    profile.append(profileLabel);
-    const profileStatus = new Gtk.Label({ label: '●', valign: Gtk.Align.CENTER });
-    profileStatus.add_css_class('cf-preview-accent');
-    profile.append(profileStatus);
-    preview.append(profile);
-
-    const contest = new Gtk.Box({ spacing: 5, height_request: 17 });
-    contest.add_css_class('cf-preview-contest');
-    const marker = new Gtk.Label({ label: '●' });
-    marker.add_css_class('cf-preview-accent');
-    contest.append(marker);
-    const contestTitle = new Gtk.Label({ label: 'Codeforces Round', xalign: 0, hexpand: true });
-    contestTitle.add_css_class('cf-preview-title');
-    contest.append(contestTitle);
-    const star = new Gtk.Label({ label: '☆' });
-    star.add_css_class('cf-preview-accent');
-    contest.append(star);
-    preview.append(contest);
-
-    const metadata = new Gtk.Box({ spacing: 4, height_request: 13 });
-    metadata.add_css_class('cf-preview-metadata');
-    const calendar = new Gtk.Image({ icon_name: 'x-office-calendar-symbolic', pixel_size: 10 });
-    calendar.add_css_class('cf-preview-icon');
-    metadata.append(calendar);
-    const detail = new Gtk.Label({ label: 'Sat, Oct 24 · 2h', xalign: 0, hexpand: true });
-    detail.add_css_class('cf-preview-secondary');
-    metadata.append(detail);
-    const countdown = new Gtk.Label({ label: '3d 15h' });
-    countdown.add_css_class('cf-preview-accent');
-    metadata.append(countdown);
-    preview.append(metadata);
-
-    const toolbar = new Gtk.Box({ spacing: 24, halign: Gtk.Align.CENTER, height_request: 12 });
-    toolbar.add_css_class('cf-preview-toolbar');
-    for (const iconName of ['view-refresh-symbolic', iconPath, 'preferences-system-symbolic']) {
-        const icon = iconName === iconPath
-            ? Gtk.Image.new_from_file(iconName)
-            : new Gtk.Image({ icon_name: iconName, pixel_size: 10 });
-        icon.pixel_size = 10;
-        icon.add_css_class('cf-preview-icon');
-        toolbar.append(icon);
+    const colors = ['surface', 'primary-accent', 'secondary-accent', 'primary-text'];
+    for (const [index, color] of colors.entries()) {
+        const dot = new Gtk.Box({
+            width_request: 16,
+            height_request: 16,
+            hexpand: false,
+            vexpand: false,
+            valign: Gtk.Align.CENTER,
+            margin_start: index === 0 ? 12 : 0,
+            margin_end: index === colors.length - 1 ? 12 : 0,
+        });
+        dot.add_css_class('cf-theme-swatch-dot');
+        dot.add_css_class(`cf-theme-swatch-dot-${color}`);
+        swatch.append(dot);
     }
-    preview.append(toolbar);
-    return preview;
+
+    return swatch;
 }
 
 export default class CFCompanionPreferences extends ExtensionPreferences {
@@ -530,12 +490,10 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         const themeChecks = new Map();
         let firstThemeCheck = null;
         let syncingThemeChecks = false;
-        const codeforcesIconPath = `${this.path}/icons/codeforces.svg`;
-        const codeforcesInverseIconPath = `${this.path}/icons/codeforces-inverse.svg`;
         for (const theme of THEMES) {
             const row = new Adw.ActionRow({ title: theme.name, subtitle: theme.subtitle });
-            const preview = buildThemePreview(theme, codeforcesIconPath, codeforcesInverseIconPath);
-            row.add_prefix(preview);
+            const swatch = buildThemeSwatch(theme);
+            row.add_prefix(swatch);
             const check = new Gtk.CheckButton({ valign: Gtk.Align.CENTER });
             check.accessible_role = Gtk.AccessibleRole.RADIO;
             check.update_property([Gtk.AccessibleProperty.LABEL], [`${theme.name} colour theme`]);

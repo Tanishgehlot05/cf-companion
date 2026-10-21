@@ -33,8 +33,8 @@ assert.match(panelSource, /this\._codeforcesToolbarIcon\.gicon = codeforcesIcon/
     'the Codeforces logo remains in the bottom toolbar');
 assert.match(panelSource, /view-refresh-symbolic/);
 assert.match(panelSource, /preferences-system-symbolic/);
-assert.match(prefsSource, /icons\/codeforces\.svg/,
-    'Appearance miniatures use the bundled Codeforces logo');
+assert.doesNotMatch(prefsSource, /icons\/codeforces(?:-inverse)?\.svg/,
+    'Appearance swatches contain no miniature logo assets');
 assert.doesNotMatch(prefsSource, /new URL\(/,
     'preferences asset loading does not rely on the browser URL global');
 
@@ -170,7 +170,7 @@ const finish = stylesheet.indexOf(end);
 assert.ok(start >= begin.length && finish > start, 'generated Shell theme section has ordered markers');
 assert.equal(stylesheet.slice(start, finish).trim(), buildShellThemeCss().trim(),
     'the Shell stylesheet is generated from the shared palette definition');
-assert.match(buildPreferencesCss(), /cf-theme-preview-system/);
+assert.match(buildPreferencesCss(), /cf-theme-swatch-system/);
 assert.match(buildPreferencesCss(), /theme-orbit/);
 assert.match(buildPreferencesCss(), /theme-slate/);
 assert.match(buildPreferencesCss(), /theme-sage/);
@@ -200,14 +200,14 @@ assert.match(panelSource, /actor\.disconnect\(signal\)/,
     'menu input signal handlers are disconnected during indicator destruction');
 assert.match(panelSource, /open-state-changed'[\s\S]*_setKeyboardMenuFocus\(false\)/,
     'opening the menu clears keyboard-only focus styling from a previous session');
-assert.match(buildPreferencesCss(), /cf-theme-preview-system \{\s*background-color: @window_bg_color/,
-    'GNOME Default preview follows native GTK surface colors');
+assert.match(buildPreferencesCss(), /cf-theme-swatch-system \{\s*background-color: #1a1b1f;[\s\S]*?border: 1px solid #3a3d46;/,
+    'GNOME Default swatch uses its themes.js palette entry');
 assert.doesNotMatch(buildPreferencesCss(), /\.theme-system preferencespage/,
     'GNOME Default preferences do not override the system appearance');
-assert.match(prefsSource, /row\.add_prefix\(preview\)/,
-    'the compact UI preview sits before the theme name and description');
-assert.doesNotMatch(prefsSource, /row\.add_suffix\(preview\)/,
-    'the preview does not push the theme description out of the expanding title column');
+assert.match(prefsSource, /row\.add_prefix\(swatch\)/,
+    'the palette swatch sits before the theme name and description');
+assert.doesNotMatch(prefsSource, /row\.add_suffix\(swatch\)/,
+    'the swatch does not push the theme description out of the expanding title column');
 assert.match(buildShellThemeCss(), /\.popup-menu-boxpointer \{\s*background-color: transparent;[\s\S]*?border: none;/,
     'the popup pointer/root does not draw a second border around the content surface');
 assert.doesNotMatch(buildShellThemeCss(), /cf-rank-/, 'theme decoration does not override Codeforces rank classes');
@@ -230,8 +230,8 @@ for (const theme of THEMES) {
 }
 
 const preferencesCss = buildPreferencesCss();
-assert.match(preferencesCss, /min-width: 150px;\s*min-height: 80px/,
-    'theme previews have the larger reference dimensions');
+assert.match(preferencesCss, /min-width: 112px;\s*min-height: 56px/,
+    'theme swatches use the compact requested dimensions');
 for (const theme of THEMES) {
     assert.ok(preferencesCss.includes(
         `.cf-companion-preferences .cf-theme-row-selected-${theme.id} {\n    background-color: rgba(`),
@@ -258,8 +258,19 @@ for (const theme of THEMES) {
         'the active palette styles Adwaita preference cards');
     assert.match(preferencesCss, new RegExp(`cf-companion-preferences\\.theme-${theme.id} toolbarview`),
         'the active palette styles the preferences content surface');
-    assert.match(preferencesCss, new RegExp(`cf-companion-preferences \\.cf-theme-preview-${theme.id} \\{[\\s\\S]*?background-color: ${theme.background}`),
-        'each miniature UI preview uses its own palette regardless of the applied window theme');
+    assert.ok(preferencesCss.includes(
+        `.cf-companion-preferences .cf-theme-swatch-${theme.id} {\n    background-color: ${theme.background};\n    border: 1px solid ${theme.separator};`),
+    `${theme.name} swatch background and border come from themes.js`);
+    for (const [dot, color] of [
+        ['surface', theme.surface],
+        ['primary-accent', theme.primaryAccent],
+        ['secondary-accent', theme.secondaryAccent],
+        ['primary-text', theme.primaryText],
+    ]) {
+        assert.ok(preferencesCss.includes(
+            `.cf-companion-preferences .cf-theme-swatch-${theme.id} .cf-theme-swatch-dot-${dot} {\n    background-color: ${color};`),
+        `${theme.name} swatch includes ${dot} in the requested dot order`);
+    }
     assert.ok(buildShellThemeCss().includes(
         `.cf-companion-menu.cf-theme-${theme.id} .cf-contest-name {\n    color: ${theme.primaryText};`),
     `${theme.id} contest titles retain the palette's primary text color`);
@@ -274,26 +285,32 @@ for (const theme of THEMES) {
 }
 assert.match(preferencesCss, /button\.suggested-action/,
     'pending Apply Changes uses the themed suggested-action style');
-assert.match(preferencesCss, /cf-theme-preview-slate \.cf-preview-contest/,
-    'Slate preview surfaces are independent of the active preferences theme');
+assert.match(preferencesCss, /cf-theme-swatch-slate \.cf-theme-swatch-dot-secondary-accent/,
+    'Slate swatch palette is independent of the active preferences theme');
 assert.match(panelSource, /changed::appearance-theme/,
     'the running extension applies a persisted theme change without rebuilding the menu');
 assert.match(panelSource, /_applyTheme\(this\._activeTheme\)/);
 assert.match(prefsSource, /setAppearanceThemeDraft\(generalSettings, theme\.id\)/,
     'theme choices use the delayed general Apply Changes settings object');
-assert.match(prefsSource, /function buildThemePreview\(theme, codeforcesIconPath, codeforcesInverseIconPath\)/,
-    'theme options render native GTK previews instead of a palette-only swatch');
-assert.match(prefsSource, /cf-preview-profile/,
-    'theme options preview the compact profile header');
-assert.match(prefsSource, /cf-preview-contest/,
-    'theme options preview the contest row and star');
-assert.match(prefsSource, /cf-preview-toolbar/,
-    'theme options preview the bottom action toolbar');
-assert.match(prefsSource, /width_request: 150,[\s\S]*height_request: 80/,
-    'theme previews have readable concept-sized dimensions');
+assert.match(prefsSource, /function buildThemeSwatch\(theme\)/,
+    'theme options render a simple GTK palette swatch');
+assert.match(prefsSource, /orientation: Gtk\.Orientation\.HORIZONTAL,[\s\S]*spacing: 8,[\s\S]*width_request: 112,[\s\S]*height_request: 56/,
+    'swatches use the requested dimensions and dot spacing');
+assert.match(prefsSource, /width_request: 16,[\s\S]*height_request: 16/,
+    'each swatch dot is 16px');
+assert.match(prefsSource, /swatch\.update_property\(\[Gtk\.AccessibleProperty\.LABEL\]/,
+    'each swatch has an accessible palette label');
+assert.match(prefsSource, /const colors = \['surface', 'primary-accent', 'secondary-accent', 'primary-text'\]/,
+    'dots are created in surface, primary accent, secondary accent, primary text order');
+assert.match(prefsSource, /margin_start: index === 0 \? 12 : 0,[\s\S]*margin_end: index === colors\.length - 1 \? 12 : 0/,
+    'the dot row is centered horizontally inside the swatch');
+assert.doesNotMatch(prefsSource, /buildThemePreview|cf-preview-|codeforcesIconPath|codeforcesInverseIconPath/,
+    'old mini-preview markup and its icon dependencies are removed');
+assert.doesNotMatch(preferencesCss, /cf-theme-preview|cf-preview-/,
+    'no unused mini-preview rules remain in generated preferences CSS');
 for (const theme of THEMES)
-    assert.match(preferencesCss, new RegExp(`cf-theme-preview-${theme.id}`),
-        `${theme.name} preview uses its own palette`);
+    assert.match(preferencesCss, new RegExp(`cf-theme-swatch-${theme.id}`),
+        `${theme.name} swatch uses its own palette`);
 assert.match(prefsSource, /generalSignals\.push\(generalSettings\.connect\('changed::appearance-theme'/,
     'reverting a draft resynchronizes the selected theme control');
 assert.match(prefsSource, /settings\.connect\('changed::appearance-theme', updatePreferencesTheme\)/,
