@@ -23,8 +23,8 @@ const codeforcesIcon = readFileSync(new URL('icons/codeforces.svg', extensionDir
 const codeforcesInverseIcon = readFileSync(new URL('icons/codeforces-inverse.svg', extensionDirectory), 'utf8');
 assert.match(codeforcesIcon, /fill="#1F8ACB"/,
     'GNOME Default uses the bundled blue Codeforces brand mark');
-assert.match(codeforcesInverseIcon, /fill="#20212A"/,
-    'custom themes use the bundled high-contrast inverse Codeforces mark');
+assert.match(codeforcesInverseIcon, /fill="#F1F0F7"/,
+    'custom themes use a light Codeforces mark visible on dark surfaces');
 assert.match(panelSource, /Gio\.FileIcon\.new\([\s\S]*icons\/codeforces\.svg/,
     'the panel loads its Codeforces mark from a bundled local asset');
 assert.match(panelSource, /text: '<\/>'[\s\S]*style_class: 'cf-profile-brand-code'/,
@@ -35,6 +35,8 @@ assert.match(panelSource, /vertical: true,[\s\S]*x_expand: true,[\s\S]*y_align: 
     'the handle and rank block is vertically centered against the profile tile');
 assert.match(panelSource, /this\._codeforcesToolbarIcon\.gicon = codeforcesIcon/,
     'the Codeforces logo remains in the bottom toolbar');
+assert.match(panelSource, /themeId === 'system' \? this\._codeforcesIcon : this\._codeforcesInverseIcon/,
+    'the toolbar selects a contrasting Codeforces mark for each palette family');
 assert.match(stylesheet, /\.cf-contest-expand-button \{ padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; \}/,
     'View all uses a slightly larger, still compact label and hit target');
 assert.match(panelSource, /view-refresh-symbolic/);
