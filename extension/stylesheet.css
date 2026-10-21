@@ -263,7 +263,7 @@
 
 
 .cf-contest-row.cf-contest-theme-system {
-    background-color: #2d2f36;
+    background-color: transparent;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -280,7 +280,7 @@
 
 
 .cf-contest-row.cf-contest-theme-orbit {
-    background-color: #292A35;
+    background-color: transparent;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -297,7 +297,7 @@
 
 
 .cf-contest-row.cf-contest-theme-slate {
-    background-color: #2A3139;
+    background-color: transparent;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -314,7 +314,7 @@
 
 
 .cf-contest-row.cf-contest-theme-sage {
-    background-color: #2A332A;
+    background-color: transparent;
     border-radius: 12px;
     padding: 10px 12px;
 }
@@ -331,7 +331,7 @@
 
 
 .cf-contest-row.cf-contest-theme-ember {
-    background-color: #332B26;
+    background-color: transparent;
     border-radius: 12px;
     padding: 10px 12px;
 }

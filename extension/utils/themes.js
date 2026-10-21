@@ -171,7 +171,7 @@ export function buildShellThemeCss() {
 
     const contestRowRules = THEMES.map(theme => `
 .cf-contest-row.cf-contest-theme-${theme.id} {
-    background-color: ${theme.surface};
+    background-color: transparent;
     border-radius: 12px;
     padding: 10px 12px;
 }

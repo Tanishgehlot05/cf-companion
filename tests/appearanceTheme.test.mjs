@@ -222,6 +222,16 @@ assert.match(panelSource, /style_class: 'popup-menu-icon cf-action-toolbar-icon'
 assert.doesNotMatch(buildShellThemeCss(), /cf-codeforces-toolbar-icon/,
     'the Codeforces toolbar icon has no unique framed tile');
 for (const theme of THEMES) {
+    const idleContestRule = buildShellThemeCss().match(
+        new RegExp(`\\.cf-contest-row\\.cf-contest-theme-${theme.id} \\{([^}]*)\\}`)
+    )?.[1] ?? '';
+    assert.match(idleContestRule, /background-color: transparent;/,
+        `${theme.id} contest rows are transparent when idle`);
+    assert.ok(buildShellThemeCss().includes(
+        `.cf-contest-row.cf-contest-theme-${theme.id}.cf-contest-row-priority {\n    border-left: 3px solid ${theme.primaryAccent};`
+    ), `${theme.id} keeps the next-contest accent bar`);
+}
+for (const theme of THEMES) {
     assert.ok(buildShellThemeCss().includes(
         `.cf-companion-menu.cf-theme-${theme.id} .cf-friend-row .cf-friend-handle {\n    color: ${theme.primaryText};\n    font-weight: 700;`),
     `${theme.id} friend handles use bold primary text`);
