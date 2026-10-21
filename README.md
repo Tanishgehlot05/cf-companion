@@ -4,7 +4,7 @@ CF Companion is a GNOME Shell extension that shows upcoming Codeforces contests 
 
 ## V2 Preview
 
-These genuine screenshots show the current V2 test interface on GNOME Shell 46. The profile handle is redacted in the shared dropdown captures. V2 has not yet been released as version 2.0.0.
+These genuine screenshots show the V2 interface running on GNOME Shell 46. The profile handle is redacted in the shared dropdown captures. GNOME Extensions submission and review are separate from GitHub releases.
 
 **Main dropdown — GNOME Default:** profile summary, upcoming contests, countdowns, and the action toolbar.
 

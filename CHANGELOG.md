@@ -6,7 +6,7 @@ EGO records the initial V1 submission as rejected version `1` and its
 review-fix submission as `1.1 (2)` (unreviewed at the time of release-workflow
 setup). See [docs/RELEASING.md](docs/RELEASING.md) before creating V1 tags.
 
-## 2.0.0 — V2 release candidate (not tagged or published)
+## 2.0.0
 
 - Restructures the extension into services, UI, and utility modules, with
   centralized timeout cleanup and a validated local contest cache.
