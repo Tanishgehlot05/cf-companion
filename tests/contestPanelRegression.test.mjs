@@ -73,6 +73,8 @@ assert.match(extensionSource, /this\.openPreferences\(\)/,
     'Settings opens preferences using the running extension instance and UUID');
 assert.match(extensionSource, /get_tab_list\([\s\S]*?window\.get_title\(\)[\s\S]*?Main\.activateWindow\(existingWindow/,
     'preference actions present an already-open settings window');
+assert.match(extensionSource, /if \(existingWindow\.minimized\)\s*existingWindow\.unminimize\(\);\s*Main\.activateWindow\(existingWindow/,
+    'preference actions unminimize an existing window before activating it once');
 assert.match(panelSource, /this\._openUri\('https:\/\/codeforces\.com\/contests'\)/,
     'Open Codeforces uses the supported URI opener');
 assert.doesNotMatch(panelSource, /PopupMenuItem\(['"](?:🔄\s+)?Refresh Now/,

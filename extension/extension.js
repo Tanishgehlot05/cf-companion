@@ -68,6 +68,8 @@ export default class CFCompanion extends Extension {
                 windowTitle.startsWith(`${title} -`);
         });
         if (existingWindow) {
+            if (existingWindow.minimized)
+                existingWindow.unminimize();
             Main.activateWindow(existingWindow, global.get_current_time());
             return;
         }
