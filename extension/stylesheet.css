@@ -1,89 +1,991 @@
-/*
- * stylesheet.css — CF Companion GNOME Extension
- * ===============================================
- * GNOME Shell loads this automatically when the extension is enabled.
- * Reference classes in JS: style_class: 'cf-panel-box'
- *
- * St supports a subset of CSS. Supported: color, background-color,
- * font-*, padding, margin, border, border-radius, min-width, spacing.
- */
+/* Compact GNOME Shell styling shared by the five palettes. */
+.cf-panel-box { spacing: 5px; }
+.cf-panel-label { font-weight: 600; font-size: 11px; }
+.cf-panel-label.cf-panel-urgent { color: #EA7770; }
 
+.cf-companion-menu { min-width: 400px; padding: 4px; }
+.cf-profile-row { spacing: 12px; padding: 4px 8px; }
+.cf-profile-brand { min-width: 38px; min-height: 38px; padding: 0; }
+.cf-profile-brand-icon { icon-size: 20px; }
+.cf-profile-header-row { spacing: 8px; }
+.cf-profile-trailing { spacing: 8px; }
+.cf-profile-indicator { font-size: 10px; }
+.cf-profile-chevron { icon-size: 14px; }
+.cf-profile-handle { font-weight: 700; font-size: 14px; }
+.cf-profile-status { font-size: 11px; margin-top: 1px; }
 
-/* ── Panel Button ─────────────────────────────────────────────────────────── */
+.cf-friend-row { spacing: 1px; padding: 3px 8px; }
+.cf-menu-header { font-size: 11px; font-weight: 600; padding: 5px 8px 3px; }
+.cf-contest-header-row { padding: 3px 5px 2px; }
+.cf-contest-header-box { spacing: 8px; }
+.cf-contest-expand-button { padding: 2px 6px; border-radius: 5px; font-size: 10px; }
+.cf-menu-footer { font-size: 10px; padding: 1px 8px 3px; }
 
-.cf-panel-box {
-    spacing: 5px;
+.cf-contest-section { spacing: 6px; }
+.cf-contest-row-item { padding: 0; background-color: transparent; }
+.cf-contest-row { spacing: 5px; padding: 10px 12px; border-radius: 12px; }
+.cf-contest-row-priority { border-radius: 12px; }
+.cf-contest-heading { spacing: 7px; }
+.cf-contest-marker { min-width: 10px; font-size: 10px; }
+.cf-contest-category-badge { padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 500; }
+.cf-contest-marker-cf { color: #8FAFD4; }
+.cf-contest-marker-icpc { color: #9CBDA0; }
+.cf-contest-marker-other { color: #A5A5B4; }
+.cf-contest-name { font-size: 13px; font-weight: 700; }
+.cf-contest-star-button { min-width: 28px; min-height: 25px; padding: 1px 4px; font-size: 14px; }
+.cf-contest-details-row { spacing: 6px; }
+.cf-contest-detail-icon { icon-size: 10px; }
+.cf-contest-details { font-size: 11px; }
+.cf-contest-countdown { font-size: 12px; font-weight: 700; }
+.cf-live-contest { font-weight: 600; }
+.cf-live-actions { spacing: 6px; padding-top: 3px; }
+.cf-live-action-button { min-height: 26px; padding: 2px 8px; font-size: 10px; }
+
+.cf-action-toolbar-row { padding: 4px; }
+.cf-action-toolbar { spacing: 0; }
+.cf-action-toolbar-button { min-width: 0; min-height: 34px; padding: 5px 4px; border-radius: 8px; }
+.cf-action-toolbar-button-content { spacing: 5px; }
+.cf-action-toolbar-label { font-size: 12px; }
+.cf-action-tooltip { padding: 6px 9px; border: 1px solid; border-radius: 6px; font-size: 0.9em; }
+
+.cf-error-label { color: #EA7770; font-weight: 600; }
+.cf-loading-label { font-style: italic; }
+.cf-urgency-yellow { color: #E7C66B; }
+.cf-urgency-orange { color: #E6A15E; }
+.cf-urgency-red { color: #EA7770; }
+
+/* Codeforces rank colors stay consistent across all theme palettes. */
+.cf-rank-newbie { color: #A1A1A8; }
+.cf-rank-pupil { color: #55CE7B; }
+.cf-rank-specialist { color: #25C5B8; }
+.cf-rank-expert { color: #68A5FF; }
+.cf-rank-candidate-master { color: #D391F4; }
+.cf-rank-master, .cf-rank-international-master { color: #FFA447; }
+.cf-rank-grandmaster, .cf-rank-international-grandmaster,
+.cf-rank-legendary-grandmaster { color: #FF7272; }
+.cf-rank-neutral { color: #A5A5B4; }
+
+/* Palette selectors are generated from utils/themes.js. */
+/* BEGIN GENERATED THEME RULES */
+.cf-profile-row.cf-profile-theme-system {
+    background-color: #2d2f36;
+    border: 1px solid #3a3d46;
+    border-radius: 14px;
+    padding: 10px 12px;
 }
 
-.cf-panel-label {
-    font-weight: bold;
-    font-size: 11px;
+.cf-profile-row.cf-profile-theme-system .cf-profile-brand {
+    background-color: rgba(153, 180, 255, 0.2);
+    border: 1px solid rgba(153, 180, 255, 0.32);
+    border-radius: 10px;
+    padding: 0;
+}
+
+.cf-profile-row.cf-profile-theme-system .cf-profile-indicator {
+    color: #8b90a0;
+}
+
+.cf-profile-row.cf-profile-theme-system .cf-profile-indicator-online {
+    color: #55CE7B;
+}
+
+.cf-profile-row.cf-profile-theme-system .cf-profile-chevron {
+    color: #d0d4db;
 }
 
 
-/* ── Dropdown Menu ────────────────────────────────────────────────────────── */
-
-.cf-menu-header {
-    font-weight: bold;
-    font-size: 13px;
-    padding-bottom: 2px;
+.cf-profile-row.cf-profile-theme-orbit {
+    background-color: #292A35;
+    border: 1px solid #3B3E4B;
+    border-radius: 14px;
+    padding: 10px 12px;
 }
 
-.cf-menu-footer {
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.45);
+.cf-profile-row.cf-profile-theme-orbit .cf-profile-brand {
+    background-color: rgba(169, 154, 244, 0.2);
+    border: 1px solid rgba(169, 154, 244, 0.32);
+    border-radius: 10px;
+    padding: 0;
 }
 
-
-/* ── Contest Row ──────────────────────────────────────────────────────────── */
-
-.cf-contest-row {
-    padding: 4px 0px;
+.cf-profile-row.cf-profile-theme-orbit .cf-profile-indicator {
+    color: #7A7D8C;
 }
 
-.cf-contest-name {
-    font-weight: bold;
-    font-size: 12px;
+.cf-profile-row.cf-profile-theme-orbit .cf-profile-indicator-online {
+    color: #55CE7B;
 }
 
-.cf-contest-details {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 11px;
-    margin-top: 2px;
+.cf-profile-row.cf-profile-theme-orbit .cf-profile-chevron {
+    color: #A7A9B7;
 }
 
 
-/* ── Urgency Colors ───────────────────────────────────────────────────────── */
-/* Applied to the contest name label based on time remaining. */
-
-.cf-urgency-green {
-    color: #2ecc71;   /* > 24 hours — no rush */
+.cf-profile-row.cf-profile-theme-slate {
+    background-color: #2A3139;
+    border: 1px solid #404C58;
+    border-radius: 14px;
+    padding: 10px 12px;
 }
 
-.cf-urgency-yellow {
-    color: #f1c40f;   /* 6–24 hours — pay attention */
+.cf-profile-row.cf-profile-theme-slate .cf-profile-brand {
+    background-color: rgba(147, 175, 214, 0.2);
+    border: 1px solid rgba(147, 175, 214, 0.32);
+    border-radius: 10px;
+    padding: 0;
 }
 
-.cf-urgency-orange {
-    color: #e67e22;   /* 1–6 hours — coming up soon */
+.cf-profile-row.cf-profile-theme-slate .cf-profile-indicator {
+    color: #758392;
 }
 
-.cf-urgency-red {
-    color: #e74c3c;   /* < 1 hour — starting soon! */
+.cf-profile-row.cf-profile-theme-slate .cf-profile-indicator-online {
+    color: #55CE7B;
 }
 
-
-/* ── Error / Offline State ────────────────────────────────────────────────── */
-
-.cf-error-label {
-    color: #e74c3c;
-    font-weight: bold;
+.cf-profile-row.cf-profile-theme-slate .cf-profile-chevron {
+    color: #A2AFBA;
 }
 
 
-/* ── Loading State ────────────────────────────────────────────────────────── */
-
-.cf-loading-label {
-    color: rgba(255, 255, 255, 0.5);
-    font-style: italic;
+.cf-profile-row.cf-profile-theme-sage {
+    background-color: #2A332A;
+    border: 1px solid #3F4C41;
+    border-radius: 14px;
+    padding: 10px 12px;
 }
+
+.cf-profile-row.cf-profile-theme-sage .cf-profile-brand {
+    background-color: rgba(154, 189, 164, 0.2);
+    border: 1px solid rgba(154, 189, 164, 0.32);
+    border-radius: 10px;
+    padding: 0;
+}
+
+.cf-profile-row.cf-profile-theme-sage .cf-profile-indicator {
+    color: #788575;
+}
+
+.cf-profile-row.cf-profile-theme-sage .cf-profile-indicator-online {
+    color: #55CE7B;
+}
+
+.cf-profile-row.cf-profile-theme-sage .cf-profile-chevron {
+    color: #A8B0A1;
+}
+
+
+.cf-profile-row.cf-profile-theme-ember {
+    background-color: #332B26;
+    border: 1px solid #4B3E35;
+    border-radius: 14px;
+    padding: 10px 12px;
+}
+
+.cf-profile-row.cf-profile-theme-ember .cf-profile-brand {
+    background-color: rgba(215, 175, 126, 0.2);
+    border: 1px solid rgba(215, 175, 126, 0.32);
+    border-radius: 10px;
+    padding: 0;
+}
+
+.cf-profile-row.cf-profile-theme-ember .cf-profile-indicator {
+    color: #857A6E;
+}
+
+.cf-profile-row.cf-profile-theme-ember .cf-profile-indicator-online {
+    color: #55CE7B;
+}
+
+.cf-profile-row.cf-profile-theme-ember .cf-profile-chevron {
+    color: #B5A699;
+}
+
+
+.cf-contest-row.cf-contest-theme-system {
+    background-color: #2d2f36;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.cf-contest-row.cf-contest-theme-system.cf-contest-row-priority {
+    background-color: rgba(153, 180, 255, 0.12);
+    border: 1px solid #99b4ff;
+}
+
+.cf-contest-row.cf-contest-theme-system:hover,
+.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-system {
+    background-color: #363a43;
+}
+
+
+.cf-contest-row.cf-contest-theme-orbit {
+    background-color: #292A35;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.cf-contest-row.cf-contest-theme-orbit.cf-contest-row-priority {
+    background-color: rgba(169, 154, 244, 0.12);
+    border: 1px solid #A99AF4;
+}
+
+.cf-contest-row.cf-contest-theme-orbit:hover,
+.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-orbit {
+    background-color: #343640;
+}
+
+
+.cf-contest-row.cf-contest-theme-slate {
+    background-color: #2A3139;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.cf-contest-row.cf-contest-theme-slate.cf-contest-row-priority {
+    background-color: rgba(147, 175, 214, 0.12);
+    border: 1px solid #93AFD6;
+}
+
+.cf-contest-row.cf-contest-theme-slate:hover,
+.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-slate {
+    background-color: #394954;
+}
+
+
+.cf-contest-row.cf-contest-theme-sage {
+    background-color: #2A332A;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.cf-contest-row.cf-contest-theme-sage.cf-contest-row-priority {
+    background-color: rgba(154, 189, 164, 0.12);
+    border: 1px solid #9ABDA4;
+}
+
+.cf-contest-row.cf-contest-theme-sage:hover,
+.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-sage {
+    background-color: #3A4640;
+}
+
+
+.cf-contest-row.cf-contest-theme-ember {
+    background-color: #332B26;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.cf-contest-row.cf-contest-theme-ember.cf-contest-row-priority {
+    background-color: rgba(215, 175, 126, 0.12);
+    border: 1px solid #D7AF7E;
+}
+
+.cf-contest-row.cf-contest-theme-ember:hover,
+.cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-ember {
+    background-color: #433731;
+}
+
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-system {
+    background-color: #212325;
+    border: 1px solid #3a3d46;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-system .cf-action-toolbar-button:hover,
+.cf-action-toolbar-row.cf-action-toolbar-theme-system .cf-action-toolbar-button:focus,
+.cf-action-toolbar-row.cf-action-toolbar-theme-system .cf-action-toolbar-button:active {
+    background-color: #363a43;
+    border-radius: 8px;
+}
+
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-orbit {
+    background-color: #242731;
+    border: 1px solid #3B3E4B;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-orbit .cf-action-toolbar-button:hover,
+.cf-action-toolbar-row.cf-action-toolbar-theme-orbit .cf-action-toolbar-button:focus,
+.cf-action-toolbar-row.cf-action-toolbar-theme-orbit .cf-action-toolbar-button:active {
+    background-color: #343640;
+    border-radius: 8px;
+}
+
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-slate {
+    background-color: #232B33;
+    border: 1px solid #404C58;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-slate .cf-action-toolbar-button:hover,
+.cf-action-toolbar-row.cf-action-toolbar-theme-slate .cf-action-toolbar-button:focus,
+.cf-action-toolbar-row.cf-action-toolbar-theme-slate .cf-action-toolbar-button:active {
+    background-color: #394954;
+    border-radius: 8px;
+}
+
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-sage {
+    background-color: #232C25;
+    border: 1px solid #3F4C41;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-sage .cf-action-toolbar-button:hover,
+.cf-action-toolbar-row.cf-action-toolbar-theme-sage .cf-action-toolbar-button:focus,
+.cf-action-toolbar-row.cf-action-toolbar-theme-sage .cf-action-toolbar-button:active {
+    background-color: #3A4640;
+    border-radius: 8px;
+}
+
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-ember {
+    background-color: #2B2522;
+    border: 1px solid #4B3E35;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.cf-action-toolbar-row.cf-action-toolbar-theme-ember .cf-action-toolbar-button:hover,
+.cf-action-toolbar-row.cf-action-toolbar-theme-ember .cf-action-toolbar-button:focus,
+.cf-action-toolbar-row.cf-action-toolbar-theme-ember .cf-action-toolbar-button:active {
+    background-color: #433731;
+    border-radius: 8px;
+}
+
+
+.cf-panel-label.cf-theme-orbit {
+    color: #A99AF4;
+}
+
+.cf-panel-label.cf-panel-live.cf-theme-orbit {
+    color: #74C9C1;
+}
+
+.cf-panel-label.cf-panel-urgent.cf-theme-orbit {
+    color: #E46D66;
+}
+
+.cf-companion-menu.cf-theme-orbit,
+.cf-companion-menu.cf-theme-orbit .popup-menu-boxpointer {
+    background-color: transparent;
+    color: #F1F0F7;
+    border: none;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-content {
+    background-color: #1F212B;
+    color: #F1F0F7;
+    border: 1px solid #3B3E4B;
+    border-radius: 14px;
+    box-shadow: none;
+    padding: 6px;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-item {
+    color: #F1F0F7;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-item:insensitive {
+    color: #7A7D8C;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-inactive-menu-item {
+    color: #F1F0F7;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-sub-menu {
+    background-color: #242731;
+    border-color: #3B3E4B;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-icon {
+    color: #A99AF4;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-codeforces-toolbar-icon {
+    background-color: #A99AF4;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-friend-row {
+    background-color: transparent;
+    padding: 2px 0;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-menu-header {
+    background-color: transparent;
+    color: #74C9C1;
+    border-radius: 0;
+    padding: 5px 8px 2px;
+    font-weight: 600;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-name {
+    color: #F1F0F7;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-details,
+.cf-companion-menu.cf-theme-orbit .cf-menu-footer,
+.cf-companion-menu.cf-theme-orbit .cf-loading-label {
+    color: #A7A9B7;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-countdown.cf-countdown-normal { color: #A99AF4; }
+.cf-companion-menu.cf-theme-orbit .cf-contest-countdown.cf-urgency-yellow { color: #E7C66B; }
+.cf-companion-menu.cf-theme-orbit .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
+.cf-companion-menu.cf-theme-orbit .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-category-badge {
+    color: #F1F0F7;
+    background-color: rgba(169, 154, 244, 0.16);
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-expand-button {
+    color: #74C9C1;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-expand-button:hover,
+.cf-companion-menu.cf-theme-orbit .cf-contest-expand-button:focus {
+    background-color: #343640;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-live-contest {
+    color: #74C9C1;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-orbit .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-orbit .popup-menu-item:active,
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:active {
+    background-color: #343640;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-star-button {
+    color: #A99AF4;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-star-button:checked {
+    background-color: #292A35;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-contest-star-button:focus,
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:focus {
+    border: 1px solid #A99AF4;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-orbit .cf-action-toolbar-button:insensitive {
+    color: #7A7D8C;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-menu-item .popup-menu-item-label {
+    color: #F1F0F7;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-separator-menu-item {
+    background-color: transparent;
+    border-color: #3B3E4B;
+    padding: 1px 8px;
+}
+
+.cf-companion-menu.cf-theme-orbit .popup-separator-menu-item-separator {
+    background-color: #3B3E4B;
+}
+
+.cf-action-tooltip.cf-theme-orbit {
+    background-color: #292A35;
+    color: #F1F0F7;
+    border-color: #3B3E4B;
+}
+
+
+.cf-panel-label.cf-theme-slate {
+    color: #93AFD6;
+}
+
+.cf-panel-label.cf-panel-live.cf-theme-slate {
+    color: #AFC4D8;
+}
+
+.cf-panel-label.cf-panel-urgent.cf-theme-slate {
+    color: #E46D66;
+}
+
+.cf-companion-menu.cf-theme-slate,
+.cf-companion-menu.cf-theme-slate .popup-menu-boxpointer {
+    background-color: transparent;
+    color: #EEF4F8;
+    border: none;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-menu-content {
+    background-color: #20262D;
+    color: #EEF4F8;
+    border: 1px solid #404C58;
+    border-radius: 14px;
+    box-shadow: none;
+    padding: 6px;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-menu-item {
+    color: #EEF4F8;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-menu-item:insensitive {
+    color: #758392;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-inactive-menu-item {
+    color: #EEF4F8;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-sub-menu {
+    background-color: #232B33;
+    border-color: #404C58;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-menu-icon {
+    color: #93AFD6;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-codeforces-toolbar-icon {
+    background-color: #93AFD6;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-friend-row {
+    background-color: transparent;
+    padding: 2px 0;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-menu-header {
+    background-color: transparent;
+    color: #AFC4D8;
+    border-radius: 0;
+    padding: 5px 8px 2px;
+    font-weight: 600;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-name {
+    color: #EEF4F8;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-details,
+.cf-companion-menu.cf-theme-slate .cf-menu-footer,
+.cf-companion-menu.cf-theme-slate .cf-loading-label {
+    color: #A2AFBA;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-countdown-normal { color: #93AFD6; }
+.cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-urgency-yellow { color: #E7C66B; }
+.cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
+.cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
+
+.cf-companion-menu.cf-theme-slate .cf-contest-category-badge {
+    color: #EEF4F8;
+    background-color: rgba(147, 175, 214, 0.16);
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-expand-button {
+    color: #AFC4D8;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-expand-button:hover,
+.cf-companion-menu.cf-theme-slate .cf-contest-expand-button:focus {
+    background-color: #394954;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-live-contest {
+    color: #AFC4D8;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-slate .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-slate .popup-menu-item:active,
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:active {
+    background-color: #394954;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-star-button {
+    color: #93AFD6;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-star-button:checked {
+    background-color: #2A3139;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-contest-star-button:focus,
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:focus {
+    border: 1px solid #93AFD6;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-slate .cf-action-toolbar-button:insensitive {
+    color: #758392;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-menu-item .popup-menu-item-label {
+    color: #EEF4F8;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-separator-menu-item {
+    background-color: transparent;
+    border-color: #404C58;
+    padding: 1px 8px;
+}
+
+.cf-companion-menu.cf-theme-slate .popup-separator-menu-item-separator {
+    background-color: #404C58;
+}
+
+.cf-action-tooltip.cf-theme-slate {
+    background-color: #2A3139;
+    color: #EEF4F8;
+    border-color: #404C58;
+}
+
+
+.cf-panel-label.cf-theme-sage {
+    color: #9ABDA4;
+}
+
+.cf-panel-label.cf-panel-live.cf-theme-sage {
+    color: #C9D7A7;
+}
+
+.cf-panel-label.cf-panel-urgent.cf-theme-sage {
+    color: #E46D66;
+}
+
+.cf-companion-menu.cf-theme-sage,
+.cf-companion-menu.cf-theme-sage .popup-menu-boxpointer {
+    background-color: transparent;
+    color: #EEF2EA;
+    border: none;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-menu-content {
+    background-color: #202620;
+    color: #EEF2EA;
+    border: 1px solid #3F4C41;
+    border-radius: 14px;
+    box-shadow: none;
+    padding: 6px;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-menu-item {
+    color: #EEF2EA;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-menu-item:insensitive {
+    color: #788575;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-inactive-menu-item {
+    color: #EEF2EA;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-sub-menu {
+    background-color: #232C25;
+    border-color: #3F4C41;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-menu-icon {
+    color: #9ABDA4;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-codeforces-toolbar-icon {
+    background-color: #9ABDA4;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-friend-row {
+    background-color: transparent;
+    padding: 2px 0;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-menu-header {
+    background-color: transparent;
+    color: #C9D7A7;
+    border-radius: 0;
+    padding: 5px 8px 2px;
+    font-weight: 600;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-name {
+    color: #EEF2EA;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-details,
+.cf-companion-menu.cf-theme-sage .cf-menu-footer,
+.cf-companion-menu.cf-theme-sage .cf-loading-label {
+    color: #A8B0A1;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-countdown.cf-countdown-normal { color: #9ABDA4; }
+.cf-companion-menu.cf-theme-sage .cf-contest-countdown.cf-urgency-yellow { color: #E7C66B; }
+.cf-companion-menu.cf-theme-sage .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
+.cf-companion-menu.cf-theme-sage .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
+
+.cf-companion-menu.cf-theme-sage .cf-contest-category-badge {
+    color: #EEF2EA;
+    background-color: rgba(154, 189, 164, 0.16);
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-expand-button {
+    color: #C9D7A7;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-expand-button:hover,
+.cf-companion-menu.cf-theme-sage .cf-contest-expand-button:focus {
+    background-color: #3A4640;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-live-contest {
+    color: #C9D7A7;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-sage .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-sage .popup-menu-item:active,
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:active {
+    background-color: #3A4640;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-star-button {
+    color: #9ABDA4;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-star-button:checked {
+    background-color: #2A332A;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-contest-star-button:focus,
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:focus {
+    border: 1px solid #9ABDA4;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-sage .cf-action-toolbar-button:insensitive {
+    color: #788575;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-menu-item .popup-menu-item-label {
+    color: #EEF2EA;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-separator-menu-item {
+    background-color: transparent;
+    border-color: #3F4C41;
+    padding: 1px 8px;
+}
+
+.cf-companion-menu.cf-theme-sage .popup-separator-menu-item-separator {
+    background-color: #3F4C41;
+}
+
+.cf-action-tooltip.cf-theme-sage {
+    background-color: #2A332A;
+    color: #EEF2EA;
+    border-color: #3F4C41;
+}
+
+
+.cf-panel-label.cf-theme-ember {
+    color: #D7AF7E;
+}
+
+.cf-panel-label.cf-panel-live.cf-theme-ember {
+    color: #C78D78;
+}
+
+.cf-panel-label.cf-panel-urgent.cf-theme-ember {
+    color: #E46D66;
+}
+
+.cf-companion-menu.cf-theme-ember,
+.cf-companion-menu.cf-theme-ember .popup-menu-boxpointer {
+    background-color: transparent;
+    color: #F3EEE8;
+    border: none;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-menu-content {
+    background-color: #28231F;
+    color: #F3EEE8;
+    border: 1px solid #4B3E35;
+    border-radius: 14px;
+    box-shadow: none;
+    padding: 6px;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-menu-item {
+    color: #F3EEE8;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-menu-item:insensitive {
+    color: #857A6E;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-inactive-menu-item {
+    color: #F3EEE8;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-sub-menu {
+    background-color: #2B2522;
+    border-color: #4B3E35;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-menu-icon {
+    color: #D7AF7E;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-codeforces-toolbar-icon {
+    background-color: #D7AF7E;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-friend-row {
+    background-color: transparent;
+    padding: 2px 0;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-menu-header {
+    background-color: transparent;
+    color: #C78D78;
+    border-radius: 0;
+    padding: 5px 8px 2px;
+    font-weight: 600;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-name {
+    color: #F3EEE8;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-details,
+.cf-companion-menu.cf-theme-ember .cf-menu-footer,
+.cf-companion-menu.cf-theme-ember .cf-loading-label {
+    color: #B5A699;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-countdown-normal { color: #D7AF7E; }
+.cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-urgency-yellow { color: #E7C66B; }
+.cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
+.cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
+
+.cf-companion-menu.cf-theme-ember .cf-contest-category-badge {
+    color: #F3EEE8;
+    background-color: rgba(215, 175, 126, 0.16);
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-expand-button {
+    color: #C78D78;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-expand-button:hover,
+.cf-companion-menu.cf-theme-ember .cf-contest-expand-button:focus {
+    background-color: #433731;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-live-contest {
+    color: #C78D78;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-menu-item:hover,
+.cf-companion-menu.cf-theme-ember .popup-menu-item:focus,
+.cf-companion-menu.cf-theme-ember .popup-menu-item:active,
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:hover,
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:focus,
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:active {
+    background-color: #433731;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-star-button {
+    color: #D7AF7E;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-star-button:checked {
+    background-color: #332B26;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-contest-star-button:focus,
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:focus {
+    border: 1px solid #D7AF7E;
+    border-radius: 5px;
+}
+
+.cf-companion-menu.cf-theme-ember .cf-action-toolbar-button:insensitive {
+    color: #857A6E;
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-menu-item .popup-menu-item-label {
+    color: #F3EEE8;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-separator-menu-item {
+    background-color: transparent;
+    border-color: #4B3E35;
+    padding: 1px 8px;
+}
+
+.cf-companion-menu.cf-theme-ember .popup-separator-menu-item-separator {
+    background-color: #4B3E35;
+}
+
+.cf-action-tooltip.cf-theme-ember {
+    background-color: #332B26;
+    color: #F3EEE8;
+    border-color: #4B3E35;
+}
+/* END GENERATED THEME RULES */

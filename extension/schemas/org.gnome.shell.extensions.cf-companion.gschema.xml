@@ -1,0 +1,37 @@
+<schemalist>
+  <schema id="org.gnome.shell.extensions.cf-companion" path="/org/gnome/shell/extensions/cf-companion/">
+    <key name="codeforces-handle" type="s"><default>''</default><summary>Codeforces handle</summary></key>
+    <key name="friends" type="as"><default>[]</default><summary>Saved Codeforces friends</summary></key>
+    <key name="show-div1" type="b"><default>true</default><summary>Show Division 1 contests</summary></key>
+    <key name="show-div2" type="b"><default>true</default><summary>Show Division 2 contests</summary></key>
+    <key name="show-div3" type="b"><default>true</default><summary>Show Division 3 contests</summary></key>
+    <key name="show-div4" type="b"><default>true</default><summary>Show Division 4 contests</summary></key>
+    <key name="show-educational" type="b"><default>true</default><summary>Show Educational rounds</summary></key>
+    <key name="show-global" type="b"><default>true</default><summary>Show Global rounds</summary></key>
+    <key name="show-other" type="b"><default>true</default><summary>Show other contests</summary></key>
+    <key name="reminder-one-hour" type="b"><default>true</default><summary>Remind one hour before</summary></key>
+    <key name="reminder-fifteen-minutes" type="b"><default>true</default><summary>Remind fifteen minutes before</summary></key>
+    <key name="reminder-at-start" type="b"><default>true</default><summary>Remind at contest start</summary></key>
+    <key name="reminder-mode" type="u">
+      <default>0</default>
+      <range min="0" max="1"/>
+      <summary>Which contests receive regular reminders</summary>
+      <description>0 reminds for all contests; 1 reminds only for starred contests.</description>
+    </key>
+    <key name="starred-contests" type="as">
+      <default>[]</default>
+      <summary>Starred Codeforces contest IDs</summary>
+    </key>
+    <key name="panel-display-mode" type="u">
+      <default>0</default>
+      <range min="0" max="2"/>
+      <summary>Panel display mode</summary>
+      <description>0 shows the default indicator, 1 shows only the countdown, and 2 shows the contest name with its countdown.</description>
+    </key>
+    <key name="appearance-theme" type="s">
+      <default>'orbit'</default>
+      <summary>CF Companion appearance theme</summary>
+      <description>Color palette used by CF Companion.</description>
+    </key>
+  </schema>
+</schemalist>

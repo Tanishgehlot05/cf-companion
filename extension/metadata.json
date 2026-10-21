@@ -5,6 +5,7 @@
   "version": 1,
   "version-name": "1.1",
   "shell-version": ["46"],
+  "settings-schema": "org.gnome.shell.extensions.cf-companion",
   "donations": { "github": "Tanishgehlot05" },
   "url": "https://github.com/Tanishgehlot05/cf-companion"
 }
