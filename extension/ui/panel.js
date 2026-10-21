@@ -291,9 +291,9 @@ class CFIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(this._profileItem);
 
         this._accountAction = new PopupMenu.PopupImageMenuItem(
-            'Change Codeforces account…', 'avatar-default-symbolic');
+            'Change Codeforces account', 'avatar-default-symbolic');
         this._accountAction.connect('activate', () => this._openPreferences());
-        const addFriendItem = new PopupMenu.PopupImageMenuItem('Add a friend…', 'list-add-symbolic');
+        const addFriendItem = new PopupMenu.PopupImageMenuItem('Add a friend', 'list-add-symbolic');
         addFriendItem.connect('activate', () => this._openPreferences());
 
         this._friendsSubmenu = new PopupMenu.PopupSubMenuMenuItem('Friends', false);
@@ -482,8 +482,8 @@ class CFIndicator extends PanelMenu.Button {
         this._profileState = state;
         const configured = Boolean(state.handle);
         this._accountAction.label.set_text(configured
-            ? 'Change Codeforces account…'
-            : 'Set up Codeforces account…');
+            ? 'Change Codeforces account'
+            : 'Set up Codeforces account');
         this._profileHandleLabel.set_text(configured ? state.handle : 'CF Companion');
         this._profileIndicator.remove_style_class_name('cf-profile-indicator-online');
         if (configured && ['ready', 'refreshing', 'stale'].includes(state.state))

@@ -11,13 +11,13 @@ assert.doesNotMatch(panelSource,
     'the dropdown no longer contains the earlier statistics, featured card, or timeline experiment');
 assert.match(menuSource, /this\.menu\.addMenuItem\(this\._profileItem\)/,
     'the compact profile header is first');
-assert.ok(menuSource.indexOf("'Change Codeforces account…'") < menuSource.indexOf("'Add a friend…'") &&
-    menuSource.indexOf("'Add a friend…'") < menuSource.indexOf("'Friends', false") &&
+assert.ok(menuSource.indexOf("'Change Codeforces account'") < menuSource.indexOf("'Add a friend'") &&
+    menuSource.indexOf("'Add a friend'") < menuSource.indexOf("'Friends', false") &&
     menuSource.indexOf("'Friends', false") < menuSource.indexOf("'UPCOMING CONTESTS · 0'"),
 'account actions and collapsed Friends appear before upcoming contests');
 assert.equal((menuSource.match(/this\.menu\.addMenuItem\(this\._accountAction\)/g) ?? []).length, 1,
     'the account action is present exactly once');
-assert.match(menuSource, /new PopupMenu\.PopupImageMenuItem\('Add a friend…', 'list-add-symbolic'\)/,
+assert.match(menuSource, /new PopupMenu\.PopupImageMenuItem\('Add a friend', 'list-add-symbolic'\)/,
     'Add a friend uses a small native symbolic icon');
 assert.match(menuSource, /this\._friendsSubmenu = new PopupMenu\.PopupSubMenuMenuItem\('Friends', false\)/,
     'friends remain inside a collapsed native submenu');
