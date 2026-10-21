@@ -445,11 +445,6 @@
 .cf-companion-menu.cf-theme-orbit .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
 .cf-companion-menu.cf-theme-orbit .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
 
-.cf-companion-menu.cf-theme-orbit .cf-contest-category-badge {
-    color: #F1F0F7;
-    background-color: rgba(169, 154, 244, 0.16);
-}
-
 .cf-companion-menu.cf-theme-orbit .cf-contest-expand-button {
     color: #74C9C1;
 }
@@ -596,11 +591,6 @@
 .cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-urgency-yellow { color: #E7C66B; }
 .cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
 .cf-companion-menu.cf-theme-slate .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
-
-.cf-companion-menu.cf-theme-slate .cf-contest-category-badge {
-    color: #EEF4F8;
-    background-color: rgba(147, 175, 214, 0.16);
-}
 
 .cf-companion-menu.cf-theme-slate .cf-contest-expand-button {
     color: #AFC4D8;
@@ -749,11 +739,6 @@
 .cf-companion-menu.cf-theme-sage .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
 .cf-companion-menu.cf-theme-sage .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
 
-.cf-companion-menu.cf-theme-sage .cf-contest-category-badge {
-    color: #EEF2EA;
-    background-color: rgba(154, 189, 164, 0.16);
-}
-
 .cf-companion-menu.cf-theme-sage .cf-contest-expand-button {
     color: #C9D7A7;
 }
@@ -900,11 +885,6 @@
 .cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-urgency-yellow { color: #E7C66B; }
 .cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
 .cf-companion-menu.cf-theme-ember .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
-
-.cf-companion-menu.cf-theme-ember .cf-contest-category-badge {
-    color: #F3EEE8;
-    background-color: rgba(215, 175, 126, 0.16);
-}
 
 .cf-companion-menu.cf-theme-ember .cf-contest-expand-button {
     color: #C78D78;

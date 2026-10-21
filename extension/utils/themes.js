@@ -290,11 +290,6 @@ export function buildShellThemeCss() {
 .cf-companion-menu.cf-theme-${theme.id} .cf-contest-countdown.cf-urgency-orange { color: #E6A15E; }
 .cf-companion-menu.cf-theme-${theme.id} .cf-contest-countdown.cf-urgency-red { color: #EA7770; }
 
-.cf-companion-menu.cf-theme-${theme.id} .cf-contest-category-badge {
-    color: ${theme.primaryText};
-    background-color: ${colorWithAlpha(theme.primaryAccent, 0.16)};
-}
-
 .cf-companion-menu.cf-theme-${theme.id} .cf-contest-expand-button {
     color: ${theme.secondaryAccent};
 }

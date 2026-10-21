@@ -11,7 +11,6 @@ import { formatCountdown, formatDuration, formatFriendlyStartDate, urgencyClass 
 import { contestUrls, createContestMenuActions } from '../utils/contestMenuActions.js';
 import { isPanelUrgent, readStarredContestIds, removeFinishedStarredContestIds, setContestStarred } from '../utils/reminderPreferences.js';
 import { rankStyleClass } from '../utils/userProfile.js';
-import { contestCategoryLabel } from '../utils/contestFilters.js';
 import { THEMES, readAppearanceTheme } from '../utils/themes.js';
 import { contestLifecycle, panelContestDisplay, selectPrimaryActiveContest, selectVisibleMenuContests, upcomingContestViewMode } from '../utils/upcomingContests.js';
 
@@ -834,11 +833,6 @@ class CFIndicator extends PanelMenu.Button {
             x_expand: true,
             y_align: Clutter.ActorAlign.CENTER,
         });
-        const categoryLabel = new St.Label({
-            text: contestCategoryLabel(contest),
-            y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'cf-contest-category-badge',
-        });
         const starButton = new St.Button({
             label: this._starredContestIds.has(contest.id) ? '★' : '☆',
             toggle_mode: true,
@@ -886,7 +880,6 @@ class CFIndicator extends PanelMenu.Button {
         actionsBox.hide();
         heading.add_child(markerLabel);
         heading.add_child(nameLabel);
-        heading.add_child(categoryLabel);
         heading.add_child(starButton);
         detailRow.add_child(detailDateIcon);
         detailRow.add_child(detailLabel);
@@ -911,7 +904,6 @@ class CFIndicator extends PanelMenu.Button {
             content,
             markerLabel,
             nameLabel,
-            categoryLabel,
             detailDateIcon,
             detailLabel,
             durationLabel,
@@ -942,7 +934,6 @@ class CFIndicator extends PanelMenu.Button {
         const live = lifecycle === 'live';
         const countdown = secondsLeft <= 0 ? 'LIVE' : formatCountdown(secondsLeft);
         row.nameLabel.set_text(row.contest.name);
-        row.categoryLabel.set_text(contestCategoryLabel(row.contest));
         for (const markerClass of ['cf-contest-marker-cf', 'cf-contest-marker-icpc', 'cf-contest-marker-other'])
             row.markerLabel.remove_style_class_name(markerClass);
         row.markerLabel.add_style_class_name(contestMarkerClass(row.contest.type));

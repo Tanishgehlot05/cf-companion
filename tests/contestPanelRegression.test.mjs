@@ -110,10 +110,10 @@ assert.match(panelSource, /source === starButton[\s\S]*actions\.open\(\)/,
     'star interaction does not activate the contest row');
 assert.match(contestRowSource, /cf-contest-marker/,
     'contest type is shown with a compact category marker');
-assert.match(contestRowSource, /cf-contest-category-badge/,
-    'contest rows show a compact category badge');
-assert.match(panelSource, /contestCategoryLabel\(contest\)/,
-    'category badges reuse the shared Codeforces classifier');
+assert.doesNotMatch(contestRowSource, /cf-contest-category-badge|contestCategoryLabel/,
+    'contest rows do not display division badges');
+assert.match(panelSource, /text: 'UPCOMING CONTESTS · 0'[\s\S]*label: 'View all'/,
+    'the contest header and View all action remain available');
 assert.match(panelSource, /selectVisibleMenuContests\(this\._contests, this\._contestsExpanded/,
     'collapsed contest rows are hidden in place without rebuilding the section');
 assert.match(panelSource, /this\._contestViewButton\.set_label\(this\._contestsExpanded \? 'Show fewer' : 'View all'\)/,
