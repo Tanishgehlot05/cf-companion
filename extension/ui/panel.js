@@ -605,7 +605,7 @@ class CFIndicator extends PanelMenu.Button {
         for (const friend of friends) {
             const item = new PopupMenu.PopupBaseMenuItem({ reactive: false });
             const box = new St.BoxLayout({ vertical: true, style_class: 'cf-friend-row' });
-            const handleLabel = new St.Label({ style_class: 'cf-profile-handle' });
+            const handleLabel = new St.Label({ style_class: 'cf-profile-handle cf-friend-handle' });
             const detailLabel = new St.Label({ style_class: 'cf-profile-status cf-rank-neutral' });
             box.add_child(handleLabel);
             box.add_child(detailLabel);

@@ -217,6 +217,11 @@ assert.match(buildShellThemeCss(), /\.cf-codeforces-toolbar-icon \{\s*background
     'the Codeforces toolbar logo is framed with the active theme accent');
 for (const theme of THEMES) {
     assert.ok(buildShellThemeCss().includes(
+        `.cf-companion-menu.cf-theme-${theme.id} .cf-friend-row .cf-friend-handle {\n    color: ${theme.primaryText};\n    font-weight: 700;`),
+    `${theme.id} friend handles use bold primary text`);
+}
+for (const theme of THEMES) {
+    assert.ok(buildShellThemeCss().includes(
         `.cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {\n    background-color: ${theme.secondarySurface};\n    border: 1px solid ${theme.separator};\n    border-radius: 12px;\n    padding: 4px;`),
     `${theme.id} toolbar uses its theme surface and separator border`);
     assert.ok(buildShellThemeCss().includes(

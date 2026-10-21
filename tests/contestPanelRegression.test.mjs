@@ -122,6 +122,8 @@ assert.match(panelSource, /this\._contestViewButton\.set_label\(this\._contestsE
     'the contest heading toggles between View all and Show fewer');
 assert.match(panelSource, /urls\.problemset|urls\.standings/,
     'Live Contest Mode keeps contest-specific shortcuts');
+assert.match(panelSource, /cf-profile-handle cf-friend-handle/,
+    'friend handles use a dedicated visible text style');
 assert.match(extensionSource, /new FriendsService[\s\S]*new CodeforcesUserService/,
     'friends and personal profile services remain wired after recap removal');
 assert.match(panelSource, /_reminders\.check\(this\._reminderContests\)/,

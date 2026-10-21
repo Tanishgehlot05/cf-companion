@@ -232,6 +232,36 @@
 }
 
 
+.cf-companion-menu.cf-theme-system .cf-friend-row .cf-friend-handle {
+    color: #f5f5f5;
+    font-weight: 700;
+}
+
+
+.cf-companion-menu.cf-theme-orbit .cf-friend-row .cf-friend-handle {
+    color: #F1F0F7;
+    font-weight: 700;
+}
+
+
+.cf-companion-menu.cf-theme-slate .cf-friend-row .cf-friend-handle {
+    color: #EEF4F8;
+    font-weight: 700;
+}
+
+
+.cf-companion-menu.cf-theme-sage .cf-friend-row .cf-friend-handle {
+    color: #EEF2EA;
+    font-weight: 700;
+}
+
+
+.cf-companion-menu.cf-theme-ember .cf-friend-row .cf-friend-handle {
+    color: #F3EEE8;
+    font-weight: 700;
+}
+
+
 .cf-contest-row.cf-contest-theme-system {
     background-color: #2d2f36;
     border-radius: 12px;

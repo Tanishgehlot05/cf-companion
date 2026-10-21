@@ -162,6 +162,13 @@ export function buildShellThemeCss() {
 }
 `).join('\n');
 
+    const friendHandleRules = THEMES.map(theme => `
+.cf-companion-menu.cf-theme-${theme.id} .cf-friend-row .cf-friend-handle {
+    color: ${theme.primaryText};
+    font-weight: 700;
+}
+`).join('\n');
+
     const contestRowRules = THEMES.map(theme => `
 .cf-contest-row.cf-contest-theme-${theme.id} {
     background-color: ${theme.surface};
@@ -349,7 +356,7 @@ export function buildShellThemeCss() {
 }
 `).join('\n');
 
-    return `${profileCardRules}\n${contestRowRules}\n${toolbarRules}\n${customThemeRules}\n${menuInteractionRules}`;
+    return `${profileCardRules}\n${friendHandleRules}\n${contestRowRules}\n${toolbarRules}\n${customThemeRules}\n${menuInteractionRules}`;
 }
 
 export function buildPreferencesCss() {
