@@ -175,6 +175,8 @@ assert.ok(start >= begin.length && finish > start, 'generated Shell theme sectio
 assert.equal(stylesheet.slice(start, finish).trim(), buildShellThemeCss().trim(),
     'the Shell stylesheet is generated from the shared palette definition');
 assert.match(buildPreferencesCss(), /cf-theme-swatch-system/);
+assert.match(buildPreferencesCss(), /\.cf-theme-row-selected-system \{\s*background-color: alpha\(@theme_selected_bg_color, 0\.12\);\s*border: 2px solid @theme_selected_bg_color;/,
+    'GNOME Default selection follows the system accent instead of a fixed theme color');
 assert.match(buildPreferencesCss(), /theme-orbit/);
 assert.match(buildPreferencesCss(), /theme-slate/);
 assert.match(buildPreferencesCss(), /theme-sage/);
@@ -257,9 +259,11 @@ const preferencesCss = buildPreferencesCss();
 assert.match(preferencesCss, /min-width: 112px;\s*min-height: 56px/,
     'theme swatches use the compact requested dimensions');
 for (const theme of THEMES) {
-    assert.ok(preferencesCss.includes(
-        `.cf-companion-preferences .cf-theme-row-selected-${theme.id} {\n    background-color: rgba(`),
-    `${theme.id} selected theme row uses a faint generated accent fill`);
+    if (theme.id !== 'system') {
+        assert.ok(preferencesCss.includes(
+            `.cf-companion-preferences .cf-theme-row-selected-${theme.id} {\n    background-color: rgba(`),
+        `${theme.id} selected theme row uses a faint generated accent fill`);
+    }
     assert.ok(preferencesCss.includes(
         `.cf-companion-preferences .cf-apply-changes-button.cf-apply-theme-${theme.id}.suggested-action`),
     `${theme.id} enabled apply button uses its generated accent`);

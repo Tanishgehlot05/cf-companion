@@ -390,12 +390,23 @@ export function buildPreferencesCss() {
 }
 `;
 
-    const selectedRows = THEMES.map(theme => `
+    const selectedRows = THEMES.map(theme => {
+        if (theme.id === 'system') {
+            return `
+.cf-companion-preferences .cf-theme-row-selected-system {
+    background-color: alpha(@theme_selected_bg_color, 0.12);
+    border: 2px solid @theme_selected_bg_color;
+    border-radius: 10px;
+}`;
+        }
+
+        return `
 .cf-companion-preferences .cf-theme-row-selected-${theme.id} {
     background-color: ${colorWithAlpha(theme.primaryAccent, 0.12)};
     border: 2px solid ${theme.primaryAccent};
     border-radius: 10px;
-}`).join('\n');
+}`;
+    }).join('\n');
 
     const applyButtons = THEMES.map(theme => `
 .cf-companion-preferences .cf-apply-changes-button.cf-apply-theme-${theme.id}.suggested-action {
