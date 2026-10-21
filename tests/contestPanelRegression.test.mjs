@@ -71,6 +71,8 @@ assert.match(panelSource, /button\.connect\('clicked', callback\)/,
     'toolbar controls are clickable St.Button widgets');
 assert.match(extensionSource, /this\.openPreferences\(\)/,
     'Settings opens preferences using the running extension instance and UUID');
+assert.match(extensionSource, /get_tab_list\([\s\S]*?window\.get_title\(\)[\s\S]*?Main\.activateWindow\(existingWindow/,
+    'preference actions present an already-open settings window');
 assert.match(panelSource, /this\._openUri\('https:\/\/codeforces\.com\/contests'\)/,
     'Open Codeforces uses the supported URI opener');
 assert.doesNotMatch(panelSource, /PopupMenuItem\(['"](?:🔄\s+)?Refresh Now/,

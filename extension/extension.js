@@ -1,4 +1,5 @@
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
+import Meta from 'gi://Meta';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import { ContestService } from './services/contestService.js';
@@ -22,10 +23,7 @@ export default class CFCompanion extends Extension {
             extensionPath: this.path,
             timers: this._timers,
             onRefresh: () => this._contestService?.refresh() ?? false,
-            onOpenPreferences: () => {
-                const result = this.openPreferences();
-                result?.catch(error => console.warn(`[CF Companion] Could not open preferences: ${error.message}`));
-            },
+            onOpenPreferences: () => this._openOrPresentPreferences(),
             reminders: this._reminders,
             settings: this._settings,
         });
@@ -58,5 +56,22 @@ export default class CFCompanion extends Extension {
         this._timers?.destroy();
         this._timers = null;
         this._settings = null;
+    }
+
+    _openOrPresentPreferences() {
+        const title = this.metadata.name;
+        const existingWindow = global.display.get_tab_list(
+            Meta.TabList.NORMAL_ALL, null
+        ).find(window => {
+            const windowTitle = window.get_title() ?? '';
+            return windowTitle === title || windowTitle.startsWith(`${title} —`) ||
+                windowTitle.startsWith(`${title} -`);
+        });
+        if (existingWindow) {
+            Main.activateWindow(existingWindow, global.get_current_time());
+            return;
+        }
+
+        this.openPreferences();
     }
 }
