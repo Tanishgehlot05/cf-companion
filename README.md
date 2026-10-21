@@ -1,88 +1,72 @@
 # CF Companion
 
-CF Companion is a GNOME Shell extension that shows upcoming Codeforces contests in the top panel. It provides contest countdowns, urgency colors, and desktop reminders.
+Follow upcoming Codeforces contests from your GNOME top bar. CF Companion brings contest countdowns, reminders, profile details, and friends into a compact GNOME Shell menu.
 
-## V2 Preview
+[![Latest GitHub release](https://img.shields.io/github/v/release/Tanishgehlot05/cf-companion?display_name=tag)](https://github.com/Tanishgehlot05/cf-companion/releases/latest)
+[![GNOME Shell 46](https://img.shields.io/badge/GNOME%20Shell-46-4a86cf?logo=gnome&logoColor=white)](https://www.gnome.org/)
+[![MIT License](https://img.shields.io/github/license/Tanishgehlot05/cf-companion)](LICENSE)
 
-These genuine screenshots show the V2 interface running on GNOME Shell 46. The profile handle is redacted in the shared dropdown captures. GNOME Extensions submission and review are separate from GitHub releases.
+CF Companion 2.0.0 is available as a GitHub Release for GNOME Shell 46. GitHub distribution is separate from GNOME Extensions submission and review; this release is not represented as approved by GNOME Extensions.
 
-**Main dropdown — GNOME Default:** profile summary, upcoming contests, countdowns, and the action toolbar.
+## Theme Gallery
 
-![CF Companion V2 test dropdown using GNOME Default, with the profile handle redacted](docs/screenshots/v2-dropdown-default.png)
+The screenshots below are captures of the running V2 test extension. The dropdown screenshots have the profile handle redacted.
 
-**Main dropdown — Orbit:** the same contest panel using the Orbit palette.
+<table>
+  <tr>
+    <th align="center">GNOME Default</th>
+    <th align="center">Orbit</th>
+  </tr>
+  <tr>
+    <td align="center"><a href="docs/screenshots/v2-dropdown-default.png"><img src="docs/screenshots/v2-dropdown-default.png" alt="CF Companion contest dropdown using GNOME Default, with the profile handle redacted" width="380"></a></td>
+    <td align="center"><a href="docs/screenshots/v2-dropdown-orbit.png"><img src="docs/screenshots/v2-dropdown-orbit.png" alt="CF Companion contest dropdown using Orbit, with the profile handle redacted" width="380"></a></td>
+  </tr>
+</table>
 
-![CF Companion V2 test dropdown using the Orbit theme, with the profile handle redacted](docs/screenshots/v2-dropdown-orbit.png)
+**Appearance settings:** the preferences page with all five implemented palettes.
 
-**Appearance preferences:** all five available palettes and the current selection.
+<a href="docs/screenshots/v2-appearance-settings.png"><img src="docs/screenshots/v2-appearance-settings.png" alt="CF Companion V2 appearance preferences showing GNOME Default, Orbit, Slate, Sage, and Ember" width="560"></a>
 
-![CF Companion V2 appearance preferences showing GNOME Default, Orbit, Slate, Sage, and Ember](docs/screenshots/v2-appearance-settings.png)
+## Features
 
-This standalone project contains only the GNOME Shell extension. It targets **GNOME Shell 46** and retains the existing UUID `cf-companion@Tanishgehlot05.github.io`.
+- See upcoming contests, live status, and changing countdowns in the top bar menu.
+- Choose contest filters, reminder timing, and panel display preferences.
+- Set a Codeforces handle and manage a friends list with rating and rank details.
+- Star contests, receive desktop reminders, and use notification actions including snooze.
+- Pick from five palettes: **GNOME Default**, **Orbit**, **Slate**, **Sage**, and **Ember**.
 
-## Baseline
+## Download and install
 
-The extension source is based on the submitted V1 review-fixes baseline, commit [`8b616e2`](https://github.com/Tanishgehlot05/cf-companion/commit/8b616e29b9276189fa37f92b653163fba9fbc50f). Stages 1–5 are implemented. The official UUID and extension version are unchanged.
+Download the production ZIP from the [CF Companion 2.0.0 GitHub Release](https://github.com/Tanishgehlot05/cf-companion/releases/tag/v2.0.0):
 
-## Package
+[`cf-companion@Tanishgehlot05.github.io.shell-extension.zip`](https://github.com/Tanishgehlot05/cf-companion/releases/download/v2.0.0/cf-companion%40Tanishgehlot05.github.io.shell-extension.zip)
 
-From this project directory, run:
+Install the downloaded bundle from a terminal:
 
 ```sh
-node scripts/generate-theme-stylesheet.mjs
-node --experimental-default-type=module scripts/package-extension.mjs --out-dir=/tmp
+gnome-extensions install ./cf-companion@Tanishgehlot05.github.io.shell-extension.zip
+gnome-extensions enable cf-companion@Tanishgehlot05.github.io
 ```
 
-The production package is written to `/tmp` using the UUID from `extension/metadata.json`. The helper stages only runtime files before invoking GNOME's extension packager, so tests and development documentation are not included.
+The extension targets **GNOME Shell 46**. If the extension does not appear in the top bar after enabling it, sign out and back in, then check its state with `gnome-extensions info cf-companion@Tanishgehlot05.github.io`. The GitHub ZIP is a release artifact; GNOME Extensions distribution and approval require a separate submission and review.
 
-See [CHANGELOG.md](CHANGELOG.md) for the version history and [docs/RELEASING.md](docs/RELEASING.md) for release policy and verification commands. The GitHub Actions release workflow packages the exact tagged commit and attaches the ZIP to a GitHub Release; it never uploads to extensions.gnome.org.
+## Settings and themes
 
-The four custom palettes and GNOME Default option are defined in `extension/utils/themes.js`. The generator keeps the Shell stylesheet's theme selectors in sync with those shared palette values; it is a development-time helper and is not included in the extension package. Bundled Codeforces icon variants are in `extension/icons/`; their source and license are documented alongside them.
+Preferences let you select contest categories, reminder modes, panel display, a Codeforces profile, and friends. Appearance offers GNOME Default plus four palettes: Orbit (violet), Slate (blue-grey), Sage (green), and Ember (amber). The Telegram control is a placeholder; Telegram integration and its separate backend are not included in this extension release.
 
-For local development, copy the contents of `extension/` into:
+## Project documentation
 
-```text
-~/.local/share/gnome-shell/extensions/cf-companion@Tanishgehlot05.github.io/
-```
+- [Architecture](docs/ARCHITECTURE.md) — runtime modules, settings, and data flow.
+- [Development](docs/DEVELOPMENT.md) — local setup, checks, packaging, and troubleshooting.
+- [Release guide](docs/RELEASING.md) — version policy and release procedure.
+- [Changelog](CHANGELOG.md) — implemented changes and verified release history.
 
-Then disable and re-enable the extension using GNOME Extensions or `gnome-extensions`. Shell/session behavior should be tested on GNOME Shell 46.
+## Links
 
-## Project contents
+- [GitHub repository](https://github.com/Tanishgehlot05/cf-companion)
+- [GitHub Releases](https://github.com/Tanishgehlot05/cf-companion/releases)
+- [GNOME Shell Extensions](https://extensions.gnome.org/) — availability and approval are subject to a separate review.
 
-- `extension/extension.js` — extension entry point
-- `extension/metadata.json` — GNOME extension metadata
-- `extension/stylesheet.css` — panel and menu styling
-- `extension/services/` — contest, profile, and friend-profile fetching with retries and upcoming-contest cache persistence
-- `extension/ui/` — panel indicator and dropdown
-- `extension/utils/` — countdown, urgency, and notification helpers
-- `LICENSE` — MIT License
+## License
 
-The Telegram backend, credentials, generated packages, and V1 Git history are not part of this repository.
-
-## Stage 1 architecture
-
-- `extension/extension.js` owns enable/disable and connects the runtime components.
-- `extension/services/contestService.js` fetches and validates the Codeforces list, handles retries, and reads/writes the local cache.
-- `extension/services/codeforcesUserService.js` validates handles and fetches the configured public profile from Codeforces.
-- `extension/services/friendsService.js` maintains the rating-sorted friends leaderboard and refreshes current public friend profiles hourly.
-- `extension/ui/panel.js` owns the panel indicator, menu, rows, countdown display, and manual refresh action.
-- `extension/utils/reminderService.js` owns reminder deduplication and the MessageTray source lifecycle.
-- `extension/utils/snoozeTimerManager.js` tracks one replaceable five-minute snooze per contest through the shared timer manager.
-- `extension/utils/reminderPreferences.js` handles reminder-mode filtering, persisted starred contest IDs, reminder windows, and panel urgency rules.
-- `extension/utils/timerManager.js` tracks every GLib timeout and removes outstanding sources during teardown.
-- `extension/prefs.js` provides General, Contests, Reminders, Profile & Friends, Appearance, and Integration pages. Orbit, Slate, Sage, and Ember are applied through the existing general Apply Changes workflow.
-- The `codeforces-handle` and `friends` preferences are stored locally in GSettings. Current friend profile data is kept in memory.
-
-The last successful contest list is stored at `${XDG_CACHE_HOME:-~/.cache}/cf-companion/contests.json`. It is validated before display and has no age-based expiry: the most recently successful valid response remains available until replaced by another successful response. Missing or invalid cache data is ignored; a network failure leaves an already loaded cache in place and displays the existing offline state. Cache writes are asynchronous and contain only contest data and its successful update timestamp.
-
-Post-contest summaries, standings comparisons, and rating-result messages are deferred to the separate Telegram backend project. The GNOME extension does not fetch, poll, read, or write recent-contest results. Any existing `contest-results.json` file is left untouched and is no longer used by the extension.
-
-Regular reminders default to **All contests**. The optional **Starred contests only** mode is applied with the other general preferences and reads the starred contest IDs stored in GSettings. Upcoming and live contest rows have an inline accessible star control. IDs are removed from the saved star list only when a fresh contest-list response confirms that contest has finished; cached and offline data do not prune stars. Reminder notifications have Open contest and Snooze 5 min actions. Snoozes use the shared timer manager, replace an existing snooze for the same contest, and are cancelled on disable. The snoozed notification uses a distinct send-once key and is checked again against the contest end time before delivery.
-
-The dropdown keeps every filtered active contest available when Codeforces reports `CODING` or its validated schedule places it between its start and end. If a refresh omits a still-active contest, its last known contest record remains available until its scheduled end; cached live rows are labelled as schedule-based. The panel uses the existing minute timer to show live time remaining, prefers a starred active contest for the compact indicator, and otherwise selects the active contest ending soonest. Live rows provide contest, problemset, and standings shortcuts.
-
-The Friends leaderboard is a collapsed native submenu. Current friend profiles are cached in memory for the session, shown with rank colors, and refreshed hourly; opening the submenu does not trigger a request. Post-contest summaries are deferred to the separate Telegram backend project.
-
-Refresh, Open Codeforces, and Settings share one compact toolbar row. Refresh status updates in place while the contest request is running; the contest service keeps requests single-flight and retains its validated contest cache on failure.
-
-Upcoming contest rows use local-time friendly dates (Today, Tomorrow, or weekday/date) and update their date and countdown text in place. The panel indicator text turns red during the final 15 minutes before a contest starts and returns to its normal color during live contests or when no upcoming contest applies.
+CF Companion is distributed under the [MIT License](LICENSE). Copyright © Tanishgehlot05.

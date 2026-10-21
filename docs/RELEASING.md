@@ -33,9 +33,8 @@ advanced since this note was written.
 - `maintenance/1.x` preserves the latest verified V1 candidate for any further
   GNOME Extensions review corrections. Keep its production UUID and metadata
   unchanged; validate and submit V1 fixes from this branch only.
-- `v2-stable` held V2 development during the initial migration. It may be
-  retired only after the V2 release commit and tag are on `main`, all V2
-  history is reachable there, and the tag workflow has published the release.
+- The temporary `v2-stable` branch was retired after the V2 release commit and
+  tag were integrated into `main` and its history was verified reachable.
 - Create short-lived branches from `main`, for example `feature/theme-polish`
   or `fix/countdown-bug`, test them, and merge them back through review. Do not
   create branches named after individual versions.
@@ -45,14 +44,14 @@ advanced since this note was written.
 
 ## Verified history note
 
-The repository has no V1 release tags or GitHub Releases. The GNOME review page
-shows V1 version `1` as rejected and the reviewer-fix submission as `1.1 (2)`,
-currently unreviewed. The source commits likewise have no `v1.0.0` or
-`v1.0.1` SemVer metadata: the initial commit has no `version-name`, and the
-review-fix line records `1.1`. Therefore the requested V1 SemVer tags must not
-be fabricated or applied to mismatching snapshots. Reconcile the historical
-labels before creating those tags. V2 release tags must match the tagged
-snapshot's `version-name` exactly.
+As checked on 2026-10-21, the repository has no V1 release tags or GitHub
+Releases. The [initial GNOME Extensions submission](https://extensions.gnome.org/review/72223)
+shows version `1` as rejected; the [review-fix submission](https://extensions.gnome.org/review/76863)
+shows `1.1 (2)` as unreviewed. The source history likewise does not establish
+the intended `v1.0.0` or `v1.0.1` SemVer snapshots: the initial commit has no
+`version-name`, while the reviewer-fix line records `1.1`. Do not create those
+historical tags without reliable release-designation evidence. V2 release tags
+must match the tagged snapshot's `version-name` exactly.
 
 ## Local verification and package build
 
