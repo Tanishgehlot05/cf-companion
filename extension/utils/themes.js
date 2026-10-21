@@ -137,15 +137,15 @@ export function buildShellThemeCss() {
 }
 
 .cf-profile-row.cf-profile-theme-${theme.id} .cf-profile-brand {
-    background-color: ${colorWithAlpha(theme.primaryAccent, 0.2)};
-    border: 1px solid ${colorWithAlpha(theme.primaryAccent, 0.32)};
+    background-color: ${colorWithAlpha(theme.primaryAccent, 0.16)};
+    border: 1px solid ${colorWithAlpha(theme.primaryAccent, 0.2)};
     border-radius: 10px;
     padding: 0;
 }
 
 .cf-profile-row.cf-profile-theme-${theme.id} .cf-profile-brand-code {
-    color: ${theme.primaryAccent};
-    font-size: 17px;
+    color: ${theme.primaryText};
+    font-size: 16px;
     font-weight: 700;
 }
 

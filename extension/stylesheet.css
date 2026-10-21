@@ -75,15 +75,15 @@
 }
 
 .cf-profile-row.cf-profile-theme-system .cf-profile-brand {
-    background-color: rgba(153, 180, 255, 0.2);
-    border: 1px solid rgba(153, 180, 255, 0.32);
+    background-color: rgba(153, 180, 255, 0.16);
+    border: 1px solid rgba(153, 180, 255, 0.2);
     border-radius: 10px;
     padding: 0;
 }
 
 .cf-profile-row.cf-profile-theme-system .cf-profile-brand-code {
-    color: #99b4ff;
-    font-size: 17px;
+    color: #f5f5f5;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -108,15 +108,15 @@
 }
 
 .cf-profile-row.cf-profile-theme-orbit .cf-profile-brand {
-    background-color: rgba(169, 154, 244, 0.2);
-    border: 1px solid rgba(169, 154, 244, 0.32);
+    background-color: rgba(169, 154, 244, 0.16);
+    border: 1px solid rgba(169, 154, 244, 0.2);
     border-radius: 10px;
     padding: 0;
 }
 
 .cf-profile-row.cf-profile-theme-orbit .cf-profile-brand-code {
-    color: #A99AF4;
-    font-size: 17px;
+    color: #F1F0F7;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -141,15 +141,15 @@
 }
 
 .cf-profile-row.cf-profile-theme-slate .cf-profile-brand {
-    background-color: rgba(147, 175, 214, 0.2);
-    border: 1px solid rgba(147, 175, 214, 0.32);
+    background-color: rgba(147, 175, 214, 0.16);
+    border: 1px solid rgba(147, 175, 214, 0.2);
     border-radius: 10px;
     padding: 0;
 }
 
 .cf-profile-row.cf-profile-theme-slate .cf-profile-brand-code {
-    color: #93AFD6;
-    font-size: 17px;
+    color: #EEF4F8;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -174,15 +174,15 @@
 }
 
 .cf-profile-row.cf-profile-theme-sage .cf-profile-brand {
-    background-color: rgba(154, 189, 164, 0.2);
-    border: 1px solid rgba(154, 189, 164, 0.32);
+    background-color: rgba(154, 189, 164, 0.16);
+    border: 1px solid rgba(154, 189, 164, 0.2);
     border-radius: 10px;
     padding: 0;
 }
 
 .cf-profile-row.cf-profile-theme-sage .cf-profile-brand-code {
-    color: #9ABDA4;
-    font-size: 17px;
+    color: #EEF2EA;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -207,15 +207,15 @@
 }
 
 .cf-profile-row.cf-profile-theme-ember .cf-profile-brand {
-    background-color: rgba(215, 175, 126, 0.2);
-    border: 1px solid rgba(215, 175, 126, 0.32);
+    background-color: rgba(215, 175, 126, 0.16);
+    border: 1px solid rgba(215, 175, 126, 0.2);
     border-radius: 10px;
     padding: 0;
 }
 
 .cf-profile-row.cf-profile-theme-ember .cf-profile-brand-code {
-    color: #D7AF7E;
-    font-size: 17px;
+    color: #F3EEE8;
+    font-size: 16px;
     font-weight: 700;
 }
 
