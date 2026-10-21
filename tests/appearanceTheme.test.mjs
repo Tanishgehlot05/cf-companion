@@ -29,6 +29,10 @@ assert.match(panelSource, /Gio\.FileIcon\.new\([\s\S]*icons\/codeforces\.svg/,
     'the panel loads its Codeforces mark from a bundled local asset');
 assert.match(panelSource, /text: '<\/>'[\s\S]*style_class: 'cf-profile-brand-code'/,
     'the profile tile uses the compact code glyph');
+assert.match(panelSource, /style_class: 'cf-profile-brand-code',[\s\S]*x_expand: true,[\s\S]*y_expand: true,[\s\S]*x_align: Clutter\.ActorAlign\.CENTER,[\s\S]*y_align: Clutter\.ActorAlign\.CENTER/,
+    'the code glyph fills the profile tile and centers on both axes');
+assert.match(panelSource, /vertical: true,[\s\S]*x_expand: true,[\s\S]*y_align: Clutter\.ActorAlign\.CENTER/,
+    'the handle and rank block is vertically centered against the profile tile');
 assert.match(panelSource, /this\._codeforcesToolbarIcon\.gicon = codeforcesIcon/,
     'the Codeforces logo remains in the bottom toolbar');
 assert.match(panelSource, /view-refresh-symbolic/);
@@ -213,8 +217,10 @@ assert.match(buildShellThemeCss(), /\.popup-menu-boxpointer \{\s*background-colo
 assert.doesNotMatch(buildShellThemeCss(), /cf-rank-/, 'theme decoration does not override Codeforces rank classes');
 assert.match(buildShellThemeCss(), /\.popup-menu-icon \{\s*color: #[0-9A-F]{6};/,
     'native menu icons receive the active palette accent');
-assert.match(buildShellThemeCss(), /\.cf-codeforces-toolbar-icon \{\s*background-color: #[0-9A-F]{6};/,
-    'the Codeforces toolbar logo is framed with the active theme accent');
+assert.match(panelSource, /style_class: 'popup-menu-icon cf-action-toolbar-icon',[\s\S]*icon_size: 16,[\s\S]*y_align: Clutter\.ActorAlign\.CENTER/,
+    'toolbar icons share a fixed size and vertical alignment');
+assert.doesNotMatch(buildShellThemeCss(), /cf-codeforces-toolbar-icon/,
+    'the Codeforces toolbar icon has no unique framed tile');
 for (const theme of THEMES) {
     assert.ok(buildShellThemeCss().includes(
         `.cf-companion-menu.cf-theme-${theme.id} .cf-friend-row .cf-friend-handle {\n    color: ${theme.primaryText};\n    font-weight: 700;`),

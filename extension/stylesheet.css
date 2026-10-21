@@ -6,7 +6,6 @@
 .cf-companion-menu { min-width: 400px; padding: 4px; }
 .cf-profile-row { spacing: 12px; padding: 4px 8px; }
 .cf-profile-brand { min-width: 38px; min-height: 38px; padding: 0; }
-.cf-profile-brand-icon { icon-size: 20px; }
 .cf-profile-header-row { spacing: 8px; }
 .cf-profile-trailing { spacing: 8px; }
 .cf-profile-indicator { font-size: 10px; }
@@ -45,6 +44,7 @@
 .cf-action-toolbar { spacing: 0; }
 .cf-action-toolbar-button { min-width: 0; min-height: 34px; padding: 5px 4px; border-radius: 8px; }
 .cf-action-toolbar-button-content { spacing: 5px; }
+.cf-action-toolbar-icon { icon-size: 16px; }
 .cf-action-toolbar-label { font-size: 12px; }
 .cf-action-tooltip { padding: 6px 9px; border: 1px solid; border-radius: 6px; font-size: 0.9em; }
 
@@ -441,12 +441,6 @@
     color: #A99AF4;
 }
 
-.cf-companion-menu.cf-theme-orbit .cf-codeforces-toolbar-icon {
-    background-color: #A99AF4;
-    border-radius: 4px;
-    padding: 2px;
-}
-
 .cf-companion-menu.cf-theme-orbit .cf-friend-row {
     background-color: transparent;
     padding: 2px 0;
@@ -586,12 +580,6 @@
 
 .cf-companion-menu.cf-theme-slate .popup-menu-icon {
     color: #93AFD6;
-}
-
-.cf-companion-menu.cf-theme-slate .cf-codeforces-toolbar-icon {
-    background-color: #93AFD6;
-    border-radius: 4px;
-    padding: 2px;
 }
 
 .cf-companion-menu.cf-theme-slate .cf-friend-row {
@@ -735,12 +723,6 @@
     color: #9ABDA4;
 }
 
-.cf-companion-menu.cf-theme-sage .cf-codeforces-toolbar-icon {
-    background-color: #9ABDA4;
-    border-radius: 4px;
-    padding: 2px;
-}
-
 .cf-companion-menu.cf-theme-sage .cf-friend-row {
     background-color: transparent;
     padding: 2px 0;
@@ -880,12 +862,6 @@
 
 .cf-companion-menu.cf-theme-ember .popup-menu-icon {
     color: #D7AF7E;
-}
-
-.cf-companion-menu.cf-theme-ember .cf-codeforces-toolbar-icon {
-    background-color: #D7AF7E;
-    border-radius: 4px;
-    padding: 2px;
 }
 
 .cf-companion-menu.cf-theme-ember .cf-friend-row {

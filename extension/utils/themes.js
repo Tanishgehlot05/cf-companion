@@ -263,12 +263,6 @@ export function buildShellThemeCss() {
     color: ${theme.primaryAccent};
 }
 
-.cf-companion-menu.cf-theme-${theme.id} .cf-codeforces-toolbar-icon {
-    background-color: ${theme.primaryAccent};
-    border-radius: 4px;
-    padding: 2px;
-}
-
 .cf-companion-menu.cf-theme-${theme.id} .cf-friend-row {
     background-color: transparent;
     padding: 2px 0;

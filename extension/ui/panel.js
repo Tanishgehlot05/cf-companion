@@ -254,6 +254,9 @@ class CFIndicator extends PanelMenu.Button {
         const brandIcon = new St.Label({
             text: '</>',
             style_class: 'cf-profile-brand-code',
+            x_expand: true,
+            y_expand: true,
+            x_align: Clutter.ActorAlign.CENTER,
             y_align: Clutter.ActorAlign.CENTER,
         });
         const brand = new St.BoxLayout({ style_class: 'cf-profile-brand' });
@@ -267,7 +270,11 @@ class CFIndicator extends PanelMenu.Button {
             text: '',
             style_class: 'cf-profile-status cf-rank-neutral',
         });
-        const profileDetails = new St.BoxLayout({ vertical: true, x_expand: true });
+        const profileDetails = new St.BoxLayout({
+            vertical: true,
+            x_expand: true,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
         this._profileIndicator = new St.Label({ text: '●', style_class: 'cf-profile-indicator' });
         headerRow.add_child(this._profileHandleLabel);
         profileDetails.add_child(headerRow);
@@ -414,7 +421,6 @@ class CFIndicator extends PanelMenu.Button {
         this._refreshTooltip = refresh.tooltip;
         const openButton = this._createToolbarButton(
             this._codeforcesIcon, 'Codeforces', 'Open Codeforces', () => this._openUri('https://codeforces.com/contests'));
-        openButton.icon.add_style_class_name('cf-codeforces-toolbar-icon');
         this._codeforcesToolbarIcon = openButton.icon;
         const settingsButton = this._createToolbarButton(
             'preferences-system-symbolic', 'Settings', 'Settings', () => this._openPreferences());
@@ -440,7 +446,11 @@ class CFIndicator extends PanelMenu.Button {
             x_align: Clutter.ActorAlign.CENTER,
             style_class: 'cf-action-toolbar-button-content',
         });
-        const iconOptions = { style_class: 'popup-menu-icon' };
+        const iconOptions = {
+            style_class: 'popup-menu-icon cf-action-toolbar-icon',
+            icon_size: 16,
+            y_align: Clutter.ActorAlign.CENTER,
+        };
         if (typeof iconName === 'string')
             iconOptions.icon_name = iconName;
         else
