@@ -28,16 +28,21 @@ advanced since this note was written.
 
 ## Branches
 
-- `main` preserves the existing V1 history and remains the V1 maintenance line.
-- `v2-stable` is the V2 development and stable-release line. V2-compatible
-  patches and features continue here.
-- Create feature branches from `v2-stable`, for example
-  `feature/friend-export`, and merge them back through review.
-- Do not merge the independent V2 history into V1 `main` just to combine
-  repositories. Do not create a V3 branch now.
-- When a new major generation is approved, create `v3-development` from the
-  selected V2 stable release commit (normally the commit tagged `v2.x.y` that
-  V3 is based on). Keep the V2 line available for compatible maintenance.
+- `main` is the primary branch. During the V2 migration it still points to the
+  latest V1 history; after V2 is finalized and verified, merge the V2 line into
+  `main` and tag that exact release commit.
+- `maintenance/1.x` preserves the latest verified V1 candidate for any further
+  GNOME Extensions review corrections. Keep its production UUID and metadata
+  unchanged; validate and submit V1 fixes from this branch only.
+- `v2-stable` currently holds V2 development. Keep it until the V2 release
+  commit and tag are on `main` and all relevant V2 history is reachable there.
+  Retire it only after those checks; do not force-push or delete it early.
+- After migration, create short-lived branches from `main`, for example
+  `feature/theme-polish` or `fix/countdown-bug`, test them, and merge them back
+  through review. Do not create branches named after individual versions.
+- Do not create a V3 branch now. If V3 becomes the main line while V2 still
+  needs maintenance, create `maintenance/2.x` from the selected V2 release
+  commit and base V3 development on that approved point.
 
 ## Verified history note
 
@@ -84,16 +89,18 @@ data, backend code, and development documentation.
 2. Update `version-name` and increment the GNOME integer `version` in
    `extension/metadata.json`. Add a changelog entry based only on merged code.
 3. Review the diff, run every verification command above, and inspect the ZIP.
-4. Merge the reviewed changes to `v2-stable` and ensure the worktree is clean.
+4. Merge reviewed changes to `main` (the primary branch after the V2
+   migration) and ensure the worktree is clean. Until that migration is
+   complete, validate and preserve the release candidate on `v2-stable`.
 5. Create an annotated tag whose name exactly matches the metadata:
 
    ```sh
-   git switch v2-stable
-   git pull --ff-only origin v2-stable
+   git switch main
+   git pull --ff-only origin main
    node --experimental-default-type=module scripts/check-release.mjs
    git tag -a v2.0.0 -m "CF Companion 2.0.0"
    node --experimental-default-type=module scripts/check-release.mjs --tag v2.0.0
-   git push origin v2-stable
+   git push origin main
    git push origin v2.0.0
    ```
 
