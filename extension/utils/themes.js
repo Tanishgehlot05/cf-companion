@@ -360,7 +360,43 @@ export function buildShellThemeCss() {
 }
 `).join('\n');
 
-    return `${profileCardRules}\n${friendHandleRules}\n${contestRowRules}\n${toolbarRules}\n${customThemeRules}\n${menuInteractionRules}`;
+    const liquidGlassRules = THEMES.map(theme => `
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .popup-menu-content {
+    background-color: ${colorWithAlpha(theme.background, 0.84)};
+    border-color: ${colorWithAlpha(theme.separator, 0.72)};
+    border-radius: 14px;
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .popup-sub-menu {
+    background-color: ${colorWithAlpha(theme.secondarySurface, 0.9)};
+    border-color: ${colorWithAlpha(theme.separator, 0.72)};
+    border-radius: 12px;
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .cf-profile-row.cf-profile-theme-${theme.id} {
+    background-color: ${colorWithAlpha(theme.surface, 0.58)};
+    border: 1px solid ${colorWithAlpha(theme.separator, 0.62)};
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .cf-action-toolbar-row.cf-action-toolbar-theme-${theme.id} {
+    background-color: ${colorWithAlpha(theme.secondarySurface, 0.62)};
+    border: 1px solid ${colorWithAlpha(theme.separator, 0.68)};
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .cf-liquid-glass-backdrop {
+    background-color: transparent;
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .cf-liquid-glass-backdrop-popup {
+    border-radius: 14px;
+}
+
+.cf-companion-menu.cf-theme-${theme.id}.cf-liquid-glass .cf-liquid-glass-backdrop-friends {
+    border-radius: 12px;
+}
+`).join('\n');
+
+    return `${profileCardRules}\n${friendHandleRules}\n${contestRowRules}\n${toolbarRules}\n${customThemeRules}\n${menuInteractionRules}\n${liquidGlassRules}`;
 }
 
 export function buildPreferencesCss() {

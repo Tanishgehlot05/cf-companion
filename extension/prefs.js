@@ -152,7 +152,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                     button.remove_css_class('suggested-action');
             }
             const description = pending
-                ? 'You have unapplied contest, reminder, panel, or appearance changes.'
+                ? 'You have unapplied contest, reminder, panel, appearance, or Liquid Glass changes.'
                 : appliedMessage || 'Apply your changes while this window stays open.';
             for (const group of applyGroups)
                 group.description = description;
@@ -210,6 +210,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             'reminder-mode',
             'panel-display-mode',
             'appearance-theme',
+            'liquid-glass-enabled',
         ]) {
             try {
                 generalSignals.push(generalSettings.connect(`changed::${key}`, () => {
@@ -539,6 +540,18 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         syncDraftTheme();
 
         pages.appearance.add(appearance);
+
+        const liquidGlassGroup = new Adw.PreferencesGroup({
+            title: 'Liquid Glass (Experimental)',
+            description: 'Adds a native blurred-glass background to the dropdown.',
+        });
+        const liquidGlassSwitch = new Adw.SwitchRow({
+            title: 'Liquid Glass Effect',
+            subtitle: 'Experimental native blur behind the dropdown.',
+        });
+        generalSettings.bind('liquid-glass-enabled', liquidGlassSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+        liquidGlassGroup.add(liquidGlassSwitch);
+        pages.appearance.add(liquidGlassGroup);
 
         const telegram = new Adw.PreferencesGroup({ title: 'Telegram' });
         const row = new Adw.ActionRow({ title: 'Connect Telegram' });

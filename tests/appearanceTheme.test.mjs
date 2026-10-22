@@ -205,14 +205,30 @@ assert.match(buildShellThemeCss(), /\.popup-menu-item:hover,[\s\S]*?background-c
     'menu hover uses a faint primary-accent fill');
 assert.match(panelSource, /_enableKeyboardMenuFocus\(\)[\s\S]*key-press-event[\s\S]*motion-event/,
     'keyboard focus styling is enabled by keyboard navigation and cleared by pointer movement');
+assert.match(panelSource, /new Shell\.Stack\([\s\S]*?stack\.add_child\(backdrop\);\s*stack\.add_child\(content\)/,
+    'a dedicated blur backing sits below the sharp popup content');
+assert.match(panelSource, /_removeLiquidGlassSurfaces\(\)[\s\S]*?surface\.container\.child = surface\.content/,
+    'turning Liquid Glass off restores the original popup hierarchy');
+assert.doesNotMatch(panelSource, /_trackPreferencesWindow|_syncPreferencesWindowEffect|cf-companion-preferences-glass-backdrop/,
+    'Liquid Glass does not attach blur to preferences windows');
 assert.match(panelSource, /actor\.disconnect\(signal\)/,
     'menu input signal handlers are disconnected during indicator destruction');
 assert.match(panelSource, /open-state-changed'[\s\S]*_setKeyboardMenuFocus\(false\)/,
     'opening the menu clears keyboard-only focus styling from a previous session');
 assert.match(buildPreferencesCss(), /cf-theme-swatch-system \{\s*background-color: #1a1b1f;[\s\S]*?border: 1px solid #3a3d46;/,
     'GNOME Default swatch uses its themes.js palette entry');
-assert.doesNotMatch(buildPreferencesCss(), /\.theme-system preferencespage/,
-    'GNOME Default preferences do not override the system appearance');
+assert.doesNotMatch(prefsSource, /cf-liquid-glass-enabled/,
+    'Liquid Glass does not change preferences-window styling');
+assert.doesNotMatch(buildPreferencesCss(), /cf-liquid-glass-enabled/,
+    'generated preferences CSS contains no Liquid Glass surfaces');
+assert.match(buildShellThemeCss(), /\.cf-theme-orbit\.cf-liquid-glass \.popup-menu-content \{\s*background-color: rgba\(31, 33, 43, 0\.84\)/,
+    'the outer Orbit glass tint keeps wallpaper subdued');
+assert.match(buildShellThemeCss(), /\.cf-theme-orbit\.cf-liquid-glass \.cf-profile-row[\s\S]*?background-color: rgba\(41, 42, 53, 0\.58\)/,
+    'the profile card uses a differentiated translucent surface');
+assert.match(buildShellThemeCss(), /\.cf-theme-orbit\.cf-liquid-glass \.cf-action-toolbar-row[\s\S]*?background-color: rgba\(36, 39, 49, 0\.62\)/,
+    'the bottom toolbar uses a separate translucent layer');
+assert.doesNotMatch(buildPreferencesCss(), /\.cf-companion-preferences\.theme-system preferencespage/,
+    'GNOME Default preferences keep the system appearance when Liquid Glass is off');
 assert.match(prefsSource, /row\.add_prefix\(swatch\)/,
     'the palette swatch sits before the theme name and description');
 assert.doesNotMatch(prefsSource, /row\.add_suffix\(swatch\)/,
@@ -282,7 +298,7 @@ for (const theme of THEMES) {
 for (const theme of THEMES) {
     if (theme.id === 'system') {
         assert.match(stylesheet, /cf-companion-menu\.cf-theme-system \.popup-menu-item:hover/);
-        assert.doesNotMatch(preferencesCss, /\.theme-system preferencespage/);
+        assert.doesNotMatch(preferencesCss, /\.cf-companion-preferences\.theme-system preferencespage/);
         continue;
     }
     assert.match(stylesheet, new RegExp(`cf-panel-label\\.cf-theme-${theme.id}`));

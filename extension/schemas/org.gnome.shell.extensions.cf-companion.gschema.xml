@@ -33,5 +33,9 @@
       <summary>CF Companion appearance theme</summary>
       <description>Color palette used by CF Companion.</description>
     </key>
+    <key name="liquid-glass-enabled" type="b">
+      <default>false</default>
+      <summary>Enable experimental Liquid Glass popup styling</summary>
+    </key>
   </schema>
 </schemalist>

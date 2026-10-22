@@ -1,5 +1,6 @@
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
+import Shell from 'gi://Shell';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 
@@ -11,6 +12,11 @@ import { formatCountdown, formatDuration, formatFriendlyStartDate, urgencyClass 
 import { contestUrls, createContestMenuActions } from '../utils/contestMenuActions.js';
 import { isPanelUrgent, readStarredContestIds, removeFinishedStarredContestIds, setContestStarred } from '../utils/reminderPreferences.js';
 import { rankStyleClass } from '../utils/userProfile.js';
+import {
+    LIQUID_GLASS_BLUR_BRIGHTNESS,
+    LIQUID_GLASS_BLUR_RADIUS,
+    readLiquidGlassSettings,
+} from '../utils/liquidGlass.js';
 import { THEMES, readAppearanceTheme } from '../utils/themes.js';
 import { contestLifecycle, panelContestDisplay, selectPrimaryActiveContest, selectVisibleMenuContests, upcomingContestViewMode } from '../utils/upcomingContests.js';
 
@@ -183,6 +189,10 @@ class CFIndicator extends PanelMenu.Button {
         this._minuteTickId = null;
         this._destroyed = false;
         this._toolbarTooltips = [];
+        this._liquidGlassSurfaces = [];
+        this._liquidGlassEnabled = false;
+        this._liquidGlassUnavailable = false;
+        this._liquidGlassSignals = [];
         this._menuNavigationSignals = [];
         this._menuNavigationActors = [];
         this._keyboardMenuFocus = false;
@@ -190,6 +200,7 @@ class CFIndicator extends PanelMenu.Button {
         this._buildPanelLabel();
         this._buildMenu();
         this._applyTheme(this._activeTheme);
+        this._setupLiquidGlass();
         this._profileState = { handle: '', profile: null, state: 'empty' };
         this._scheduleCountdownTick();
     }
@@ -375,6 +386,134 @@ class CFIndicator extends PanelMenu.Button {
                     this._renderFriendRows();
             }
         });
+    }
+
+    _setupLiquidGlass() {
+        if (!this._settings || !this.menu?.actor)
+            return;
+
+        try {
+            const signal = this._settings.connect('changed::liquid-glass-enabled', () => this._syncLiquidGlass());
+            this._settingsSignals.push(signal);
+        } catch (_error) {
+            // Missing optional settings leave the standard popup untouched.
+        }
+
+        const openSignal = this.menu.connect('open-state-changed', (_menu, isOpen) => {
+            this._syncLiquidGlassVisibility(isOpen);
+        });
+        const visibilitySignal = this.menu.actor.connect('notify::visible', () => {
+            if (!this.menu.actor.visible)
+                this._syncLiquidGlassVisibility(false);
+        });
+        const submenuSignal = this._friendsSubmenu.menu.connect('open-state-changed', () => {
+            this._syncLiquidGlassVisibility(this.menu.isOpen);
+        });
+        this._liquidGlassSignals.push(
+            [this.menu, openSignal],
+            [this.menu.actor, visibilitySignal],
+            [this._friendsSubmenu.menu, submenuSignal]
+        );
+        this._syncLiquidGlass();
+    }
+
+    _syncLiquidGlass() {
+        if (this._destroyed || !this.menu?.actor || !this._settings)
+            return;
+
+        const { enabled } = readLiquidGlassSettings(this._settings);
+        this._liquidGlassEnabled = enabled;
+        if (enabled && this._liquidGlassSurfaces.length === 0 && !this._liquidGlassUnavailable) {
+            try {
+                this._createLiquidGlassSurfaces();
+            } catch (error) {
+                this._liquidGlassUnavailable = true;
+                this._removeLiquidGlassSurfaces();
+                console.warn(`[CF Companion] Liquid Glass is unavailable; using the standard popup: ${error.message}`);
+            }
+        }
+
+        if (enabled && this._liquidGlassSurfaces.length > 0) {
+            this.menu.actor.add_style_class_name('cf-liquid-glass');
+            this._friendsSubmenu.menu.actor.add_style_class_name('cf-liquid-glass');
+            this._syncLiquidGlassVisibility(this.menu.isOpen);
+        } else {
+            this.menu.actor.remove_style_class_name('cf-liquid-glass');
+            this._friendsSubmenu.menu.actor.remove_style_class_name('cf-liquid-glass');
+            this._removeLiquidGlassSurfaces();
+        }
+    }
+
+    _createLiquidGlassSurfaces() {
+        const popupBin = this.menu.actor.get_first_child();
+        const popupContent = popupBin?.child;
+        const submenuScroll = this._friendsSubmenu.menu.actor;
+        const submenuContent = submenuScroll.child;
+        if (!popupBin || !popupContent || !submenuContent)
+            throw new Error('Could not find the popup content actors');
+
+        this._liquidGlassSurfaces = [];
+        this._liquidGlassSurfaces.push(this._createLiquidGlassSurface(popupBin, popupContent, 'popup'));
+        this._liquidGlassSurfaces.push(this._createLiquidGlassSurface(submenuScroll, submenuContent, 'friends'));
+    }
+
+    _createLiquidGlassSurface(container, content, name) {
+        const stack = new Shell.Stack({
+            name: `cf-liquid-glass-${name}-stack`,
+            x_expand: true,
+            y_expand: true,
+            clip_to_allocation: true,
+        });
+        const backdrop = new St.Widget({
+            name: `cf-liquid-glass-${name}-backdrop`,
+            style_class: `cf-liquid-glass-backdrop cf-liquid-glass-backdrop-${name}`,
+            reactive: false,
+            x_expand: true,
+            y_expand: true,
+            clip_to_allocation: true,
+        });
+        const effect = new Shell.BlurEffect({
+            mode: Shell.BlurMode.BACKGROUND,
+            radius: LIQUID_GLASS_BLUR_RADIUS,
+            brightness: LIQUID_GLASS_BLUR_BRIGHTNESS,
+        });
+        effect.set_enabled(false);
+        backdrop.add_effect(effect);
+        stack.add_child(backdrop);
+        stack.add_child(content);
+        container.child = stack;
+        return { container, content, stack, backdrop, effect, name };
+    }
+
+    _syncLiquidGlassVisibility(menuIsOpen) {
+        for (const surface of this._liquidGlassSurfaces) {
+            const isVisible = surface.name === 'friends'
+                ? menuIsOpen && this._friendsSubmenu.menu.isOpen
+                : menuIsOpen;
+            surface.effect.set_enabled(this._liquidGlassEnabled && isVisible);
+        }
+    }
+
+    _removeLiquidGlassSurfaces() {
+        for (const surface of this._liquidGlassSurfaces) {
+            surface.effect.set_enabled(false);
+            surface.backdrop.remove_effect(surface.effect);
+            surface.container.child = surface.content;
+            surface.stack.destroy();
+        }
+        this._liquidGlassSurfaces = [];
+    }
+
+    _destroyLiquidGlass() {
+        for (const [object, signal] of this._liquidGlassSignals) {
+            if (signal)
+                object.disconnect(signal);
+        }
+        this._liquidGlassSignals = [];
+        this.menu?.actor?.remove_style_class_name('cf-liquid-glass');
+        this._friendsSubmenu?.menu?.actor?.remove_style_class_name('cf-liquid-glass');
+        this._removeLiquidGlassSurfaces();
+        this._liquidGlassEnabled = false;
     }
 
     _enableKeyboardMenuFocus() {
@@ -1154,6 +1293,7 @@ class CFIndicator extends PanelMenu.Button {
         if (this._destroyed)
             return;
         this._destroyed = true;
+        this._destroyLiquidGlass();
         if (this._minuteTickId !== null) {
             this._timers.cancel(this._minuteTickId);
             this._minuteTickId = null;
