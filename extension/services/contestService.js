@@ -189,6 +189,7 @@ export class ContestService {
     }
 
     async _loadCache() {
+        let cache;
         try {
             const [loaded, bytes] = await new Promise((resolve, reject) => {
                 this._cacheFile.load_contents_async(this._cacheCancellable, (file, result) => {
@@ -199,28 +200,30 @@ export class ContestService {
                     }
                 });
             });
-            if (this._session === null)
-                return;
             if (!loaded)
                 throw new Error('Contest cache could not be read');
 
-            const cache = JSON.parse(new TextDecoder('utf-8').decode(bytes));
-            const contests = validateContests(cache?.contests);
-            if (cache?.version !== CACHE_VERSION || contests === null ||
-                !Number.isFinite(cache.updatedAt) || cache.updatedAt <= 0) {
-                throw new Error('Cached contest data has an unsupported or invalid format');
-            }
-
-            this._rawContests = contests;
-            this._staleContestIds = new Set(contests.map(contest => contest.id));
-            this._lastUpdatedAt = cache.updatedAt;
-            this._emit();
+            cache = JSON.parse(new TextDecoder('utf-8').decode(bytes));
         } catch (error) {
             if (this._session === null || error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED) ||
                 error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
                 return;
             console.warn(`[CF Companion] Could not load contest cache: ${error.message}`);
+            return;
         }
+        if (this._session === null)
+            return;
+        const contests = validateContests(cache?.contests);
+        if (cache?.version !== CACHE_VERSION || contests === null ||
+            !Number.isFinite(cache?.updatedAt) || cache.updatedAt <= 0) {
+            console.warn('[CF Companion] Could not load contest cache: Cached contest data has an unsupported or invalid format');
+            return;
+        }
+
+        this._rawContests = contests;
+        this._staleContestIds = new Set(contests.map(contest => contest.id));
+        this._lastUpdatedAt = cache.updatedAt;
+        this._emit();
     }
 
     async _saveCache() {

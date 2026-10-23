@@ -11,12 +11,7 @@ import { TimerManager } from './utils/timerManager.js';
 
 export default class CFCompanion extends Extension {
     enable() {
-        try {
-            this._settings = this.getSettings();
-        } catch (error) {
-            console.warn(`[CF Companion] Settings unavailable; using defaults: ${error.message}`);
-            this._settings = null;
-        }
+        this._settings = this.getSettings();
         this._timers = new TimerManager();
         this._reminders = new ReminderService(this._timers, this._settings);
         this._indicator = new CFIndicator({

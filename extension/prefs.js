@@ -61,21 +61,9 @@ function buildThemeSwatch(theme) {
 export default class CFCompanionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window.set_default_size(760, 680);
-        let settings;
-        let generalSettings;
-        try {
-            settings = this.getSettings();
-            // Keep draft-only preferences separate from immediate profile/friend writes.
-            generalSettings = this.getSettings();
-        } catch (error) {
-            const page = new Adw.PreferencesPage();
-            page.add(new Adw.PreferencesGroup({
-                title: 'Settings unavailable',
-                description: `CF Companion settings could not be loaded: ${error.message}`,
-            }));
-            window.add(page);
-            return;
-        }
+        const settings = this.getSettings();
+        // Keep draft-only preferences separate from immediate profile/friend writes.
+        const generalSettings = this.getSettings();
         generalSettings.delay();
 
         const pages = {
@@ -90,15 +78,10 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         for (const widget of themedSurfaces)
             widget.add_css_class('cf-companion-preferences');
         const styleProvider = new Gtk.CssProvider();
-        let styleDisplay = null;
-        try {
-            styleProvider.load_from_string(buildPreferencesCss());
-            styleDisplay = Gdk.Display.get_default();
-            if (styleDisplay)
-                Gtk.StyleContext.add_provider_for_display(styleDisplay, styleProvider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-        } catch (error) {
-            console.warn(`[CF Companion] Could not load preferences theme styles: ${error.message}`);
-        }
+        styleProvider.load_from_string(buildPreferencesCss());
+        let styleDisplay = Gdk.Display.get_default();
+        if (styleDisplay)
+            Gtk.StyleContext.add_provider_for_display(styleDisplay, styleProvider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         const updatePreferencesTheme = (source = settings) => {
             const currentTheme = readAppearanceTheme(source);
             for (const widget of themedSurfaces) {
@@ -155,29 +138,19 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                 group.description = description;
         };
         const applyChanges = () => {
-            try {
-                applyPendingSettings(generalSettings, () => {
-                    appliedMessage = 'Changes applied.';
-                    updatePreferencesTheme(generalSettings);
-                });
-                updateApplyState();
-            } catch (error) {
-                appliedMessage = `Could not apply changes: ${error.message}`;
-                updateApplyState();
-            }
+            applyPendingSettings(generalSettings, () => {
+                appliedMessage = 'Changes applied.';
+                updatePreferencesTheme(generalSettings);
+            });
+            updateApplyState();
         };
         const discardChanges = () => {
-            try {
-                if (!discardPendingSettings(generalSettings, () => {
-                    appliedMessage = 'Changes discarded.';
-                    updatePreferencesTheme(settings);
-                }))
-                    return;
-                updateApplyState();
-            } catch (error) {
-                appliedMessage = `Could not discard changes: ${error.message}`;
-                updateApplyState();
-            }
+            if (!discardPendingSettings(generalSettings, () => {
+                appliedMessage = 'Changes discarded.';
+                updatePreferencesTheme(settings);
+            }))
+                return;
+            updateApplyState();
         };
         const addApplyControls = page => {
             const group = new Adw.PreferencesGroup();
@@ -288,7 +261,14 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             handleEntry.sensitive = false;
             setGroupStatus(profileGroup, `Checking ${handle} with Codeforces…`);
             try {
-                const profile = await api.lookupUser(handle, cancellable);
+                let profile;
+                try {
+                    profile = await api.lookupUser(handle, cancellable);
+                } catch (error) {
+                    if (!cancellable.is_cancelled())
+                        setGroupStatus(profileGroup, `Could not validate handle: ${error.message}`, true);
+                    return;
+                }
                 if (cancellable.is_cancelled())
                     return;
                 handleEntry.text = profile.handle;
@@ -298,9 +278,6 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                 } else {
                     setGroupStatus(profileGroup, 'Handle validated, but settings are not writable.', true);
                 }
-            } catch (error) {
-                if (!cancellable.is_cancelled())
-                    setGroupStatus(profileGroup, `Could not validate handle: ${error.message}`, true);
             } finally {
                 cancellables.delete(cancellable);
                 if (!cancellable.is_cancelled()) {
@@ -393,7 +370,14 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             friendEntry.sensitive = false;
             setGroupStatus(friendsGroup, `Checking ${handle} with Codeforces…`);
             try {
-                const profile = await api.lookupUser(handle, cancellable);
+                let profile;
+                try {
+                    profile = await api.lookupUser(handle, cancellable);
+                } catch (error) {
+                    if (!cancellable.is_cancelled())
+                        setGroupStatus(friendsGroup, `Could not validate friend: ${error.message}`, true);
+                    return;
+                }
                 if (cancellable.is_cancelled())
                     return;
                 friends = currentFriends();
@@ -413,9 +397,6 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                 settings.set_strv('friends', friends);
                 friendEntry.text = '';
                 setGroupStatus(friendsGroup, `Validated and added ${profile.handle}.`);
-            } catch (error) {
-                if (!cancellable.is_cancelled())
-                    setGroupStatus(friendsGroup, `Could not validate friend: ${error.message}`, true);
             } finally {
                 cancellables.delete(cancellable);
                 if (!cancellable.is_cancelled())

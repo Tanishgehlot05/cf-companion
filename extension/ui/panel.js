@@ -1023,38 +1023,35 @@ class CFIndicator extends PanelMenu.Button {
     _pruneFinishedStars(finishedContestIds) {
         if (!this._settings)
             return;
-        try {
-            if (!this._settings.is_writable('starred-contests'))
-                return;
-            const current = this._settings.get_strv('starred-contests');
-            const updated = removeFinishedStarredContestIds(current, finishedContestIds);
-            if (updated.join('\0') === current.join('\0'))
-                return;
-            if (!this._settings.set_strv('starred-contests', updated))
-                return;
-            this._starredContestIds = readStarredContestIds(updated);
-            this._syncStarredRows();
-        } catch (error) {
-            console.warn(`[CF Companion] Could not remove finished contests from stars: ${error.message}`);
-        }
+        if (!this._settings.is_writable('starred-contests'))
+            return;
+        const current = this._settings.get_strv('starred-contests');
+        const updated = removeFinishedStarredContestIds(current, finishedContestIds);
+        if (updated.join('\0') === current.join('\0'))
+            return;
+        if (!this._settings.set_strv('starred-contests', updated))
+            return;
+        this._starredContestIds = readStarredContestIds(updated);
+        this._syncStarredRows();
     }
 
     _setContestStarred(contestId, starred) {
         if (!this._settings)
             return;
-        try {
-            if (!this._settings.is_writable('starred-contests'))
-                throw new Error('settings are not writable');
-            const current = this._settings.get_strv('starred-contests');
-            const updated = setContestStarred(current, contestId, starred);
-            if (!this._settings.set_strv('starred-contests', updated))
-                throw new Error('settings rejected the updated star list');
-            this._starredContestIds = readStarredContestIds(updated);
+        if (!this._settings.is_writable('starred-contests')) {
+            console.warn(`[CF Companion] Could not save starred contest ${contestId}: settings are not writable`);
             this._syncStarredRows();
-        } catch (error) {
-            console.warn(`[CF Companion] Could not save starred contest ${contestId}: ${error.message}`);
-            this._syncStarredRows();
+            return;
         }
+        const current = this._settings.get_strv('starred-contests');
+        const updated = setContestStarred(current, contestId, starred);
+        if (!this._settings.set_strv('starred-contests', updated)) {
+            console.warn(`[CF Companion] Could not save starred contest ${contestId}: settings rejected the updated star list`);
+            this._syncStarredRows();
+            return;
+        }
+        this._starredContestIds = readStarredContestIds(updated);
+        this._syncStarredRows();
     }
 
     _setPanelUrgency(secondsLeft) {

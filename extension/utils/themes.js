@@ -109,22 +109,14 @@ export function getTheme(value) {
 }
 
 export function readAppearanceTheme(settings) {
-    try {
-        return normalizeThemeId(settings?.get_string('appearance-theme'));
-    } catch (_error) {
-        return DEFAULT_THEME;
-    }
+    return normalizeThemeId(settings?.get_string('appearance-theme'));
 }
 
 export function setAppearanceThemeDraft(settings, value) {
     const themeId = normalizeThemeId(value);
-    try {
-        if (!settings?.is_writable('appearance-theme'))
-            return false;
-        return settings.set_string('appearance-theme', themeId);
-    } catch (_error) {
+    if (!settings?.is_writable('appearance-theme'))
         return false;
-    }
+    return settings.set_string('appearance-theme', themeId);
 }
 
 export function buildShellThemeCss() {
