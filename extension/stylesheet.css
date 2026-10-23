@@ -23,7 +23,8 @@
 .cf-contest-section { spacing: 6px; }
 .cf-contest-row-item { padding: 0; background-color: transparent; }
 .cf-contest-row { spacing: 5px; padding: 10px 12px; border-radius: 12px; }
-.cf-contest-row-priority { border-radius: 12px; }
+.cf-contest-row-layout { spacing: 0; border-radius: 12px; }
+.cf-contest-accent-strip { min-width: 3px; max-width: 3px; border-radius: 12px 0 0 12px; }
 .cf-contest-heading { spacing: 7px; }
 .cf-contest-marker { min-width: 10px; font-size: 10px; }
 .cf-contest-category-badge { padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 500; }
@@ -262,99 +263,89 @@
 }
 
 
-.cf-contest-row.cf-contest-theme-system {
+.cf-contest-row-layout.cf-contest-theme-system {
     background-color: transparent;
-    border-left: 3px solid #3a3d46;
     border-radius: 12px;
-    padding: 10px 12px;
 }
 
-.cf-contest-row.cf-contest-theme-system.cf-contest-row-priority {
-    border-left: 3px solid #99b4ff;
+.cf-contest-accent-strip.cf-contest-accent-theme-system {
+    background-color: #99b4ff;
 }
 
-.cf-companion-menu.cf-theme-system .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-system,
-.cf-companion-menu.cf-theme-system.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-system,
-.cf-companion-menu.cf-theme-system .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-system {
+.cf-companion-menu.cf-theme-system .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-system,
+.cf-companion-menu.cf-theme-system.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-system,
+.cf-companion-menu.cf-theme-system .cf-contest-row-item:active .cf-contest-row-layout.cf-contest-theme-system {
     background-color: rgba(153, 180, 255, 0.15);
-    border-left-color: #99b4ff;
 }
 
 
-.cf-contest-row.cf-contest-theme-orbit {
+
+.cf-contest-row-layout.cf-contest-theme-orbit {
     background-color: transparent;
-    border-left: 3px solid #3B3E4B;
     border-radius: 12px;
-    padding: 10px 12px;
 }
 
-.cf-contest-row.cf-contest-theme-orbit.cf-contest-row-priority {
-    border-left: 3px solid #A99AF4;
+.cf-contest-accent-strip.cf-contest-accent-theme-orbit {
+    background-color: #A99AF4;
 }
 
-.cf-companion-menu.cf-theme-orbit .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-orbit,
-.cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-orbit,
-.cf-companion-menu.cf-theme-orbit .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-orbit {
+.cf-companion-menu.cf-theme-orbit .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-orbit,
+.cf-companion-menu.cf-theme-orbit.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-orbit,
+.cf-companion-menu.cf-theme-orbit .cf-contest-row-item:active .cf-contest-row-layout.cf-contest-theme-orbit {
     background-color: rgba(169, 154, 244, 0.15);
-    border-left-color: #A99AF4;
 }
 
 
-.cf-contest-row.cf-contest-theme-slate {
+
+.cf-contest-row-layout.cf-contest-theme-slate {
     background-color: transparent;
-    border-left: 3px solid #404C58;
     border-radius: 12px;
-    padding: 10px 12px;
 }
 
-.cf-contest-row.cf-contest-theme-slate.cf-contest-row-priority {
-    border-left: 3px solid #93AFD6;
+.cf-contest-accent-strip.cf-contest-accent-theme-slate {
+    background-color: #93AFD6;
 }
 
-.cf-companion-menu.cf-theme-slate .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-slate,
-.cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-slate,
-.cf-companion-menu.cf-theme-slate .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-slate {
+.cf-companion-menu.cf-theme-slate .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-slate,
+.cf-companion-menu.cf-theme-slate.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-slate,
+.cf-companion-menu.cf-theme-slate .cf-contest-row-item:active .cf-contest-row-layout.cf-contest-theme-slate {
     background-color: rgba(147, 175, 214, 0.15);
-    border-left-color: #93AFD6;
 }
 
 
-.cf-contest-row.cf-contest-theme-sage {
+
+.cf-contest-row-layout.cf-contest-theme-sage {
     background-color: transparent;
-    border-left: 3px solid #3F4C41;
     border-radius: 12px;
-    padding: 10px 12px;
 }
 
-.cf-contest-row.cf-contest-theme-sage.cf-contest-row-priority {
-    border-left: 3px solid #9ABDA4;
+.cf-contest-accent-strip.cf-contest-accent-theme-sage {
+    background-color: #9ABDA4;
 }
 
-.cf-companion-menu.cf-theme-sage .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-sage,
-.cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-sage,
-.cf-companion-menu.cf-theme-sage .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-sage {
+.cf-companion-menu.cf-theme-sage .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-sage,
+.cf-companion-menu.cf-theme-sage.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-sage,
+.cf-companion-menu.cf-theme-sage .cf-contest-row-item:active .cf-contest-row-layout.cf-contest-theme-sage {
     background-color: rgba(154, 189, 164, 0.15);
-    border-left-color: #9ABDA4;
 }
 
 
-.cf-contest-row.cf-contest-theme-ember {
+
+.cf-contest-row-layout.cf-contest-theme-ember {
     background-color: transparent;
-    border-left: 3px solid #4B3E35;
     border-radius: 12px;
-    padding: 10px 12px;
 }
 
-.cf-contest-row.cf-contest-theme-ember.cf-contest-row-priority {
-    border-left: 3px solid #D7AF7E;
+.cf-contest-accent-strip.cf-contest-accent-theme-ember {
+    background-color: #D7AF7E;
 }
 
-.cf-companion-menu.cf-theme-ember .cf-contest-row-item:hover .cf-contest-row.cf-contest-theme-ember,
-.cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row.cf-contest-theme-ember,
-.cf-companion-menu.cf-theme-ember .cf-contest-row-item:active .cf-contest-row.cf-contest-theme-ember {
+.cf-companion-menu.cf-theme-ember .cf-contest-row-item:hover .cf-contest-row-layout.cf-contest-theme-ember,
+.cf-companion-menu.cf-theme-ember.cf-keyboard-navigation .cf-contest-row-item:focus .cf-contest-row-layout.cf-contest-theme-ember,
+.cf-companion-menu.cf-theme-ember .cf-contest-row-item:active .cf-contest-row-layout.cf-contest-theme-ember {
     background-color: rgba(215, 175, 126, 0.15);
-    border-left-color: #D7AF7E;
 }
+
 
 
 .cf-companion-menu.cf-theme-system .cf-action-toolbar-row.cf-action-toolbar-theme-system {

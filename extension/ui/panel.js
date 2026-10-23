@@ -170,6 +170,7 @@ class CFIndicator extends PanelMenu.Button {
         this._toolbarTooltips = [];
         this._menuNavigationSignals = [];
         this._menuNavigationActors = [];
+        this._keyboardMenuFocus = false;
 
         this._buildPanelLabel();
         this._buildMenu();
@@ -216,9 +217,14 @@ class CFIndicator extends PanelMenu.Button {
             this._toolbarRow.add_style_class_name(`cf-action-toolbar-theme-${themeId}`);
         }
         for (const row of this._contestRows ?? []) {
-            for (const theme of THEMES)
+            for (const theme of THEMES) {
                 row.content.remove_style_class_name(`cf-contest-theme-${theme.id}`);
+                row.rowLayout.remove_style_class_name(`cf-contest-theme-${theme.id}`);
+                row.accentStrip.remove_style_class_name(`cf-contest-accent-theme-${theme.id}`);
+            }
             row.content.add_style_class_name(`cf-contest-theme-${themeId}`);
+            row.rowLayout.add_style_class_name(`cf-contest-theme-${themeId}`);
+            row.accentStrip.add_style_class_name(`cf-contest-accent-theme-${themeId}`);
         }
     }
 
@@ -381,12 +387,15 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     _setKeyboardMenuFocus(enabled) {
+        this._keyboardMenuFocus = enabled;
         for (const actor of this._menuNavigationActors) {
             if (enabled)
                 actor.add_style_class_name('cf-keyboard-navigation');
             else
                 actor.remove_style_class_name('cf-keyboard-navigation');
         }
+        for (const row of this._contestRows ?? [])
+            this._updateContestStripVisibility(row);
     }
 
     _buildActionToolbar() {
@@ -819,6 +828,26 @@ class CFIndicator extends PanelMenu.Button {
             x_expand: true,
             style_class: `cf-contest-row cf-contest-theme-${this._activeTheme}`,
         });
+        const rowLayout = new St.BoxLayout({
+            x_expand: true,
+            y_expand: true,
+            style_class: `cf-contest-row-layout cf-contest-theme-${this._activeTheme}`,
+        });
+        const accentStrip = new St.Widget({
+            x_expand: false,
+            y_expand: true,
+            reactive: false,
+            can_focus: false,
+            track_hover: false,
+            style_class: `cf-contest-accent-strip cf-contest-accent-theme-${this._activeTheme}`,
+        });
+        accentStrip.opacity = 0;
+        item.track_hover = true;
+        let row = null;
+        const syncAccentStrip = () => this._updateContestStripVisibility(row);
+        item.connect('notify::hover', syncAccentStrip);
+        item.connect('key-focus-in', syncAccentStrip);
+        item.connect('key-focus-out', syncAccentStrip);
         const heading = new St.BoxLayout({ style_class: 'cf-contest-heading' });
         const markerLabel = new St.Label({
             text: '●',
@@ -888,7 +917,9 @@ class CFIndicator extends PanelMenu.Button {
         content.add_child(heading);
         content.add_child(detailRow);
         content.add_child(actionsBox);
-        item.add_child(content);
+        rowLayout.add_child(accentStrip);
+        rowLayout.add_child(content);
+        item.add_child(rowLayout);
         item.connect('activate', (_item, event) => {
             let source = event?.get_source() ?? null;
             while (source) {
@@ -898,10 +929,12 @@ class CFIndicator extends PanelMenu.Button {
             }
             actions.open();
         });
-        const row = {
+        row = {
             contest,
             item,
             content,
+            rowLayout,
+            accentStrip,
             markerLabel,
             nameLabel,
             detailDateIcon,
@@ -912,8 +945,16 @@ class CFIndicator extends PanelMenu.Button {
             actionsBox,
             actionButtons,
         };
+        this._updateContestStripVisibility(row);
         this._updateRow(row, secondsLeft);
         return row;
+    }
+
+    _updateContestStripVisibility(row) {
+        if (!row?.accentStrip || !row.item)
+            return;
+        const keyboardFocused = this._keyboardMenuFocus && row.item.has_key_focus();
+        row.accentStrip.opacity = row.item.hover || keyboardFocused ? 255 : 0;
     }
 
     _updateContestHighlight() {

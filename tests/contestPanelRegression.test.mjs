@@ -110,6 +110,18 @@ assert.doesNotMatch(panelSource, /row\.separator\s*=|addMenuItem\(row\.separator
     'contest rows render as separate cards without separator lines');
 assert.match(panelSource, /cf-contest-theme-\$\{this\._activeTheme\}/,
     'contest rows track the active theme for card and highlight colors');
+assert.match(contestRowSource, /new St\.Widget\(\{[\s\S]*?reactive: false,[\s\S]*?can_focus: false,[\s\S]*?cf-contest-accent-strip/,
+    'each contest row has a non-interactive dedicated accent strip');
+assert.match(contestRowSource, /item\.track_hover = true;[\s\S]*notify::hover[\s\S]*key-focus-in[\s\S]*key-focus-out/,
+    'the strip responds to pointer hover and keyboard focus transitions');
+assert.match(panelSource, /row\.accentStrip\.opacity = row\.item\.hover \|\| keyboardFocused \? 255 : 0;/,
+    'the strip is hidden at rest and shown only for hovered or keyboard-focused rows');
+assert.match(contestRowSource, /rowLayout\.add_child\(accentStrip\);\s*rowLayout\.add_child\(content\);\s*item\.add_child\(rowLayout\);/,
+    'the strip is flush beside the existing contest content inside one row');
+assert.match(panelSource, /row\.accentStrip\.remove_style_class_name\(`cf-contest-accent-theme-\$\{theme\.id\}`\)[\s\S]*row\.accentStrip\.add_style_class_name\(`cf-contest-accent-theme-\$\{themeId\}`\)/,
+    'applying a theme updates existing row strips in place');
+assert.match(panelSource, /row\.rowLayout\.remove_style_class_name\(`cf-contest-theme-\$\{theme\.id\}`\)[\s\S]*row\.rowLayout\.add_style_class_name\(`cf-contest-theme-\$\{themeId\}`\)/,
+    'applying a theme updates the row hover surface in place');
 assert.match(panelSource, /source === starButton[\s\S]*actions\.open\(\)/,
     'star interaction does not activate the contest row');
 assert.match(contestRowSource, /cf-contest-marker/,

@@ -27,26 +27,35 @@ the website may have advanced since this note was written.
 
 ## Branches
 
-- `main` is the V2 stable-release line.
-- `maintenance/1.x` preserves the V1 history for reviewer-requested fixes.
-- Create V2 feature and fix branches from `main`, for example
-  `feature/friend-export`, and merge them back through review.
-- Keep V1 fixes on `maintenance/1.x`; do not merge them into V2 `main`. Do not
-  create a V3 branch now.
-- When a new major generation is approved, create `v3-development` from the
-  selected V2 stable release commit (normally the commit tagged `v2.x.y` that
-  V3 is based on). Keep the V2 line available for compatible maintenance.
+- `main` is the primary branch and carries the current product line. After the
+  V2.0.0 migration it contains V2 and is protected; merge changes through a
+  pull request after the required CI check passes.
+- `maintenance/1.x` preserves the latest verified V1 candidate for any further
+  GNOME Extensions review corrections. Keep its production UUID and metadata
+  unchanged; validate and submit V1 fixes from this branch only.
+- `review-fixes` is retained as a historical reference. Make future V1 review
+  corrections on `maintenance/1.x`.
+- Create short-lived branches from `main`, for example `feature/theme-polish`
+  or `fix/countdown-bug`, test them, and merge them back through review. Do not
+  create branches named after individual versions.
+- Do not create a V3 branch now. If V3 becomes the main line while V2 still
+  needs maintenance, create `maintenance/2.x` from the selected V2 release
+  commit and base V3 development on that approved point.
 
 ## Verified history note
 
-The repository has no V1 release tags or V1 GitHub Releases. The GNOME review
-page shows V1 version `1` as rejected and the reviewer-fix submission as
-`1.1 (2)`. The source commits likewise have no `v1.0.0` or
-`v1.0.1` SemVer metadata: the initial commit has no `version-name`, and the
-review-fix line records `1.1`. Therefore the requested V1 SemVer tags must not
-be fabricated or applied to mismatching snapshots. Reconcile the historical
-labels before creating those tags. V2 release tags must match the tagged
-snapshot's `version-name` exactly.
+As checked on 2026-10-22, the only GitHub release and tag is `v2.0.0`. The
+[initial GNOME Extensions submission](https://extensions.gnome.org/review/72223)
+shows version `1` as rejected; the [review-fix submission](https://extensions.gnome.org/review/76863)
+shows `1.1 (2)` as unreviewed. The implementation files in the revision-2
+submission archive match the reviewer-fix source at `8b616e2` (merged as
+`1620f42`), but the submission's version name is `1.1`, not the intended
+SemVer `1.0.1`. The revision-1 archive's `extension.js` does not match any
+tracked V1 source commit. Therefore neither V1 SemVer label has been published,
+and the initial submission cannot be assigned to an exact tracked source
+snapshot. Do not create historical tags until their SemVer mapping is
+explicitly resolved. V2 release tags must match the tagged snapshot's
+`version-name` exactly.
 
 ## Local verification and package build
 
@@ -82,7 +91,7 @@ data, backend code, and development documentation.
 2. Update `version-name` and increment the GNOME integer `version` in
    `extension/metadata.json`. Add a changelog entry based only on merged code.
 3. Review the diff, run every verification command above, and inspect the ZIP.
-4. Merge the reviewed changes to `main` and ensure the worktree is clean.
+4. Merge the validated pull request to `main` and ensure the worktree is clean.
 5. Create an annotated tag whose name exactly matches the metadata:
 
    ```sh
