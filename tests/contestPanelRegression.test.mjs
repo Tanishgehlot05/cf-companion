@@ -94,8 +94,8 @@ assert.match(contestServiceSource, /this\._requestRunning = true;\s*this\._notif
     'the loading state is emitted synchronously before the fetch');
 assert.match(contestServiceSource, /\.finally\(\(\) => \{\s*this\._requestRunning = false;\s*this\._notifyRequestState\(\);/,
     'success and failure both clear refresh progress');
-assert.match(contestServiceSource, /if \(this\._destroyed \|\| this\._requestCancellable\.is_cancelled\(\)/,
-    'late or cancelled contest responses are ignored');
+assert.match(contestServiceSource, /if \(this\._session === null \|\| this\._requestCancellable\.is_cancelled\(\)/,
+    'late or cancelled contest responses are ignored after session cleanup');
 assert.match(contestServiceSource, /this\._rawContests,\s*contests,/,
     'successful responses reconcile with the existing cached contest list');
 assert.match(contestServiceSource, /this\._offline = true;\s*this\._emit\(\);/,

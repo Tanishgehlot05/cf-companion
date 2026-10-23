@@ -12,7 +12,6 @@ export class FriendsService {
         this._settings = settings;
         this._onUpdate = onUpdate;
         this._api = new CodeforcesApi();
-        this._destroyed = false;
         this._started = false;
         this._friends = [];
         this._friendProfiles = new Map();
@@ -25,29 +24,20 @@ export class FriendsService {
         this._settingsSignal = 0;
         this._delaySources = new Map();
 
-        try {
-            this._settingsSignal = this._settings?.connect('changed::friends', () => this._readFriends()) ?? 0;
-        } catch (_error) {
-            // Missing friend settings leave the leaderboard empty.
-        }
+        this._settingsSignal = this._settings?.connect('changed::friends', () => this._readFriends()) ?? 0;
     }
 
     start() {
-        if (this._started || this._destroyed)
+        if (this._started || this._api === null)
             return;
         this._started = true;
         this._readFriends();
     }
 
     _readFriends() {
-        if (this._destroyed)
+        if (this._api === null)
             return;
-        let friends = [];
-        try {
-            friends = normalizeFriends(this._settings?.get_strv('friends'));
-        } catch (_error) {
-            friends = [];
-        }
+        const friends = normalizeFriends(this._settings?.get_strv('friends'));
 
         const oldKeys = this._friends.map(handle => handle.toLowerCase()).join(',');
         const newKeys = friends.map(handle => handle.toLowerCase()).join(',');
@@ -65,7 +55,7 @@ export class FriendsService {
     }
 
     _refreshFriends(force = false) {
-        if (this._destroyed)
+        if (this._api === null)
             return;
         if (this._friends.length === 0) {
             this._cancelFriendTimer();
@@ -87,11 +77,11 @@ export class FriendsService {
         this._emit();
         this._api.lookupUsers(requestedHandles, cancellable)
             .then(profiles => {
-                if (!this._destroyed && !cancellable.is_cancelled())
+                if (this._api !== null && !cancellable.is_cancelled())
                     this._storeFriendProfiles(profiles, requestedHandles);
             })
             .catch(async error => {
-                if (this._destroyed || cancellable.is_cancelled())
+                if (this._api === null || cancellable.is_cancelled())
                     return;
                 if (error.apiFailure)
                     await this._lookupFriendsIndividually(requestedHandles, cancellable);
@@ -102,7 +92,7 @@ export class FriendsService {
                 }
             })
             .finally(() => {
-                if (this._destroyed)
+                if (this._api === null)
                     return;
                 this._friendRequestRunning = false;
                 this._friendCancellable = null;
@@ -121,11 +111,11 @@ export class FriendsService {
         const failedHandles = new Set();
         let failed = false;
         for (let index = 0; index < handles.length; index++) {
-            if (this._destroyed || cancellable.is_cancelled())
+            if (this._api === null || cancellable.is_cancelled())
                 return;
             if (index > 0)
                 await this._delay(FALLBACK_REQUEST_GAP_MS);
-            if (this._destroyed || cancellable.is_cancelled())
+            if (this._api === null || cancellable.is_cancelled())
                 return;
             try {
                 const profile = await this._api.lookupUser(handles[index], cancellable);
@@ -135,7 +125,7 @@ export class FriendsService {
                 failedHandles.add(handles[index].toLowerCase());
             }
         }
-        if (!this._destroyed && !cancellable.is_cancelled()) {
+        if (this._api !== null && !cancellable.is_cancelled()) {
             this._storeFriendProfiles(profiles, handles);
             this._friendFailed = failedHandles;
             this._friendError = failed;
@@ -158,7 +148,7 @@ export class FriendsService {
     }
 
     _scheduleFriendRefresh() {
-        if (this._destroyed || this._friends.length === 0)
+        if (this._api === null || this._friends.length === 0)
             return;
         this._cancelFriendTimer();
         this._friendTimer = this._timers.timeout(FRIEND_REFRESH_INTERVAL_MS, () => {
@@ -189,7 +179,7 @@ export class FriendsService {
     }
 
     _emit() {
-        if (this._destroyed || !this._onUpdate)
+        if (this._api === null || !this._onUpdate)
             return;
         const friends = sortFriendProfiles(this._friends.map(handle => {
             const key = handle.toLowerCase();
@@ -211,9 +201,8 @@ export class FriendsService {
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._api === null)
             return;
-        this._destroyed = true;
         this._cancelFriendTimer();
         this._friendCancellable?.cancel();
         this._friendCancellable = null;
@@ -227,6 +216,7 @@ export class FriendsService {
         this._settingsSignal = 0;
         this._settings = null;
         this._api.destroy();
+        this._api = null;
         this._friendProfiles.clear();
         this._friendFailed.clear();
         this._friends = [];

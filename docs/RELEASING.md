@@ -20,11 +20,10 @@ version and tag instead.
 
 `extension/metadata.json` is the canonical version source. Its `version-name`
 is SemVer without the `v` prefix. Its integer `version` is the GNOME Extensions
-revision and must increase beyond the latest accepted/submitted revision for
-the production UUID. The latest public EGO submission observed while preparing
-this workflow is `1.1 (2)`, so the next V2 submission should use integer `3`.
-Confirm the current EGO version before every upload; the website may have
-advanced since this note was written.
+revision and must increase beyond the latest submitted revision for the
+production UUID. The V2.0.0 submission used integer `3`; the V2.0.1 submission
+should use integer `4`. Confirm the current EGO version before every upload;
+the website may have advanced since this note was written.
 
 ## Branches
 
@@ -99,13 +98,13 @@ data, backend code, and development documentation.
    git switch main
    git pull --ff-only origin main
    node --experimental-default-type=module scripts/check-release.mjs
-   git tag -a v2.0.0 -m "CF Companion 2.0.0"
-   node --experimental-default-type=module scripts/check-release.mjs --tag v2.0.0
+   git tag -a v2.0.1 -m "CF Companion 2.0.1"
+   node --experimental-default-type=module scripts/check-release.mjs --tag v2.0.1
    git push origin main
-   git push origin v2.0.0
+   git push origin v2.0.1
    ```
 
-   Replace `v2.0.0` with the chosen release tag. Never force-push a branch or
+   Replace `v2.0.1` with the chosen release tag. Never force-push a branch or
    tag. If a tag already exists at a different commit, stop and cut a new
    version instead.
 6. The `v2.*` GitHub Actions workflow validates and packages the exact tagged

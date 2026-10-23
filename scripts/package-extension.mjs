@@ -10,6 +10,7 @@ const sourceRoot = resolve(repoRoot, 'extension');
 const runtimeRootFiles = ['extension.js', 'metadata.json', 'prefs.js', 'stylesheet.css'];
 const runtimeDirectories = new Map([
     ['icons', new Set(['.svg'])],
+    ['prefs', new Set(['.js'])],
     ['schemas', new Set(['.xml'])],
     ['services', new Set(['.js'])],
     ['ui', new Set(['.js'])],
@@ -78,6 +79,7 @@ try {
         '--extra-source=services',
         '--extra-source=ui',
         '--extra-source=utils',
+        '--extra-source=prefs',
         '--extra-source=icons',
         '--schema=schemas/org.gnome.shell.extensions.cf-companion.gschema.xml',
     ], { cwd: repoRoot, encoding: 'utf8' });

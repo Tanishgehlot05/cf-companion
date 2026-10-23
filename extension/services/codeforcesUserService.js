@@ -13,7 +13,6 @@ export class CodeforcesApi {
         this._session.timeout = 30;
         this._cancellables = new Set();
         this._inFlightHandles = new Set();
-        this._destroyed = false;
     }
 
     lookupUser(value, cancellable = new Gio.Cancellable()) {
@@ -23,7 +22,7 @@ export class CodeforcesApi {
         } catch (error) {
             return Promise.reject(error);
         }
-        if (this._destroyed)
+        if (this._session === null)
             return Promise.reject(new Error('Profile service is unavailable.'));
         const requestKey = handle.toLowerCase();
         if (this._inFlightHandles.has(requestKey))
@@ -50,7 +49,7 @@ export class CodeforcesApi {
     }
 
     _requestJson(url, cancellable) {
-        if (this._destroyed)
+        if (this._session === null)
             return Promise.reject(new Error('Codeforces service is unavailable.'));
         this._cancellables.add(cancellable);
         return new Promise((resolve, reject) => {
@@ -69,7 +68,7 @@ export class CodeforcesApi {
                     this._cancellables.delete(cancellable);
                     try {
                         const bytes = session.send_and_read_finish(result);
-                        if (this._destroyed || cancellable.is_cancelled())
+                        if (this._session === null || cancellable.is_cancelled())
                             throw new Error('Request cancelled.');
                         const status = message.get_status();
                         if (status === 429) {
@@ -105,9 +104,8 @@ export class CodeforcesApi {
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._session === null)
             return;
-        this._destroyed = true;
         for (const cancellable of this._cancellables)
             cancellable.cancel();
         this._cancellables.clear();
@@ -128,13 +126,7 @@ export class CodeforcesUserService {
         this._cancellable = null;
         this._profileTimer = null;
         this._generation = 0;
-        this._destroyed = false;
-        this._settingsSignal = 0;
-        try {
-            this._settingsSignal = this._settings?.connect('changed::codeforces-handle', () => this._readHandle()) ?? 0;
-        } catch (_error) {
-            // A missing setting leaves the profile section hidden.
-        }
+        this._settingsSignal = this._settings?.connect('changed::codeforces-handle', () => this._readHandle()) ?? 0;
     }
 
     start() {
@@ -142,14 +134,9 @@ export class CodeforcesUserService {
     }
 
     _readHandle() {
-        if (this._destroyed)
+        if (this._api === null)
             return;
-        let handle = '';
-        try {
-            handle = this._settings?.get_string('codeforces-handle').trim() ?? '';
-        } catch (_error) {
-            handle = '';
-        }
+        const handle = this._settings?.get_string('codeforces-handle').trim() ?? '';
         if (handle === this._handle)
             return;
 
@@ -218,19 +205,18 @@ export class CodeforcesUserService {
     }
 
     _isCurrent(generation, handle) {
-        return !this._destroyed && this._generation === generation && this._handle === handle;
+        return this._api !== null && this._generation === generation && this._handle === handle;
     }
 
     _emit(state, error) {
-        if (this._destroyed || !this._onUpdate)
+        if (this._api === null || !this._onUpdate)
             return;
         this._onUpdate({ handle: this._handle, profile: this._profile, state, error });
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._api === null)
             return;
-        this._destroyed = true;
         this._generation++;
         this._cancelProfileTimer();
         this._cancellable?.cancel();
@@ -240,6 +226,7 @@ export class CodeforcesUserService {
         this._settingsSignal = 0;
         this._settings = null;
         this._api.destroy();
+        this._api = null;
         this._profile = null;
         this._onUpdate = null;
     }

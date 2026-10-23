@@ -6,11 +6,10 @@ export class SnoozeTimerManager {
         this._onFire = onFire;
         this._onScheduleError = onScheduleError;
         this._timersByContest = new Map();
-        this._destroyed = false;
     }
 
     schedule(contest) {
-        if (this._destroyed || !Number.isSafeInteger(contest?.id) || contest.id <= 0)
+        if (this._timers === null || !Number.isSafeInteger(contest?.id) || contest.id <= 0)
             return false;
 
         const previousTimerId = this._timersByContest.get(contest.id);
@@ -19,7 +18,7 @@ export class SnoozeTimerManager {
             if (this._timersByContest.get(contest.id) !== timerId)
                 return;
             this._timersByContest.delete(contest.id);
-            if (!this._destroyed)
+            if (this._timers !== null)
                 this._onFire?.(contest);
         });
 
@@ -42,9 +41,8 @@ export class SnoozeTimerManager {
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._timers === null)
             return;
-        this._destroyed = true;
         for (const timerId of this._timersByContest.values())
             this._timers.cancel(timerId);
         this._timersByContest.clear();

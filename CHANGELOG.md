@@ -8,6 +8,15 @@ have not been created. The initial EGO submission (version `1`) is rejected;
 the reviewer-fix submission (`1.1 (2)`) is still unreviewed. See
 [docs/RELEASING.md](docs/RELEASING.md) for the version-history rationale.
 
+## 2.0.1 — GNOME Extensions review fixes
+
+- Tightens extension and preferences cleanup, including cancellation and timer
+  handling, and removes an unused timer helper.
+- Makes the preferences-only settings helper's process location explicit and
+  renames shared reminder preferences rules to clarify their use by the Shell.
+- Removes unnecessary exception wrappers and replaces emoji notification text
+  with plain notification labels.
+
 ## 2.0.0
 
 - Restructures the extension into services, UI, and utility modules, with

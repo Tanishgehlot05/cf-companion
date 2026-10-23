@@ -4,19 +4,15 @@ import GLib from 'gi://GLib';
 export class TimerManager {
     constructor() {
         this._sources = new Set();
-        this._destroyed = false;
     }
 
     timeout(delayMs, callback) {
-        if (this._destroyed)
+        if (this._sources === null)
             return null;
 
         let sourceId = null;
         sourceId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, delayMs, () => {
             this._sources.delete(sourceId);
-            if (this._destroyed)
-                return GLib.SOURCE_REMOVE;
-
             try {
                 callback();
             } catch (error) {
@@ -29,17 +25,17 @@ export class TimerManager {
     }
 
     cancel(sourceId) {
-        if (sourceId === null || !this._sources.delete(sourceId))
+        if (this._sources === null || sourceId === null || !this._sources.delete(sourceId))
             return;
         GLib.source_remove(sourceId);
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._sources === null)
             return;
-        this._destroyed = true;
         for (const sourceId of this._sources)
             GLib.source_remove(sourceId);
         this._sources.clear();
+        this._sources = null;
     }
 }

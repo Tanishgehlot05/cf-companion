@@ -4,7 +4,7 @@ import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { CodeforcesApi } from './services/codeforcesUserService.js';
-import { applyPendingSettings, discardPendingSettings } from './utils/generalPreferences.js';
+import { applyPendingSettings, discardPendingSettings } from './prefs/generalSettings.js';
 import { buildPreferencesCss, getTheme, readAppearanceTheme, setAppearanceThemeDraft, THEMES } from './utils/themes.js';
 import { hasFriend, normalizeFriends, normalizeHandle } from './utils/userProfile.js';
 
@@ -65,6 +65,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         let generalSettings;
         try {
             settings = this.getSettings();
+            // Keep draft-only preferences separate from immediate profile/friend writes.
             generalSettings = this.getSettings();
         } catch (error) {
             const page = new Adw.PreferencesPage();
@@ -110,13 +111,9 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         updatePreferencesTheme();
         const api = new CodeforcesApi();
         const cancellables = new Set();
-        let closed = false;
         let discardConfirmed = false;
         let appliedMessage = '';
         const cleanup = () => {
-            if (closed)
-                return;
-            closed = true;
             for (const cancellable of cancellables)
                 cancellable.cancel();
             cancellables.clear();
@@ -211,14 +208,10 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             'panel-display-mode',
             'appearance-theme',
         ]) {
-            try {
-                generalSignals.push(generalSettings.connect(`changed::${key}`, () => {
-                    appliedMessage = '';
-                    updateApplyState();
-                }));
-            } catch (_error) {
-                // Keep the remaining preferences available if a key is missing.
-            }
+            generalSignals.push(generalSettings.connect(`changed::${key}`, () => {
+                appliedMessage = '';
+                updateApplyState();
+            }));
         }
         settingsSignals.push([settings, settings.connect('changed::appearance-theme', updatePreferencesTheme)]);
 
@@ -250,7 +243,6 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                 });
                 return true;
             }
-            cleanup();
             return false;
         });
 
@@ -281,7 +273,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         pages.account.add(profileGroup);
 
         const validateHandle = async () => {
-            if (closed || !handleButton.sensitive)
+            if (!handleButton.sensitive)
                 return;
             let handle;
             try {
@@ -297,7 +289,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             setGroupStatus(profileGroup, `Checking ${handle} with Codeforces…`);
             try {
                 const profile = await api.lookupUser(handle, cancellable);
-                if (closed || cancellable.is_cancelled())
+                if (cancellable.is_cancelled())
                     return;
                 handleEntry.text = profile.handle;
                 if (settings.is_writable('codeforces-handle')) {
@@ -307,11 +299,11 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                     setGroupStatus(profileGroup, 'Handle validated, but settings are not writable.', true);
                 }
             } catch (error) {
-                if (!closed && !cancellable.is_cancelled())
+                if (!cancellable.is_cancelled())
                     setGroupStatus(profileGroup, `Could not validate handle: ${error.message}`, true);
             } finally {
                 cancellables.delete(cancellable);
-                if (!closed) {
+                if (!cancellable.is_cancelled()) {
                     handleButton.sensitive = true;
                     handleEntry.sensitive = true;
                 }
@@ -320,7 +312,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         handleButton.connect('clicked', validateHandle);
         handleEntry.connect('activate', validateHandle);
         settingsSignals.push([settings, settings.connect('changed::codeforces-handle', () => {
-            if (!closed && !handleEntry.has_focus)
+            if (!handleEntry.has_focus)
                 handleEntry.text = this._readString(settings, 'codeforces-handle');
         })]);
 
@@ -346,15 +338,9 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
         pages.account.add(savedFriendsGroup);
 
         const currentFriends = () => {
-            try {
-                return normalizeFriends(settings.get_strv('friends'));
-            } catch (_error) {
-                return [];
-            }
+            return normalizeFriends(settings.get_strv('friends'));
         };
         const renderFriends = () => {
-            if (closed)
-                return;
             for (const row of friendRows)
                 savedFriendsGroup.remove(row);
             friendRows.length = 0;
@@ -382,7 +368,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                 savedFriendsGroup.description = `${currentFriends().length} of ${MAX_FRIENDS} friends saved.`;
         };
         const validateFriend = async () => {
-            if (closed || !addFriendButton.sensitive)
+            if (!addFriendButton.sensitive)
                 return;
             let handle;
             try {
@@ -408,7 +394,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             setGroupStatus(friendsGroup, `Checking ${handle} with Codeforces…`);
             try {
                 const profile = await api.lookupUser(handle, cancellable);
-                if (closed || cancellable.is_cancelled())
+                if (cancellable.is_cancelled())
                     return;
                 friends = currentFriends();
                 if (hasFriend(friends, profile.handle)) {
@@ -428,13 +414,13 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
                 friendEntry.text = '';
                 setGroupStatus(friendsGroup, `Validated and added ${profile.handle}.`);
             } catch (error) {
-                if (!closed && !cancellable.is_cancelled())
+                if (!cancellable.is_cancelled())
                     setGroupStatus(friendsGroup, `Could not validate friend: ${error.message}`, true);
             } finally {
                 cancellables.delete(cancellable);
-                if (!closed)
+                if (!cancellable.is_cancelled())
                     addFriendButton.sensitive = true;
-                if (!closed)
+                if (!cancellable.is_cancelled())
                     friendEntry.sensitive = true;
             }
         };
@@ -504,7 +490,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
             row.add_suffix(check);
             row.activatable_widget = check;
             check.connect('toggled', () => {
-                if (syncingThemeChecks || !check.active || closed)
+                if (syncingThemeChecks || !check.active)
                     return;
                 appliedMessage = '';
                 if (!setAppearanceThemeDraft(generalSettings, theme.id))
@@ -569,11 +555,7 @@ export default class CFCompanionPreferences extends ExtensionPreferences {
     }
 
     _readString(settings, key) {
-        try {
-            return settings.get_string(key);
-        } catch (_error) {
-            return '';
-        }
+        return settings.get_string(key);
     }
 
     _switchRow(settings, key, title) {

@@ -1,14 +1,13 @@
 import Gio from 'gi://Gio';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
-import { contestHasNotEnded, dueReminderKinds, normalizeReminderMode, readStarredContestIds, shouldSendRegularReminder, snoozedReminderKey } from './reminderPreferences.js';
+import { contestHasNotEnded, dueReminderKinds, normalizeReminderMode, readStarredContestIds, shouldSendRegularReminder, snoozedReminderKey } from './reminderRules.js';
 import { SnoozeTimerManager } from './snoozeTimerManager.js';
 
 export class ReminderService {
     constructor(timerManager, settings = null) {
         this._sentKeys = new Set();
         this._source = null;
-        this._destroyed = false;
         this._settings = settings;
         this._lastContests = [];
         this._snoozeSequence = 0;
@@ -23,17 +22,13 @@ export class ReminderService {
                 'reminder-one-hour', 'reminder-fifteen-minutes', 'reminder-at-start',
                 'reminder-mode', 'starred-contests',
             ]) {
-                try {
-                    this._settingsSignals.push(this._settings.connect(`changed::${key}`, () => this._checkLastContests()));
-                } catch (_error) {
-                    // Keep reminders enabled by default if an optional preference is unavailable.
-                }
+                this._settingsSignals.push(this._settings.connect(`changed::${key}`, () => this._checkLastContests()));
             }
         }
     }
 
     _getSource() {
-        if (this._source === null && !this._destroyed) {
+        if (this._source === null && this._snoozes !== null) {
             const source = new MessageTray.Source({
                 title: 'CF Companion',
                 iconName: 'dialog-information-symbolic',
@@ -49,7 +44,7 @@ export class ReminderService {
     }
 
     _notify(key, title, contest) {
-        if (this._destroyed || this._sentKeys.has(key))
+        if (this._snoozes === null || this._sentKeys.has(key))
             return;
         const source = this._getSource();
         if (source === null)
@@ -62,7 +57,7 @@ export class ReminderService {
     }
 
     _openContest(contestId) {
-        if (this._destroyed || !Number.isSafeInteger(contestId) || contestId <= 0)
+        if (this._snoozes === null || !Number.isSafeInteger(contestId) || contestId <= 0)
             return;
         try {
             Gio.AppInfo.launch_default_for_uri(`https://codeforces.com/contest/${contestId}`, null);
@@ -78,7 +73,7 @@ export class ReminderService {
     }
 
     _scheduleSnooze(contest) {
-        if (this._destroyed)
+        if (this._snoozes === null)
             return;
         const currentContest = this._contestForSnooze(contest);
         if (!currentContest)
@@ -87,7 +82,7 @@ export class ReminderService {
     }
 
     _sendSnoozedReminder(contest) {
-        if (this._destroyed)
+        if (this._snoozes === null)
             return;
         const currentContest = this._contestForSnooze(contest);
         if (!currentContest)
@@ -95,7 +90,7 @@ export class ReminderService {
         this._snoozeSequence++;
         this._notify(
             snoozedReminderKey(currentContest.id, this._snoozeSequence),
-            '🔔 Contest reminder',
+            'Contest reminder',
             currentContest
         );
     }
@@ -103,42 +98,28 @@ export class ReminderService {
     _isEnabled(key) {
         if (!this._settings)
             return true;
-        try {
-            return this._settings.get_boolean(key);
-        } catch (_error) {
-            return true;
-        }
+        return this._settings.get_boolean(key);
     }
 
     _checkLastContests() {
-        if (!this._destroyed)
+        if (this._snoozes !== null)
             this._check(this._lastContests);
     }
 
     check(contests, enabled = true) {
-        if (!enabled || this._destroyed)
+        if (!enabled || this._snoozes === null)
             return;
         this._lastContests = contests;
         this._check(contests);
     }
 
     _check(contests) {
-        if (this._destroyed)
+        if (this._snoozes === null)
             return;
 
         const nowSeconds = Math.floor(Date.now() / 1000);
-        let reminderMode = 0;
-        let starredIds = new Set();
-        try {
-            reminderMode = normalizeReminderMode(this._settings?.get_uint('reminder-mode'));
-        } catch (_error) {
-            reminderMode = normalizeReminderMode(undefined);
-        }
-        try {
-            starredIds = readStarredContestIds(this._settings?.get_strv('starred-contests'));
-        } catch (_error) {
-            starredIds = new Set();
-        }
+        const reminderMode = normalizeReminderMode(this._settings?.get_uint('reminder-mode'));
+        const starredIds = readStarredContestIds(this._settings?.get_strv('starred-contests'));
 
         for (const contest of contests) {
             if (!shouldSendRegularReminder(contest.id, reminderMode, starredIds))
@@ -150,19 +131,19 @@ export class ReminderService {
                 atStart: this._isEnabled('reminder-at-start'),
             });
             for (const kind of kinds) {
-                const title = kind === '1h' ? '⏰ Contest in 1 hour'
-                    : kind === '15m' ? '🔔 Contest in 15 minutes!'
-                        : '🚀 Contest started!';
+                const title = kind === '1h' ? 'Contest in 1 hour'
+                    : kind === '15m' ? 'Contest in 15 minutes'
+                        : 'Contest started';
                 this._notify(`${contest.id}-${kind}`, title, contest);
             }
         }
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._snoozes === null)
             return;
-        this._destroyed = true;
         this._snoozes.destroy();
+        this._snoozes = null;
         this._source?.destroy();
         this._source = null;
         this._sentKeys.clear();

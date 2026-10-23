@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { applyPendingSettings } from '../extension/utils/generalPreferences.js';
+import { applyPendingSettings } from '../extension/prefs/generalSettings.js';
 import { contestCategoryLabel, filterContests, isContestVisible } from '../extension/utils/contestFilters.js';
 
 const contest = name => ({
