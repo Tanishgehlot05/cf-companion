@@ -13,11 +13,7 @@ export class TimerManager {
         let sourceId = null;
         sourceId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, delayMs, () => {
             this._sources.delete(sourceId);
-            try {
-                callback();
-            } catch (error) {
-                console.error(`[CF Companion] Timer callback failed: ${error.message}`);
-            }
+            callback();
             return GLib.SOURCE_REMOVE;
         });
         this._sources.add(sourceId);

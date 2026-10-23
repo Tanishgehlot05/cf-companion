@@ -48,8 +48,8 @@ assert.doesNotMatch(prefsSource, /new URL\(/,
 
 assert.equal(DEFAULT_THEME, 'orbit');
 assert.equal(readAppearanceTheme(null), 'orbit', 'a missing settings object safely keeps Orbit as the saved fallback');
-assert.equal(readAppearanceTheme({ get_string: () => { throw new Error('missing key'); } }), 'orbit',
-    'a missing key safely keeps Orbit as the saved fallback');
+assert.throws(() => readAppearanceTheme({ get_string: () => { throw new Error('missing key'); } }), /missing key/,
+    'unexpected GSettings read errors are not hidden');
 assert.equal(normalizeThemeId('invalid'), 'orbit', 'an invalid saved ID safely falls back to Orbit');
 assert.equal(readAppearanceTheme({ get_string: () => 'invalid' }), 'orbit',
     'an invalid stored theme safely falls back to Orbit');
