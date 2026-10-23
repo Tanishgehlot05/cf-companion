@@ -1,12 +1,20 @@
 # Changelog
 
-This file records changes found in repository history. Historical V1 SemVer
-labels below are the requested product labels, not verified Git release tags:
-EGO records the initial V1 submission as rejected version `1` and its
-review-fix submission as `1.1 (2)` (unreviewed at the time of release-workflow
-setup). See [docs/RELEASING.md](docs/RELEASING.md) before creating V1 tags.
+This file records V2 GitHub releases and V1 submission history. The V1 SemVer
+labels are product labels, not Git release tags: EGO records the initial V1
+submission as rejected version `1` and its review-fix submission as `1.1 (2)`.
+See [docs/RELEASING.md](docs/RELEASING.md) before creating V1 tags.
 
-## 2.0.0 — V2 release candidate (not tagged or published)
+## 2.0.1 — GNOME Extensions review fixes
+
+- Tightens extension and preferences cleanup, including cancellation and timer
+  handling, and removes an unused timer helper.
+- Makes the preferences-only settings helper's process location explicit and
+  renames shared reminder preferences rules to clarify their use by the Shell.
+- Removes unnecessary exception wrappers and replaces emoji notification text
+  with plain notification labels.
+
+## 2.0.0 — First V2 release
 
 - Restructures the extension into services, UI, and utility modules, with
   centralized timeout cleanup and a validated local contest cache.

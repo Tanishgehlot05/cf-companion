@@ -20,30 +20,28 @@ version and tag instead.
 
 `extension/metadata.json` is the canonical version source. Its `version-name`
 is SemVer without the `v` prefix. Its integer `version` is the GNOME Extensions
-revision and must increase beyond the latest accepted/submitted revision for
-the production UUID. The latest public EGO submission observed while preparing
-this workflow is `1.1 (2)`, so the next V2 submission should use integer `3`.
-Confirm the current EGO version before every upload; the website may have
-advanced since this note was written.
+revision and must increase beyond the latest submitted revision for the
+production UUID. The V2.0.0 submission used integer `3`; the V2.0.1 submission
+should use integer `4`. Confirm the current EGO version before every upload;
+the website may have advanced since this note was written.
 
 ## Branches
 
-- `main` preserves the existing V1 history and remains the V1 maintenance line.
-- `v2-stable` is the V2 development and stable-release line. V2-compatible
-  patches and features continue here.
-- Create feature branches from `v2-stable`, for example
+- `main` is the V2 stable-release line.
+- `maintenance/1.x` preserves the V1 history for reviewer-requested fixes.
+- Create V2 feature and fix branches from `main`, for example
   `feature/friend-export`, and merge them back through review.
-- Do not merge the independent V2 history into V1 `main` just to combine
-  repositories. Do not create a V3 branch now.
+- Keep V1 fixes on `maintenance/1.x`; do not merge them into V2 `main`. Do not
+  create a V3 branch now.
 - When a new major generation is approved, create `v3-development` from the
   selected V2 stable release commit (normally the commit tagged `v2.x.y` that
   V3 is based on). Keep the V2 line available for compatible maintenance.
 
 ## Verified history note
 
-The repository has no V1 release tags or GitHub Releases. The GNOME review page
-shows V1 version `1` as rejected and the reviewer-fix submission as `1.1 (2)`,
-currently unreviewed. The source commits likewise have no `v1.0.0` or
+The repository has no V1 release tags or V1 GitHub Releases. The GNOME review
+page shows V1 version `1` as rejected and the reviewer-fix submission as
+`1.1 (2)`. The source commits likewise have no `v1.0.0` or
 `v1.0.1` SemVer metadata: the initial commit has no `version-name`, and the
 review-fix line records `1.1`. Therefore the requested V1 SemVer tags must not
 be fabricated or applied to mismatching snapshots. Reconcile the historical
@@ -84,20 +82,20 @@ data, backend code, and development documentation.
 2. Update `version-name` and increment the GNOME integer `version` in
    `extension/metadata.json`. Add a changelog entry based only on merged code.
 3. Review the diff, run every verification command above, and inspect the ZIP.
-4. Merge the reviewed changes to `v2-stable` and ensure the worktree is clean.
+4. Merge the reviewed changes to `main` and ensure the worktree is clean.
 5. Create an annotated tag whose name exactly matches the metadata:
 
    ```sh
-   git switch v2-stable
-   git pull --ff-only origin v2-stable
+   git switch main
+   git pull --ff-only origin main
    node --experimental-default-type=module scripts/check-release.mjs
-   git tag -a v2.0.0 -m "CF Companion 2.0.0"
-   node --experimental-default-type=module scripts/check-release.mjs --tag v2.0.0
-   git push origin v2-stable
-   git push origin v2.0.0
+   git tag -a v2.0.1 -m "CF Companion 2.0.1"
+   node --experimental-default-type=module scripts/check-release.mjs --tag v2.0.1
+   git push origin main
+   git push origin v2.0.1
    ```
 
-   Replace `v2.0.0` with the chosen release tag. Never force-push a branch or
+   Replace `v2.0.1` with the chosen release tag. Never force-push a branch or
    tag. If a tag already exists at a different commit, stop and cut a new
    version instead.
 6. The `v2.*` GitHub Actions workflow validates and packages the exact tagged
