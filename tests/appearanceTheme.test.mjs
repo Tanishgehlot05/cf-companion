@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-import { applyPendingSettings, discardPendingSettings } from '../extension/utils/generalPreferences.js';
+import { applyPendingSettings, discardPendingSettings } from '../extension/prefs/generalSettings.js';
 import { urgencyClass } from '../extension/utils/time.js';
 import {
     buildPreferencesCss,

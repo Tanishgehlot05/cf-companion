@@ -1,5 +1,5 @@
 import { ContestService } from '../extension/services/contestService.js';
-import { applyPendingSettings } from '../extension/utils/generalPreferences.js';
+import { applyPendingSettings } from '../extension/prefs/generalSettings.js';
 import {
     contestLifecycle,
     panelContestDisplay,

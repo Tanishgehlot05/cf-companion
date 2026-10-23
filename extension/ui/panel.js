@@ -9,7 +9,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { formatCountdown, formatDuration, formatFriendlyStartDate, urgencyClass } from '../utils/time.js';
 import { contestUrls, createContestMenuActions } from '../utils/contestMenuActions.js';
-import { isPanelUrgent, readStarredContestIds, removeFinishedStarredContestIds, setContestStarred } from '../utils/reminderPreferences.js';
+import { isPanelUrgent, readStarredContestIds, removeFinishedStarredContestIds, setContestStarred } from '../utils/reminderRules.js';
 import { rankStyleClass } from '../utils/userProfile.js';
 import { THEMES, readAppearanceTheme } from '../utils/themes.js';
 import { contestLifecycle, panelContestDisplay, selectPrimaryActiveContest, selectVisibleMenuContests, upcomingContestViewMode } from '../utils/upcomingContests.js';
@@ -30,7 +30,6 @@ class ToolbarTooltip {
         this._button = button;
         this._timers = timers;
         this._timeoutId = null;
-        this._destroyed = false;
         this.actor = new St.Label({
             text,
             visible: false,
@@ -62,7 +61,7 @@ class ToolbarTooltip {
     }
 
     _syncHover() {
-        if (this._destroyed)
+        if (this.actor === null)
             return;
         if (!this._button.hover) {
             this._cancelTimeout();
@@ -72,13 +71,13 @@ class ToolbarTooltip {
         this._cancelTimeout();
         this._timeoutId = this._timers.timeout(550, () => {
             this._timeoutId = null;
-            if (!this._destroyed && this._button?.hover)
+            if (this.actor !== null && this._button?.hover)
                 this._show();
         });
     }
 
     _show() {
-        if (this._destroyed || !this._button?.mapped)
+        if (this.actor === null || !this._button?.mapped)
             return;
         this.actor.show();
         const [, , preferredWidth, preferredHeight] = this.actor.get_preferred_size();
@@ -104,14 +103,13 @@ class ToolbarTooltip {
     }
 
     _hide() {
-        if (!this._destroyed && this.actor)
+        if (this.actor !== null)
             this.actor.hide();
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this.actor === null)
             return;
-        this._destroyed = true;
         this._cancelTimeout();
         if (this._button) {
             for (const signal of [this._hoverSignal, this._pressSignal, this._destroySignal]) {
@@ -142,28 +140,16 @@ class CFIndicator extends PanelMenu.Button {
         this._settingsSignals = [];
         this._activeTheme = readAppearanceTheme(this._settings);
         this._starredContestIds = this._readStarredContestIds();
-        try {
-            this._settingsSignals.push(this._settings?.connect('changed::panel-display-mode', () => {
-                this._updatePanelLabel();
-            }) ?? 0);
-        } catch (_error) {
-            // Keep the default panel label if the preference is unavailable.
-        }
-        try {
-            this._settingsSignals.push(this._settings?.connect('changed::starred-contests', () => {
-                this._syncStarredRows();
-            }) ?? 0);
-        } catch (_error) {
-            // Starring remains unavailable if its optional setting is missing.
-        }
-        try {
-            this._settingsSignals.push(this._settings?.connect('changed::appearance-theme', () => {
-                this._activeTheme = readAppearanceTheme(this._settings);
-                this._applyTheme(this._activeTheme);
-            }) ?? 0);
-        } catch (_error) {
-            // The Orbit palette remains active if the appearance setting is unavailable.
-        }
+        this._settingsSignals.push(this._settings?.connect('changed::panel-display-mode', () => {
+            this._updatePanelLabel();
+        }) ?? 0);
+        this._settingsSignals.push(this._settings?.connect('changed::starred-contests', () => {
+            this._syncStarredRows();
+        }) ?? 0);
+        this._settingsSignals.push(this._settings?.connect('changed::appearance-theme', () => {
+            this._activeTheme = readAppearanceTheme(this._settings);
+            this._applyTheme(this._activeTheme);
+        }) ?? 0);
         this._contests = [];
         this._reminderContests = [];
         this._friendsState = { friends: [], friendsState: 'empty' };
@@ -181,7 +167,6 @@ class CFIndicator extends PanelMenu.Button {
         this._loadingContests = true;
         this._lastUpdatedAt = null;
         this._minuteTickId = null;
-        this._destroyed = false;
         this._toolbarTooltips = [];
         this._menuNavigationSignals = [];
         this._menuNavigationActors = [];
@@ -360,7 +345,7 @@ class CFIndicator extends PanelMenu.Button {
         this._enableKeyboardMenuFocus();
 
         this.menu.connect('open-state-changed', (menu, isOpen) => {
-            if (!isOpen && !this._destroyed) {
+            if (!isOpen) {
                 for (const tooltip of this._toolbarTooltips)
                     tooltip.hide();
                 if (this._pendingMenuUpdate)
@@ -472,7 +457,7 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     setRefreshState(isRefreshing) {
-        if (this._destroyed || !this._refreshButton)
+        if (!this._refreshButton)
             return;
         this._setRefreshState(isRefreshing);
     }
@@ -486,8 +471,6 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     setProfileState(state) {
-        if (this._destroyed)
-            return;
         this._profileState = state;
         const configured = Boolean(state.handle);
         this._accountAction.label.set_text(configured
@@ -539,8 +522,6 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     setContestState({ contests, displayContests = contests, offline, stale = false, staleContestIds = [], lastUpdatedAt, finishedContestIds = [] }) {
-        if (this._destroyed)
-            return;
         if (!offline && finishedContestIds.length > 0)
             this._pruneFinishedStars(finishedContestIds);
         const now = Math.floor(Date.now() / 1000);
@@ -576,8 +557,6 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     setFriendsState(state) {
-        if (this._destroyed)
-            return;
         this._friendsState = state;
         const friendCount = state.friends.length;
         this._friendsSubmenu.label.set_text(friendCount > 0 ? `Friends · ${friendCount}` : 'Friends');
@@ -663,11 +642,19 @@ class CFIndicator extends PanelMenu.Button {
         this._contestSection.removeAll();
         this._contestRows = [];
         this._placeholderItem = new PopupMenu.PopupBaseMenuItem({ reactive: false });
-        const box = new St.BoxLayout({ vertical: true });
+        const box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
+        this._placeholderIcon = new St.Icon({
+            icon_name: 'content-loading-symbolic',
+            style_class: 'popup-menu-icon',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        const labels = new St.BoxLayout({ vertical: true, y_align: Clutter.ActorAlign.CENTER });
         this._placeholderPrimary = new St.Label();
         this._placeholderSecondary = new St.Label({ style_class: 'cf-menu-footer' });
-        box.add_child(this._placeholderPrimary);
-        box.add_child(this._placeholderSecondary);
+        labels.add_child(this._placeholderPrimary);
+        labels.add_child(this._placeholderSecondary);
+        box.add_child(this._placeholderIcon);
+        box.add_child(labels);
         this._placeholderItem.add_child(box);
         this._contestSection.addMenuItem(this._placeholderItem);
         this._contestSection.actor.show();
@@ -680,16 +667,19 @@ class CFIndicator extends PanelMenu.Button {
         for (const styleClass of ['cf-loading-label', 'cf-error-label'])
             this._placeholderPrimary.remove_style_class_name(styleClass);
         if (mode === 'offline') {
-            this._placeholderPrimary.set_text('⚠️  Offline');
+            this._placeholderIcon.set_icon_name('network-offline-symbolic');
+            this._placeholderPrimary.set_text('Offline');
             this._placeholderPrimary.add_style_class_name('cf-error-label');
             this._placeholderSecondary.set_text('Click Refresh to retry');
             this._placeholderSecondary.show();
         } else if (mode === 'loading') {
-            this._placeholderPrimary.set_text('⏳  Loading contests…');
+            this._placeholderIcon.set_icon_name('content-loading-symbolic');
+            this._placeholderPrimary.set_text('Loading contests…');
             this._placeholderPrimary.add_style_class_name('cf-loading-label');
             this._placeholderSecondary.set_text('');
             this._placeholderSecondary.hide();
         } else {
+            this._placeholderIcon.set_icon_name('view-list-symbolic');
             this._placeholderPrimary.set_text('No upcoming contests');
             this._placeholderSecondary.set_text('');
             this._placeholderSecondary.hide();
@@ -970,11 +960,7 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     _readStarredContestIds() {
-        try {
-            return readStarredContestIds(this._settings?.get_strv('starred-contests'));
-        } catch (_error) {
-            return new Set();
-        }
+        return readStarredContestIds(this._settings?.get_strv('starred-contests'));
     }
 
     _updateStarButton(row) {
@@ -1013,7 +999,7 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     _setContestStarred(contestId, starred) {
-        if (this._destroyed || !this._settings)
+        if (!this._settings)
             return;
         try {
             if (!this._settings.is_writable('starred-contests'))
@@ -1038,12 +1024,7 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     _updatePanelLabel() {
-        let mode = 0;
-        try {
-            mode = this._settings?.get_uint('panel-display-mode') ?? 0;
-        } catch (_error) {
-            mode = 0;
-        }
+        const mode = this._settings?.get_uint('panel-display-mode') ?? 0;
         const now = Math.floor(Date.now() / 1000);
         const primaryLive = selectPrimaryActiveContest(this._contests, this._starredContestIds, now);
         const display = panelContestDisplay(
@@ -1077,8 +1058,6 @@ class CFIndicator extends PanelMenu.Button {
     _scheduleCountdownTick() {
         this._minuteTickId = this._timers.timeout(COUNTDOWN_INTERVAL_MS, () => {
             this._minuteTickId = null;
-            if (this._destroyed)
-                return;
             // Queue the next tick before UI work so a rendering error cannot stop updates.
             this._scheduleCountdownTick();
             const now = Math.floor(Date.now() / 1000);
@@ -1104,15 +1083,12 @@ class CFIndicator extends PanelMenu.Button {
     }
 
     _openPreferences() {
-        if (this._destroyed || !this._onOpenPreferences)
+        if (!this._onOpenPreferences)
             return;
         this._onOpenPreferences();
     }
 
     destroy() {
-        if (this._destroyed)
-            return;
-        this._destroyed = true;
         if (this._minuteTickId !== null) {
             this._timers.cancel(this._minuteTickId);
             this._minuteTickId = null;

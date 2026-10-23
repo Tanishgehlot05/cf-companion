@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { formatFriendlyStartDate } from '../extension/utils/time.js';
 import { createContestMenuActions } from '../extension/utils/contestMenuActions.js';
 import { contestUrls } from '../extension/utils/contestMenuActions.js';
-import { applyPendingSettings } from '../extension/utils/generalPreferences.js';
+import { applyPendingSettings } from '../extension/prefs/generalSettings.js';
 import {
     dueReminderKinds,
     contestHasNotEnded,
@@ -15,7 +15,7 @@ import {
     setContestStarred,
     shouldSendRegularReminder,
     snoozedReminderKey,
-} from '../extension/utils/reminderPreferences.js';
+} from '../extension/utils/reminderRules.js';
 import { SNOOZE_DELAY_MS, SnoozeTimerManager } from '../extension/utils/snoozeTimerManager.js';
 
 assert.equal(normalizeReminderMode(undefined), REMINDER_MODE_ALL, 'missing setting defaults to all contests');

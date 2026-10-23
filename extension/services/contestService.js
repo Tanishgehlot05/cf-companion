@@ -35,11 +35,7 @@ export class ContestService {
         this._settingsSignals = [];
         if (this._settings) {
             for (const key of ['show-div1', 'show-div2', 'show-div3', 'show-div4', 'show-educational', 'show-global', 'show-other']) {
-                try {
-                    this._settingsSignals.push(this._settings.connect(`changed::${key}`, () => this._scheduleFilterUpdate()));
-                } catch (_error) {
-                    // Keep the extension usable if an optional preference is unavailable.
-                }
+                this._settingsSignals.push(this._settings.connect(`changed::${key}`, () => this._scheduleFilterUpdate()));
             }
         }
         this._session = new Soup.Session();
@@ -47,7 +43,6 @@ export class ContestService {
         this._requestCancellable = new Gio.Cancellable();
         this._cacheCancellable = new Gio.Cancellable();
         this._requestRunning = false;
-        this._destroyed = false;
         this._started = false;
         this._retryAttempt = 0;
         this._refreshTimer = null;
@@ -64,17 +59,17 @@ export class ContestService {
     }
 
     start() {
-        if (this._started || this._destroyed)
+        if (this._started || this._session === null)
             return;
         this._started = true;
         this._loadCache().finally(() => {
-            if (!this._destroyed)
+            if (this._session !== null)
                 this.refresh();
         });
     }
 
     refresh() {
-        if (this._destroyed)
+        if (this._session === null)
             return false;
         if (this._requestRunning) {
             this._notifyRequestState();
@@ -90,7 +85,7 @@ export class ContestService {
         this._notifyRequestState();
         this._fetchContests()
             .then(contests => {
-                if (this._destroyed)
+                if (this._session === null)
                     return;
                 const freshIds = new Set(contests.map(contest => contest.id));
                 this._rawContests = reconcileContestList(
@@ -110,7 +105,7 @@ export class ContestService {
                 this._schedule(REFRESH_INTERVAL_MS);
             })
             .catch(error => {
-                if (this._destroyed || this._requestCancellable.is_cancelled() ||
+                if (this._session === null || this._requestCancellable.is_cancelled() ||
                     error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                     return;
 
@@ -129,12 +124,12 @@ export class ContestService {
     }
 
     _notifyRequestState() {
-        if (!this._destroyed)
+        if (this._session !== null)
             this._onRequestState?.(this._requestRunning);
     }
 
     _schedule(delayMs) {
-        if (this._destroyed)
+        if (this._session === null)
             return;
         if (this._refreshTimer !== null)
             this._timers.cancel(this._refreshTimer);
@@ -145,7 +140,7 @@ export class ContestService {
     }
 
     _scheduleFilterUpdate() {
-        if (this._destroyed)
+        if (this._session === null)
             return;
         if (this._filterUpdateTimer !== null)
             this._timers.cancel(this._filterUpdateTimer);
@@ -170,7 +165,7 @@ export class ContestService {
                 (session, result) => {
                     try {
                         const bytes = session.send_and_read_finish(result);
-                        if (this._destroyed || this._requestCancellable.is_cancelled()) {
+                        if (this._session === null || this._requestCancellable.is_cancelled()) {
                             reject(new Error('Request cancelled'));
                             return;
                         }
@@ -204,7 +199,7 @@ export class ContestService {
                     }
                 });
             });
-            if (this._destroyed)
+            if (this._session === null)
                 return;
             if (!loaded)
                 throw new Error('Contest cache could not be read');
@@ -221,7 +216,7 @@ export class ContestService {
             this._lastUpdatedAt = cache.updatedAt;
             this._emit();
         } catch (error) {
-            if (this._destroyed || error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED) ||
+            if (this._session === null || error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED) ||
                 error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
                 return;
             console.warn(`[CF Companion] Could not load contest cache: ${error.message}`);
@@ -236,7 +231,7 @@ export class ContestService {
         });
         try {
             await this._ensureDirectory(this._cacheDirectory);
-            if (this._destroyed)
+            if (this._session === null)
                 return;
 
             await new Promise((resolve, reject) => {
@@ -257,7 +252,7 @@ export class ContestService {
                 );
             });
         } catch (error) {
-            if (!this._destroyed && !error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+            if (this._session !== null && !error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 console.warn(`[CF Companion] Could not save contest cache: ${error.message}`);
         }
     }
@@ -288,16 +283,12 @@ export class ContestService {
     }
 
     _emit() {
-        if (this._destroyed)
+        if (this._session === null)
             return;
         const isEnabled = (key, fallback) => {
             if (!this._settings)
                 return fallback;
-            try {
-                return this._settings.get_boolean(key);
-            } catch (_error) {
-                return fallback;
-            }
+            return this._settings.get_boolean(key);
         };
         const contests = selectUpcomingContests(this._rawContests, isEnabled);
         const displayContests = selectAllUpcomingContests(this._rawContests, isEnabled);
@@ -315,9 +306,8 @@ export class ContestService {
     }
 
     destroy() {
-        if (this._destroyed)
+        if (this._session === null)
             return;
-        this._destroyed = true;
         if (this._refreshTimer !== null) {
             this._timers.cancel(this._refreshTimer);
             this._refreshTimer = null;
